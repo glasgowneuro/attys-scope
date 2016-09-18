@@ -1,0 +1,16 @@
+Plotting program for the Attys for Linux
+
+Requires:
+- QT5
+- QWT
+- IIR1 library (from Bernd Porr's github)
+- FFTW3
+- Bluez development libraries
+
+Compile with:
+qmake
+make
+
+Enjoy!
+
+/Bernd Porr
