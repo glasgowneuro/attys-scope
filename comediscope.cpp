@@ -498,8 +498,8 @@ void ComediScope::paintEvent( QPaintEvent * ) {
 
 
 struct __attribute__((__packed__)) bin_data_t {
-	uint32_t adc_ch1;
-	uint32_t adc_ch2;
+	uint32_t adc_ch1 : 24;
+	uint32_t adc_ch2 : 24;
 	
 	uint8_t adc_gpio;
 	uint8_t timestamp;
