@@ -2,9 +2,13 @@ Plotting program for the Attys for Windows
 
 Requires:
 - QT5.7 (download open source version, 64 bits)
+- IIR1 libaray
 
 Compile with:
-Visual Studio 2015 community edition
+- Install: Visual Studio 2015 community edition
+- cd attys_scope, Check out iir1 as a subproject: https://github.com/berndporr/iir1
+- Open the .sln file
+- Build solution
 
 Enjoy!
 

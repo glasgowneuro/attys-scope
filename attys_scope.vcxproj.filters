@@ -216,5 +216,9 @@
     <None Include="LICENSE" />
     <None Include="COPYING" />
     <None Include="README" />
+    <None Include="attys_scope.svg" />
+    <None Include="attys_scope.xpm" />
+    <None Include="attys_scope.VC.db" />
+    <None Include="attys_scope.pro" />
   </ItemGroup>
 </Project>

@@ -295,6 +295,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="attys_scope.pro" />
+    <None Include="attys_scope.svg" />
+    <None Include="attys_scope.VC.db" />
+    <None Include="attys_scope.xpm" />
     <None Include="COPYING" />
     <None Include="LICENSE" />
     <None Include="README" />
