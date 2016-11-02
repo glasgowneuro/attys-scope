@@ -1,15 +1,10 @@
-Plotting program for the Attys for Linux
+Plotting program for the Attys for Windows
 
 Requires:
-- QT5
-- QWT
-- IIR1 library (from Bernd Porr's github)
-- FFTW3
-- Bluez development libraries
+- QT5.7 (download open source version, 64 bits)
 
 Compile with:
-qmake
-make
+Visual Studio 2015 community edition
 
 Enjoy!
 

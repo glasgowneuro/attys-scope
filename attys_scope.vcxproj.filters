@@ -212,4 +212,9 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="LICENSE" />
+    <None Include="COPYING" />
+    <None Include="README" />
+  </ItemGroup>
 </Project>
