@@ -4,164 +4,139 @@
 #include <QTimerEvent>
 #include <QPaintEvent>
 
-#include<sys/ioctl.h>
+extern "C" {
 #include<stdio.h>
 #include<fcntl.h>
-#include<unistd.h>
 #include<stdlib.h>
-#include <termios.h>
-
-#include <fcntl.h>
-
-#include "comediscope.h"
-#include "base64.h"
-
-void ComediScope::btprintf(int s,const char *message) {
-	usleep(100000);
-	write(s,message,strlen(message));
-	tcflush(s,TCIFLUSH);
-	usleep(100000);
-	tcflush(s,TCIFLUSH);
+#include<fcntl.h>
 }
 
-ComediScope::ComediScope( Attys_scope *attys_scope_tmp, 
-			  int, 
-			  float f, 
-			  int port_for_ext_data, 
-			  int maxComediDevs,
-			  int, // first_dev_no,
-			  int req_sampling_rate,
-			  const char* defaultTextStringForMissingExtData,
-			  int fftdevnumber, int fftchannel, int fftmaxf
-	)
-    : QWidget( attys_scope_tmp ) {
+#include "comediscope.h"
 
-	inquiry_info *ii = NULL;
-	int max_rsp, num_rsp;
-	int dev_id, sock, len, flags;
-	int i;
-	char addr[19] = { 0 };
-	char name[248] = { 0 };
-	struct sockaddr_rc saddr;
-	
+
+#include <initguid.h>
+
+DEFINE_GUID(g_guidServiceClass, 0xb62c4e8d, 0x62cc, 0x404b, 0xbb, 0xbf, 0xbf, 0x3e, 0x3b, 0xbb, 0x13, 0x74);
+
+ComediScope::ComediScope(Attys_scope *attys_scope_tmp,
+	int,
+	float f,
+	int maxComediDevs,
+	int, // first_dev_no,
+	int req_sampling_rate
+)
+	: QWidget(attys_scope_tmp) {
+
 	sampling_rate = req_sampling_rate;
 
-	channels_in_use = 11;
-
-	tb_init=1;
-	tb_counter=tb_init;
-	attys_scope=attys_scope_tmp;
+	tb_init = 1;
+	tb_counter = tb_init;
+	attys_scope = attys_scope_tmp;
 	// erase plot
 	eraseFlag = 1;
 
-	fftdevno = fftdevnumber;
-	fftch = fftchannel;
-	fftmaxfrequency = fftmaxf;
-
 	// for ASCII
-	rec_file=NULL;
+	rec_file = NULL;
 
 	// filename
-	rec_filename=new QString();
+	rec_filename = new QString();
 
 	// flag if data has been recorded and we need a new filename
-	recorded=0;
-
-	if (port_for_ext_data>0) {
-		fprintf(stderr,
-			"Expecting a connection on TCP port %d. \n"
-			"Start your client now, for example: \n"
-			"telnet localhost %d\n"
-			"Press Ctrl-C to abort.\n",
-			port_for_ext_data,
-			port_for_ext_data);
-		ext_data_receive = new Ext_data_receive(
-			port_for_ext_data,
-			defaultTextStringForMissingExtData
-			);
-	} else {
-		ext_data_receive = NULL;
-	}	
-
+	recorded = 0;
 
 	//////////////////////////////////////////////////////////////
 
 	setAttribute(Qt::WA_OpaquePaintEvent);
 
-	dev_id = hci_get_route(NULL);
-	sock = hci_open_dev( dev_id );
-	if (dev_id < 0 || sock < 0) {
-		perror("opening socket");
-		exit(1);
-	}
-	
-	len  = 8;
-	max_rsp = 255;
-	flags = IREQ_CACHE_FLUSH;
-	ii = new inquiry_info[max_rsp];
-    
-	num_rsp = hci_inquiry(dev_id, len, max_rsp, NULL, &ii, flags);
-	if( num_rsp < 0 ) perror("hci_inquiry");
-	
-	dev = new int[maxComediDevs];
-	stream = new FILE*[maxComediDevs];
-	for(int devNo=0;devNo<maxComediDevs;devNo++) {
+	dev = new SOCKET[maxComediDevs];
+	attysComm = new AttysComm*[maxComediDevs];
+	for (int devNo = 0; devNo < maxComediDevs; devNo++) {
 		dev[devNo] = 0;
-		stream[devNo] = NULL;
+		attysComm[devNo] = nullptr;
 	}
 
-	// let's probe how many we have
-	nComediDevices = 0;
-	for (i = 0; i < num_rsp; i++) {
-		ba2str(&(ii+i)->bdaddr, addr);
-		memset(name, 0, sizeof(name));
-		if (hci_read_remote_name(sock, &(ii+i)->bdaddr, sizeof(name), 
-					 name, 0) < 0)
-			strcpy(name, "[unknown]");
-		printf("%s  %s", addr, name);
-		if (strstr(name,"GN-ATTYS")!=0) {
-			printf("!\n");
-			// allocate a socket
-			int s = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
-			
-			// set the connection parameters (who to connect to)
-			saddr.rc_family = AF_BLUETOOTH;
-			saddr.rc_channel = (uint8_t) 1;
-			str2ba( addr, &saddr.rc_bdaddr );
+	WSADATA wsd;
+	WSAStartup(MAKEWORD(1, 0), &wsd);
 
-			// connect to server
-			int status = ::connect(s,
-					       (struct sockaddr *)&saddr,
-					       sizeof(saddr));
-			
-			if (status == 0) {
-				dev[nComediDevices] = s;
-				stream[nComediDevices] = fdopen(s,"rt");
-				btprintf(s,"\n\r\n\r\n\r\n\r\n\r\n\r");
-				btprintf(s,"\n\nx=0\r\n");
-				btprintf(s,"\n\nv=0\r\n");
-				btprintf(s,"\n\nd=1\r\n");
-				btprintf(s,"\n\nr=1\r\n");
-				btprintf(s,"\n\na=0\r\n"); // a=6 for ECG
-				btprintf(s,"\n\nb=0\r\n"); // a=6 for ECG
-				btprintf(s,"\n\nt=3\r\n");
-				btprintf(s,"\n\ng=3\r\n");
-				btprintf(s,"\n\nx=1\r\n");
-				nComediDevices++;
-			} else {
-				printf("Connect failed: %d\n",status);
-				printf("Has the device been paired?\n");
-			}
-		} else {
-			printf("\n");
+	WSAQUERYSET wsaq;
+	ZeroMemory(&wsaq, sizeof(wsaq));
+	wsaq.dwSize = sizeof(wsaq);
+	wsaq.dwNameSpace = NS_BTH;
+	wsaq.lpcsaBuffer = NULL;
+	HANDLE hLookup = nullptr;
+	int iRet = WSALookupServiceBegin(&wsaq, LUP_CONTAINERS, &hLookup);
+	if (0 != iRet) {
+		if (WSAGetLastError() != WSASERVICE_NOT_FOUND) {
+			OutputDebugStringW(L"WSALookupServiceBegin failed\n");
+			exit(1);
+		}
+		else {
+			OutputDebugStringW(L"No bluetooth devices found\n");
+			exit(1);
 		}
 	}
 
-	delete ii;
+	CHAR buf[4096];
+	LPWSAQUERYSET pwsaResults = (LPWSAQUERYSET)buf;
+	ZeroMemory(pwsaResults, sizeof(WSAQUERYSET));
+	pwsaResults->dwSize = sizeof(WSAQUERYSET);
+	pwsaResults->dwNameSpace = NS_BTH;
+	pwsaResults->lpBlob = NULL;
+
+	// let's probe how many we have
+	nComediDevices = 0;
+	DWORD dwSize = sizeof(buf);
+	while (WSALookupServiceNext(hLookup, LUP_RETURN_NAME | LUP_RETURN_ADDR, &dwSize, pwsaResults) == 0) {
+		LPWSTR name = pwsaResults->lpszServiceInstanceName;
+		OutputDebugStringW(name);
+		if (wcsstr(name,L"GN-ATTYS1")!=0) {
+			OutputDebugStringW(L" -- Found an Attys!\n");
+
+			// allocate a socket
+			SOCKET s = ::socket(AF_BTH, SOCK_STREAM, BTHPROTO_RFCOMM);
+
+			if (INVALID_SOCKET == s) {
+				OutputDebugStringW(L"=CRITICAL= | socket() call failed.\n");
+				exit(1);
+			}
+
+			GUID service_UUID = { /* 00001101-0000-1000-8000-00805F9B34FB */
+				0x00001101,
+				0x0000,
+				0x1000,
+				{ 0x80, 0x00, 0x00, 0x80, 0x5F, 0x9B, 0x34, 0xFB }
+			};
+
+			PSOCKADDR_BTH btAddr = (SOCKADDR_BTH *)(pwsaResults->lpcsaBuffer->RemoteAddr.lpSockaddr);
+			btAddr->addressFamily = AF_BTH;
+			btAddr->serviceClassId = service_UUID;
+			btAddr->port = 0;
+
+			int btAddrLen = pwsaResults->lpcsaBuffer->RemoteAddr.iSockaddrLength;
+
+			// connect to server
+			int status = ::connect(s, (struct sockaddr *)btAddr,btAddrLen);
+			
+			if (status == 0) {
+
+				attysComm[nComediDevices] = new AttysComm(s);
+				channels_in_use = attysComm[nComediDevices]->NCHANNELS;
+				nComediDevices++;
+
+			} else {
+				OutputDebugStringW(L"Connect failed\n");
+				OutputDebugStringW(L"Has the device been paired?\n");
+			}
+		} else {
+			OutputDebugStringW(L"\n");
+		}
+	}
+
+	WSALookupServiceEnd(hLookup);
 	
 	// none detected
 	if (nComediDevices<1) {
-		fprintf(stderr,"No rfcomm devices detected!\n");
+		OutputDebugStringW(L"No rfcomm devices detected!\n");
 		exit(1);
 	}
 
@@ -234,36 +209,24 @@ ComediScope::ComediScope( Attys_scope *attys_scope_tmp,
 	}
 
 	setNotchFrequency(f);
-
-	// let's check that we get data from all devices
-	// and clear the buffers
-	for (int i=0;i<10;i++) {
-		for(int devNo=0;devNo<nComediDevices;devNo++) {
-			char linebuffer[65536];
-			int ret = fscanf(stream[devNo],
-					 "%s\n",
-					 linebuffer);
-			if (ret<1) {
-				fprintf(stderr,
-					"No data from rfcomm %d\n",devNo);
-				exit(-1);
-			}
-		}
-	}
-
-	// ready steady go!
-	counter = new QTimer( this );
-	assert( counter != NULL );
-	connect( counter, 
-		 SIGNAL(timeout()),
-		 this, 
-		 SLOT(updateTime()) );
 }
 
 
 void ComediScope::startDAQ() {
+	// ready steady go!
+	counter = new QTimer(this);
+	assert(counter != NULL);
+	connect(counter,
+		SIGNAL(timeout()),
+		this,
+		SLOT(updateTime()));
+
 	startTimer( 50 );		// run continuous timer
 	counter->start( 500 );
+	for (int i = 0; i < nComediDevices; i++) {
+		if (attysComm[i])
+		attysComm[i]->start();
+	}
 }
 
 
@@ -272,8 +235,11 @@ ComediScope::~ComediScope() {
 		fclose(rec_file);
 	}
 	for(int i=0; i<nComediDevices;i++) {
-		fclose(stream[i]);
-		shutdown(dev[i],2);
+		if (attysComm[i]) {
+			attysComm[i]->quit();
+			delete attysComm[i];
+			attysComm[i] = nullptr;
+		}
 	}
 }
 
@@ -363,9 +329,6 @@ void ComediScope::writeFile() {
 			}
 		}
 	}
-	if (ext_data_receive) {
-		fprintf(rec_file,"%c%s",separator,ext_data_receive->getData());
-	}
 	fprintf(rec_file,"\n");
 }
 
@@ -389,8 +352,7 @@ void ComediScope::startRec() {
 		delete rec_filename;
 		// print error msg
 		fprintf(stderr,
-			"Writing to %s failed.\n",
-			rec_filename->toLocal8Bit().constData());
+			"Writing failed.\n");
 	}
 	// print comment
 	if ((rec_file)&&(!comment.isEmpty())) {
@@ -494,97 +456,27 @@ void ComediScope::paintData(float** buffer) {
 // displayed and saved to disk.
 //
 
-void ComediScope::paintEvent( QPaintEvent * ) {
+void ComediScope::paintEvent(QPaintEvent *) {
 
+	for (;;) {
 
-struct __attribute__((__packed__)) bin_data_t {
-	uint32_t adc_ch1 : 24;
-	uint32_t adc_ch2 : 24;
-	
-	uint8_t adc_gpio;
-	uint8_t timestamp;
-
-	uint16_t accel_x;
-	uint16_t accel_y;
-	uint16_t accel_z;
-
-	uint16_t gyr_x;
-	uint16_t gyr_y;
-	uint16_t gyr_z;
-
-	uint16_t mag_x;
-	uint16_t mag_y;
-	uint16_t mag_z;
-
-} alldata;
-
-
-	while (1) {
-		// we need data in all of the comedi devices
-		for(int n=0;n<nComediDevices;n++) {
-			int fd=dev[n];
-			fd_set fds;
-			FD_ZERO(&fds);
-			FD_SET(fd, &fds);
-			struct timeval tv;
-			tv.tv_sec = 0;
-			tv.tv_usec = 0;
-			if (select(fd+1, &fds, 0, 0, &tv)<1) return;
+		for (int n = 0; n < nComediDevices; n++) {
+			int hasSample = attysComm[n]->hasSampleAvilabale();
+			if (!hasSample) return;
 		}
 
-		for(int n=0;n<nComediDevices;n++) {
-			int buffer[20];
-			
-			char linebuffer[256];
-
-			int ret = fscanf(stream[n],
-					 "%s\n",
-					 linebuffer);
-			if (ret<0) {
-				fclose(stream[n]);
-				shutdown(dev[n],2);
-				printf("Error during read. %d\n",ret);
-				exit(1);
-			}
-
-			Base64decode((char*)(&alldata),linebuffer);
-
-			buffer[0] = alldata.accel_x;
-			buffer[1] = alldata.accel_y;
-			buffer[2] = alldata.accel_z;
-
-			buffer[3] = alldata.gyr_x;
-			buffer[4] = alldata.gyr_y;
-			buffer[5] = alldata.gyr_z;
-
-			buffer[6] = alldata.mag_x;
-			buffer[7] = alldata.mag_y;
-			buffer[8] = alldata.mag_z;
-
-			buffer[9] = alldata.adc_ch1;
-			buffer[10] = alldata.adc_ch2;
-			
-			for(int i=0;i<channels_in_use;i++) {
-				int sample;
+		for (int n = 0; n < nComediDevices; n++) {
+			float* values = attysComm[n]->getSampleFromBuffer();
+			for (int i = 0; i < channels_in_use; i++) {
 				if (attys_scope->channel[n][i]->isActive()) {
-					int ch = attys_scope->channel[n][i]->getChannel();
-					sample = buffer[ch];
-					// store raw data
-					daqData[n][i] = sample;
-					// convert data to physical units for plotting
-					float value;
-					value = normaliseData(sample,maxdata[n][i]);
 					// filtering
-					value = attys_scope->dcSub[n][i]->filter(value);
+					float value = attys_scope->dcSub[n][i]->filter(values[i]);
 					value = attys_scope->hp[n][i]->filter(value);
 					value = attys_scope->lp[n][i]->filter(value);
 					// remove 50Hz
-					if (attys_scope->filterCheckbox->checkState()==Qt::Checked) {
-						value=iirnotch[n][i]->filter(value);
+					if (attys_scope->filterCheckbox->checkState() == Qt::Checked) {
+						value = iirnotch[n][i]->filter(value);
 					}
-					if ((n==fftdevno) && (ch==fftch) &&
-					    (attys_scope->fftscope))
-						attys_scope->fftscope->append(value);
 					// average response if TB is slower than sampling rate
 					adAvgBuffer[n][i] = adAvgBuffer[n][i] + value;
 				}
@@ -592,7 +484,7 @@ struct __attribute__((__packed__)) bin_data_t {
 		}
 
 		// save data
-		if (attys_scope->recPushButton->checkState()==Qt::Checked) {
+		if (attys_scope->recPushButton->checkState() == Qt::Checked) {
 			writeFile();
 		}
 
@@ -600,21 +492,21 @@ struct __attribute__((__packed__)) bin_data_t {
 		tb_counter--;
 
 		// enough averaged?
-		if (tb_counter<=0) {
-			for(int n=0;n<nComediDevices;n++) {
-				for(int i=0;i<channels_in_use;i++) {
-					adAvgBuffer[n][i]=adAvgBuffer[n][i]/tb_init;
+		if (tb_counter <= 0) {
+			for (int n = 0; n < nComediDevices; n++) {
+				for (int i = 0; i < channels_in_use; i++) {
+					adAvgBuffer[n][i] = adAvgBuffer[n][i] / tb_init;
 				}
 			}
-		
+
 			// plot the stuff
 			paintData(adAvgBuffer);
 
 			// clear buffer
-			tb_counter=tb_init;
-			for(int n=0;n<nComediDevices;n++) {
-				for(int i=0;i<channels_in_use;i++) {
-					adAvgBuffer[n][i]=0;
+			tb_counter = tb_init;
+			for (int n = 0; n < nComediDevices; n++) {
+				for (int i = 0; i < channels_in_use; i++) {
+					adAvgBuffer[n][i] = 0;
 				}
 			}
 		}
@@ -638,9 +530,6 @@ void ComediScope::setTB(int us) {
 
 void ComediScope::timerEvent( QTimerEvent * )
 {
-	if (ext_data_receive) {
-		ext_data_receive->readSocket();
-	}
 	repaint();
 }
 

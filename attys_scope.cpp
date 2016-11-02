@@ -1,4 +1,3 @@
-#include <sys/ioctl.h>
 #include <math.h>
 
 #include <QTimer>
@@ -13,7 +12,6 @@
 
 #include <stdio.h>
 #include <fcntl.h>
-#include <unistd.h>
 #include <stdlib.h>
 #include <qtextedit.h>
 #include <qfont.h>
@@ -69,25 +67,13 @@ Attys_scope::Attys_scope( QWidget *parent,
         comediScope=new ComediScope(this,
 				    nchannels,
 				    notchF,
-				    port,
 				    num_of_devices,
 				    first_dev_no,
-				    requrested_sampling_rate,
-				    defaultTextStringForMissingExtData,
-				    fftdev, 
-				    fftch,
-				    fftmaxf
+				    requrested_sampling_rate
 		);
 
 	int n_devs = comediScope->getNcomediDevices();
 	int channels = comediScope->getNchannels();
-
-	if ((fftdev>=0)&&(fftdev<n_devs)&&(fftch>=0)&&(fftch<channels)) {
-		fftscope = new FFTScope( this );
-		fftscope->show();
-	} else {
-		fftscope = NULL;
-	}
 
 	tb_us = 1000000 / comediScope->getActualSamplingRate();
 
@@ -103,7 +89,6 @@ Attys_scope::Attys_scope( QWidget *parent,
 
 	// the corresponding box which contains all the controls
 	QGroupBox *controlBox = new QGroupBox ();
-	controlBox->setStyleSheet("padding:0px;margin:0px;border:0px;");
 	controlBox->setSizePolicy ( QSizePolicy(QSizePolicy::Fixed,
 						QSizePolicy::Minimum ) );
 
@@ -125,7 +110,6 @@ Attys_scope::Attys_scope( QWidget *parent,
 	QGridLayout *allChLayout = new QGridLayout;
 	QGroupBox *allChGroup = new QGroupBox;
 	allChLayout->setSpacing(0);
-	allChGroup->setStyleSheet("padding:0px;margin:0px;border:0px;");
 	allChGroup->setLayout(allChLayout);
 	allChGroup->setSizePolicy ( QSizePolicy(QSizePolicy::Fixed,
 						QSizePolicy::Expanding ) );
@@ -146,7 +130,7 @@ Attys_scope::Attys_scope( QWidget *parent,
 	lpLabel=new QLabel**[n_devs];
 	
 	// to the get the stuff a bit closer together
-	char styleSheet[] = "padding:0px;margin:0px;border:0px;";
+//	char styleSheet[] = "padding:0px;margin:0px;border:0px;";
 
 	QSettings settings(QSettings::IniFormat, 
 			   QSettings::UserScope,
@@ -173,13 +157,13 @@ Attys_scope::Attys_scope( QWidget *parent,
 			// create the group for a channel
 			char tmp[10];
 			channelgrp[n][i] = new QGroupBox();
-			channelgrp[n][i]->setStyleSheet(styleSheet);
+//			channelgrp[n][i]->setStyleSheet(styleSheet);
 			// the corresponding layout
 			hbox[n][i] = new QHBoxLayout();
 			channelgrp[n][i]->setLayout(hbox[n][i]);
 			sprintf(tmp,"%02d:",i);
 			channelLabel[n][i] = new QLabel(tmp);
-			channelLabel[n][i]->setStyleSheet(styleSheet);
+//			channelLabel[n][i]->setStyleSheet(styleSheet);
 			channelLabel[n][i]->setFont(voltageFont);
 			hbox[n][i]->addWidget(channelLabel[n][i]);
 			hbox[n][i]->setSpacing(1);
@@ -194,16 +178,14 @@ Attys_scope::Attys_scope( QWidget *parent,
 			}
 			if ( channel[n][i] -> isActive() )
 				nch_enabled++;
-			channel[n][i]->setStyleSheet(styleSheet);
+//			channel[n][i]->setStyleSheet(styleSheet);
 			hbox[n][i]->addWidget(channel[n][i]);
 			voltageTextEdit[n][i]=new QTextEdit(channelgrp[n][i]);
-			voltageTextEdit[n][i]->setStyleSheet(styleSheet);
+//			voltageTextEdit[n][i]->setStyleSheet(styleSheet);
 			hbox[n][i]->addWidget(voltageTextEdit[n][i]);
 			voltageTextEdit[n][i]->setFont(voltageFont);
 			char tmpVolt[128];
-			sprintf(tmpVolt,
-				" "VOLT_FORMAT_STRING" ",
-				1.0);
+			sprintf(tmpVolt,"%f",1.0);
 			voltageTextEdit[n][i]->setMaximumSize
 				(voltageMetrics.width(tmpVolt),
 				 (int)(voltageMetrics.height()*1.1));
@@ -214,36 +196,36 @@ Attys_scope::Attys_scope( QWidget *parent,
 			// voltageTextEdit[i]->setLineWidth(1);
 
 			subDClabel[n][i] = new QLabel(" -DC");
-			subDClabel[n][i]->setStyleSheet(styleSheet);
+//			subDClabel[n][i]->setStyleSheet(styleSheet);
 			subDClabel[n][i]->setFont(voltageFont);
 			hbox[n][i]->addWidget(subDClabel[n][i]);
 
 			dcSub[n][i] = new DCSub((float)INERTIA_FOR_DC_DETECTION);
-			dcSub[n][i]->setStyleSheet(styleSheet);
+//			dcSub[n][i]->setStyleSheet(styleSheet);
 			hbox[n][i]->addWidget(dcSub[n][i]);
 
 			hpLabel[n][i] = new QLabel(" HP");
-			hpLabel[n][i]->setStyleSheet(styleSheet);
+//			hpLabel[n][i]->setStyleSheet(styleSheet);
 			hpLabel[n][i]->setFont(voltageFont);
 			hbox[n][i]->addWidget(hpLabel[n][i]);
 
 			hp[n][i] = new Hp(comediScope->getActualSamplingRate(),
 					  hpFreq);
-			hp[n][i] ->setStyleSheet(styleSheet);
+//			hp[n][i] ->setStyleSheet(styleSheet);
 			hbox[n][i]->addWidget(hp[n][i]);
 
 			lpLabel[n][i] = new QLabel(" LP");
-			lpLabel[n][i]->setStyleSheet(styleSheet);
+//			lpLabel[n][i]->setStyleSheet(styleSheet);
 			lpLabel[n][i]->setFont(voltageFont);
 			hbox[n][i]->addWidget(lpLabel[n][i]);
 
 			lp[n][i] = new Lp(comediScope->getActualSamplingRate(),
 					  lpFreq);
-			lp[n][i] ->setStyleSheet(styleSheet);
+//			lp[n][i] ->setStyleSheet(styleSheet);
 			hbox[n][i]->addWidget(lp[n][i]);
 
 			gain[n][i] = new Gain();
-			gain[n][i]->setStyleSheet(styleSheet);
+//			gain[n][i]->setStyleSheet(styleSheet);
 			hbox[n][i]->addWidget(gain[n][i]);
 
 			allChLayout->addWidget(channelgrp[n][i],row,1);
@@ -269,7 +251,7 @@ Attys_scope::Attys_scope( QWidget *parent,
 	// create a group for the notch filter
 	QGroupBox* notchGroupBox = new QGroupBox();
 	notchGroupBox->setFlat(true);
-	notchGroupBox->setStyleSheet(styleSheet);
+//	notchGroupBox->setStyleSheet(styleSheet);
 	QHBoxLayout *notchLayout = new QHBoxLayout();
 	char tmp[128];
 	sprintf(tmp,"%2.0fHz notch",notchF);
@@ -554,7 +536,6 @@ void Attys_scope::resetTbEvent() {
 
 int main( int argc, char **argv )
 {
-	int c;
 	int num_of_channels = 0;
 	int num_of_devices = 16;
 	const char *filename = NULL;
@@ -594,6 +575,8 @@ int main( int argc, char **argv )
 		settings.endGroup();
 	}
 	
+
+	/**
 	while (-1 != (c = getopt(argc, argv, "a:b:x:l:t:r:d:p:f:c:n:hvi"))) {
 		switch (c) {
 		case 'x':
@@ -651,6 +634,7 @@ int main( int argc, char **argv )
 	if (optind < argc) {
 		filename = argv[optind];
 	}
+	**/
 
 	settings.beginGroup(SETTINGS_GLOBAL);
 	settings.setValue("num_of_channels",num_of_channels);

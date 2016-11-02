@@ -18,7 +18,6 @@ class Attys_scope;
 #include "dc_sub.h"
 #include "hp.h"
 #include "lp.h"
-#include "fftscope.h"
 
 // defines how quickly the DC detector follows the signal
 // the larger the value the slower
@@ -230,12 +229,6 @@ private:
     QHBoxLayout*** hbox;
 
     QLabel *statusLabel;
-
-public:
-/**
- * FFT window
- **/
-    FFTScope *fftscope;
 
 };
 

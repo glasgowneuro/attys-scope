@@ -1,16 +1,10 @@
+#pragma comment(lib, "Ws2_32.lib")
+
 class ComediScope;
 #ifndef COMEDISCOPE_H
 #define COMEDISCOPE_H
 
 #define MAXBUFFER 65536
-
-extern "C" {
-#include <bluetooth/bluetooth.h>
-#include <bluetooth/hci.h>
-#include <bluetooth/hci_lib.h>
-#include <sys/socket.h>
-#include <bluetooth/rfcomm.h>
-}
 
 #include <QWidget>
 #include <QPushButton>
@@ -19,12 +13,22 @@ extern "C" {
 #include <QPaintEvent>
 #include <QTimerEvent>
 
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#include <stdio.h>
+#include <winsock2.h>
+#include <ws2bth.h>
+#include <BluetoothAPIs.h>
+
 #include <Iir.h>
 
 #include <fcntl.h>
-#include "ext_data_receive.h"
+
+#include <string>
 
 #include "attys_scope.h"
+
+#include "AttysComm.h"
 
 #define MAX_DISP_X 4096 // max screen width
 
@@ -42,15 +46,10 @@ public:
     ComediScope( Attys_scope* attys_scope_tmp,
 		 int channels = 0,
 		 float notchF = 50,
-		 int port_for_ext_data = 0,
 		 int maxComediDevices = 1,
 		 int first_dev_no = 0,
-		 int req_sampling_rate = 1000,
-		 const char *defaultTextStringForMissingExtData = NULL,
-		 int fftdevnumber = -1, 
-		 int fftchannel = -1,
-		 int fftmaxf = -1
-	    );
+		 int req_sampling_rate = 1000
+	);
 /**
  * Destructor: close the file if necessary
  **/
@@ -58,7 +57,7 @@ public:
 
 
 private:
-    void btprintf(int s,const char *message);
+    void btprintf(int s,const char *message,int checkOK);
 
 protected:
 /**
@@ -99,12 +98,9 @@ private:
 
 private:
     /**
-     * file descriptor for /dev/comedi0
+     * file descriptor for bt devices
      **/
-    int *dev;
-
-private:
-    FILE** stream;
+    SOCKET *dev;
 
  private:
     unsigned int** chanlist;
@@ -126,6 +122,8 @@ private:
      * elapsed msec
      **/
     long int         nsamples;
+
+	AttysComm** attysComm;
 
 public:
     /**
@@ -243,11 +241,6 @@ public:
     char separator;
 
 /**
- * Object for external data reception via a socket
- **/
-    Ext_data_receive* ext_data_receive;
-
-/**
  * Number of detected comedi devices
  **/
     int nComediDevices;
@@ -261,6 +254,8 @@ public:
  * Raw daq data from the A/D converter which is saved to a file
  **/
     int** daqData;
+
+
 
 public:
 /**
@@ -290,12 +285,6 @@ private:
     float normaliseData(int raw,int maxdata) {
 	    return (float)(raw-(maxdata/2))/(float)maxdata;
     }
-
-public:
-// FFT
-    int fftdevno;
-    int fftch;
-    int fftmaxfrequency;
 
 };
 
