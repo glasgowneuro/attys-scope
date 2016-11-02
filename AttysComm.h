@@ -113,9 +113,9 @@ public:
 		adc1_gain_index = idx;
 	}
 
-	// initial gain factor is 6 for both channels
-	int adc0_gain_index = 0;
-	int adc1_gain_index = 0;
+	// initial gain factor is 1 for both channels
+	int adc0_gain_index = ADC_GAIN_1;
+	int adc1_gain_index = ADC_GAIN_1;
 
 
 	/////////////////////////////////////////////////////////////////////
@@ -163,8 +163,8 @@ public:
 	const int ADC_MUX_TEMPERATURE = 4;
 	const int ADC_MUX_TEST_SIGNAL = 5;
 	const int ADC_MUX_ECG_EINTHOVEN = 6;
-	int adc0_mux_index = ADC_MUX_NORMAL;
-	int adc1_mux_index = ADC_MUX_NORMAL;
+	int adc0_mux_index;
+	int adc1_mux_index;
 
 	void setAdc0_mux_index(int idx) {
 		adc0_mux_index = idx;
@@ -183,7 +183,7 @@ public:
 	const int ACCEL_16G = 3;
 	const float oneG = 9.80665F; // m/s^2
 	const float ACCEL_FULL_SCALE[4] = { 2 * oneG, 4 * oneG, 8 * oneG, 16 * oneG }; // m/s^2
-	int accel_full_scale_index = ACCEL_16G;
+	int accel_full_scale_index;
 
 	float getAccelFullScaleRange() {
 		return ACCEL_FULL_SCALE[accel_full_scale_index];

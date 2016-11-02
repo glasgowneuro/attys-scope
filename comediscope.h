@@ -253,7 +253,7 @@ public:
 /**
  * Raw daq data from the A/D converter which is saved to a file
  **/
-    int** daqData;
+    float** daqData;
 
 
 
@@ -280,11 +280,6 @@ public:
  * Gets the actual sampling rate the boards are running at.
  **/
     int getActualSamplingRate() {return sampling_rate;};
-
-private:
-    float normaliseData(int raw,int maxdata) {
-	    return (float)(raw-(maxdata/2))/(float)maxdata;
-    }
 
 };
 

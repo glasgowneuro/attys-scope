@@ -94,11 +94,6 @@ public:
     QTextEdit* commentTextEdit;
 
     /**
-     * Raw data checkbox
-     **/
-    QCheckBox* rawCheckbox;
-
-    /**
      * Shows the filter frequency
      **/
     QTextEdit*  filterTextEdit;

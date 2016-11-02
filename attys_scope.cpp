@@ -289,10 +289,6 @@ Attys_scope::Attys_scope( QWidget *parent,
 		this, SLOT( enterFileName() ) );
 	recLayout->addWidget(filePushButton);
 
-	rawCheckbox=new QCheckBox("raw data" );
-	rawCheckbox->setChecked( false );
-	recLayout->addWidget(rawCheckbox);
-
 	recPushButton = new QCheckBox( "&REC" );
 	recPushButton->connect(recPushButton, SIGNAL( stateChanged(int) ),
 			       this, SLOT( recstartstop(int) ) );
@@ -424,7 +420,6 @@ Attys_scope::~Attys_scope() {
 
 void Attys_scope::disableControls() {
 	filePushButton->setEnabled( false );
-	rawCheckbox->setEnabled( false );
 	int n_devs = comediScope->getNcomediDevices();
 	int channels = comediScope->getNchannels();
 	for(int n=0;n<n_devs;n++) {
@@ -437,7 +432,6 @@ void Attys_scope::disableControls() {
 
 void Attys_scope::enableControls() {
 	filePushButton->setEnabled( true );
-	rawCheckbox->setEnabled( true );
 	int n_devs = comediScope->getNcomediDevices();
 	int channels = comediScope->getNchannels();
 	for(int n=0;n<n_devs;n++) {

@@ -34,6 +34,11 @@ AttysComm::AttysComm(SOCKET _btsocket)
 	outPtr = 0;
 	adc_rate_index = ADC_DEFAULT_RATE;
 	timestamp = 0;
+	adc0_gain_index = ADC_GAIN_1;
+	adc1_gain_index = ADC_GAIN_1;
+	adc0_mux_index = ADC_MUX_NORMAL;
+	adc1_mux_index = ADC_MUX_NORMAL;
+	accel_full_scale_index = ACCEL_16G;
 }
 
 

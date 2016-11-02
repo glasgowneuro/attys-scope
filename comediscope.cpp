@@ -140,6 +140,8 @@ ComediScope::ComediScope(Attys_scope *attys_scope_tmp,
 		exit(1);
 	}
 
+	assert(channels_in_use > 0);
+
 	// initialise the graphics stuff
 	ypos = new int**[nComediDevices];
 	assert(ypos != NULL);
@@ -187,7 +189,7 @@ ComediScope::ComediScope(Attys_scope *attys_scope_tmp,
 	assert( iirnotch != NULL );
 	adAvgBuffer = new float*[nComediDevices];
 	assert( adAvgBuffer != NULL );
-	daqData = new int*[nComediDevices];
+	daqData = new float*[nComediDevices];
 	assert( daqData != NULL );
 	for(int devNo=0;devNo<nComediDevices;devNo++) {
 		iirnotch[devNo] = new Iir::Butterworth::BandStop<IIRORDER>*[channels_in_use];
@@ -201,7 +203,7 @@ ComediScope::ComediScope(Attys_scope *attys_scope_tmp,
 			assert( iirnotch[devNo][i] != NULL );
 		}
 		// raw data buffer for saving the data
-		daqData[devNo] = new int[channels_in_use];
+		daqData[devNo] = new float[channels_in_use];
 		assert( daqData[devNo] != NULL );
 		for(int i=0;i<channels_in_use;i++) {
 			daqData[devNo][i]=0;
@@ -286,7 +288,7 @@ void ComediScope::updateTime() {
 	char tmp[256];
 	for(int n=0;n<nComediDevices;n++) {
 		for(int i=0;i<channels_in_use;i++) {
-			float phys=normaliseData(daqData[n][i],maxdata[n][i]);
+			float phys = daqData[n][i];
 			sprintf(tmp,VOLT_FORMAT_STRING,phys);
 			attys_scope->voltageTextEdit[n][i]->setText(tmp);
 		}
@@ -307,29 +309,18 @@ void ComediScope::setFilename(QString name,int csv) {
 
 void ComediScope::writeFile() {
 	if (!rec_file) return;
-	if (attys_scope->
-	    rawCheckbox->isChecked()) {
-		fprintf(rec_file,"%ld",nsamples);
-	} else {
-		fprintf(rec_file,"%f",((float)nsamples)/((float)sampling_rate));
-	}
-	for(int n=0;n<nComediDevices;n++) {
-		for(int i=0;i<channels_in_use;i++) {
+	fprintf(rec_file, "%f", ((float)nsamples) / ((float)sampling_rate));
+	for (int n = 0; n < nComediDevices; n++) {
+		for (int i = 0; i < channels_in_use; i++) {
 			if (attys_scope->
-			    channel[n][i]->isActive()
+				channel[n][i]->isActive()
 				) {
-				if (attys_scope->
-				    rawCheckbox->isChecked()) {
-					fprintf(rec_file,
-						"%c%d",separator,(int)(daqData[n][i]));
-				} else {
-					float phy=normaliseData(daqData[n][i],maxdata[n][i]);
-					fprintf(rec_file,"%c%f",separator,phy);
-				}
+				float phy = daqData[n][i];
+				fprintf(rec_file, "%c%f", separator, phy);
 			}
 		}
 	}
-	fprintf(rec_file,"\n");
+	fprintf(rec_file, "\n");
 }
 
 void ComediScope::startRec() {
@@ -417,10 +408,26 @@ void ComediScope::paintData(float** buffer) {
 		       xer,h);
 	int act=1;
 	for(int n=0;n<nComediDevices;n++) {
-		float minV = -1.0;
-		float maxV = 1.0;
-		float dy=(float)base/(float)(maxV-minV);
 		for(int i=0;i<channels_in_use;i++) {
+			float minV = -10;
+			float maxV = 10;
+			if ((i >= attysComm[n]->INDEX_Acceleration_X) && (i >= attysComm[n]->INDEX_Acceleration_Z)) {
+				minV = -attysComm[n]->getAccelFullScaleRange();
+				maxV = attysComm[n]->getAccelFullScaleRange();
+			}
+			if ((i >= attysComm[n]->INDEX_Magnetic_field_X) && (i >= attysComm[n]->INDEX_Magnetic_field_Z)) {
+				minV = -attysComm[n]->getMagFullScaleRange();
+				maxV = attysComm[n]->getMagFullScaleRange();
+			}
+			if (i == attysComm[n]->INDEX_Analogue_channel_1) {
+				minV = -attysComm[n]->getADCFullScaleRange(0);
+				maxV = attysComm[n]->getADCFullScaleRange(0);
+			}
+			if (i == attysComm[n]->INDEX_Analogue_channel_2) {
+				minV = -attysComm[n]->getADCFullScaleRange(1);
+				maxV = attysComm[n]->getADCFullScaleRange(1);
+			}
+			float dy = (float)base / (float)(maxV - minV);
 			if (attys_scope->
 			    channel[n][i]->
 			    isActive()) {
@@ -468,6 +475,7 @@ void ComediScope::paintEvent(QPaintEvent *) {
 		for (int n = 0; n < nComediDevices; n++) {
 			float* values = attysComm[n]->getSampleFromBuffer();
 			for (int i = 0; i < channels_in_use; i++) {
+				daqData[n][i] = values[i];
 				if (attys_scope->channel[n][i]->isActive()) {
 					// filtering
 					float value = attys_scope->dcSub[n][i]->filter(values[i]);
