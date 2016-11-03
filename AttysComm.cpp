@@ -172,8 +172,8 @@ void AttysComm::run() {
 	// Keep listening to the InputStream until an exception occurs
 	while (doRun) {
 
-		char linebuffer[1024];
-		int ret = recv(btsocket, linebuffer, 1023, 0);
+		char linebuffer[8192];
+		int ret = recv(btsocket, linebuffer, 8290, 0);
 		if (ret > 0) {
 			linebuffer[ret] = 0;
 			if (!strstr(linebuffer, "OK")) {
@@ -196,68 +196,75 @@ void AttysComm::run() {
 
 		if ((hasData)&&(!strstr(inbuffer,"OK"))) {
 
+			// _RPT1(0, "%d -- ", strlen(inbuffer));
 			// _RPT1(0, "%s\n",inbuffer);
-			Base64decode(raw, inbuffer);
+
+			if (strlen(inbuffer) == 28) {
+
+				char re[] = "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$";
+
+				Base64decode(raw, inbuffer);
+
+				for (int i = 0; i < 2; i++) {
+					long v = (raw[i * 3] & 0xff)
+						| ((raw[i * 3 + 1] & 0xff) << 8)
+						| ((raw[i * 3 + 2] & 0xff) << 16);
+					data[INDEX_Analogue_channel_1 + i] = v;
+				}
+
+				for (int i = 0; i < 6; i++) {
+					long v = (raw[8 + i * 2] & 0xff)
+						| ((raw[8 + i * 2 + 1] & 0xff) << 8);
+					data[i] = v;
+				}
+
+				// check that the timestamp is the expected one
+				int ts = 0;
+				nTrans = 1;
+				ts = raw[7];
+				if ((ts - expectedTimestamp) > 0) {
+					if (correctTimestampDifference) {
+						nTrans = 1 + (ts - expectedTimestamp);
+					}
+					else {
+						correctTimestampDifference = true;
+					}
+				}
+				// update timestamp
+				expectedTimestamp = ++ts;
+
+				// acceleration
+				for (int i = INDEX_Acceleration_X;
+					i <= INDEX_Acceleration_Z; i++) {
+					float norm = 0x8000;
+					sample[i] = ((float)data[i] - norm) / norm *
+						getAccelFullScaleRange();
+				}
+
+				// magnetometer
+				for (int i = INDEX_Magnetic_field_X;
+					i <= INDEX_Magnetic_field_Z; i++) {
+					float norm = 0x8000;
+					sample[i] = ((float)data[i] - norm) / norm *
+						MAG_FULL_SCALE;
+					//Log.d(TAG,"i="+i+","+sample[i]);
+				}
+
+				for (int i = INDEX_Analogue_channel_1;
+					i <= INDEX_Analogue_channel_2; i++) {
+					float norm = 0x800000;
+					sample[i] = ((float)data[i] - norm) / norm *
+						ADC_REF / ADC_GAIN_FACTOR[adcGainRegister[i
+						- INDEX_Analogue_channel_1]];
+				}
+
+			}
 
 			lf++;
 			int rem = (int)strlen(lf);
 			memmove(inbuffer, lf, rem);
 
 			inbuffer[rem] = 0;
-
-
-			for (int i = 0; i < 2; i++) {
-				long v = (raw[i * 3] & 0xff)
-					| ((raw[i * 3 + 1] & 0xff) << 8)
-					| ((raw[i * 3 + 2] & 0xff) << 16);
-				data[INDEX_Analogue_channel_1 + i] = v;
-			}
-
-			for (int i = 0; i < 6; i++) {
-				long v = (raw[8 + i * 2] & 0xff)
-					| ((raw[8 + i * 2 + 1] & 0xff) << 8);
-				data[i] = v;
-			}
-
-			// check that the timestamp is the expected one
-			int ts = 0;
-			nTrans = 1;
-			ts = raw[7];
-			if ((ts - expectedTimestamp) > 0) {
-				if (correctTimestampDifference) {
-					nTrans = 1 + (ts - expectedTimestamp);
-				}
-				else {
-					correctTimestampDifference = true;
-				}
-			}
-			// update timestamp
-			expectedTimestamp = ++ts;
-
-			// acceleration
-			for (int i = INDEX_Acceleration_X;
-				i <= INDEX_Acceleration_Z; i++) {
-				float norm = 0x8000;
-				sample[i] = ((float)data[i] - norm) / norm *
-					getAccelFullScaleRange();
-			}
-
-			// magnetometer
-			for (int i = INDEX_Magnetic_field_X;
-				i <= INDEX_Magnetic_field_Z; i++) {
-				float norm = 0x8000;
-				sample[i] = ((float)data[i] - norm) / norm *
-					MAG_FULL_SCALE;
-				//Log.d(TAG,"i="+i+","+sample[i]);
-			}
-
-			for (int i = INDEX_Analogue_channel_1;
-				i <= INDEX_Analogue_channel_2; i++) {
-				float norm = 0x800000;
-				sample[i] = ((float)data[i] - norm) / norm *
-					ADC_REF / ADC_GAIN_FACTOR[adcGainRegister[i
-					- INDEX_Analogue_channel_1]];
-			}
 
 			// in case a sample has been lost
 			for (int j = 0; j < nTrans; j++) {

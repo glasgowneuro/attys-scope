@@ -44,11 +44,7 @@ public:
  * Constructor:
  **/
     ComediScope( Attys_scope* attys_scope_tmp,
-		 int channels = 0,
-		 float notchF = 50,
-		 int maxComediDevices = 1,
-		 int first_dev_no = 0,
-		 int req_sampling_rate = 1000
+		 float notchF = 50
 	);
 /**
  * Destructor: close the file if necessary
@@ -256,13 +252,6 @@ public:
     float** daqData;
 
 
-
-public:
-/**
- * The actual sampling rate
- **/
-    int sampling_rate;
-
 public:
 /**
  * Start the DAQ board(s)
@@ -275,13 +264,12 @@ public:
  **/
     int getNcomediDevices() {return nComediDevices;};
 
-public:
-/**
- * Gets the actual sampling rate the boards are running at.
- **/
-    int getActualSamplingRate() {return sampling_rate;};
+
+	public:
+	int getActualSamplingRate() { return attysComm[0]->getSamplingRateInHz(); }
 
 };
+
 
 
 #endif

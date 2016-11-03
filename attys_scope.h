@@ -11,6 +11,7 @@ class Attys_scope;
 #include <QTextEdit>
 #include <QGroupBox>
 #include <QLabel>
+#include <qsplashscreen.h>
 
 #include "comediscope.h"
 #include "gain.h"
@@ -32,19 +33,11 @@ public:
  * Constructor
  **/
 	Attys_scope( QWidget *parent,
+		      QSplashScreen *_splash,
 		      int ignoreSettings = 0,
-		      int channels = 1, 
 		      float notch = 50.0,
-		      int port = 0,
 		      int num_of_devices = 1,
-		      int first_dev_no = 0,
-		      int requested_sampling_rate = 1000,
-		      const char* defaultTextStringForMissingExtData = NULL,
-		      const char* filename = NULL,
 		      int csv = 0,
-		      int fftdevnumber = -1,
-		      int fftchannel = -1,
-		      int fftmaxf = -1,
 		      float lpFreq = 10,
 		      float hpFreq = 1
 		);
@@ -65,6 +58,8 @@ public:
 	void disableControls();
 
 public:
+
+	QSplashScreen *splash;
 
 /**
  * Button which controls recording

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Generated Files">
@@ -17,6 +17,16 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
+      <Extensions>qrc;*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
+      <Extensions>qrc;*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
     <Filter Include="Source Files">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
@@ -27,6 +37,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AttysComm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="iir1\iir\Bessel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -90,11 +103,11 @@
     <ClCompile Include="lp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AttysComm.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AttysComm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="iir1\iir\Bessel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -164,9 +177,6 @@
     <CustomBuild Include="lp.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <ClInclude Include="AttysComm.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="debug\moc_attys_scope.cpp">
@@ -211,14 +221,19 @@
     <ClCompile Include="release\moc_lp.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="debug\qrc_application.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\qrc_application.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="LICENSE" />
-    <None Include="COPYING" />
-    <None Include="README" />
-    <None Include="attys_scope.svg" />
-    <None Include="attys_scope.xpm" />
-    <None Include="attys_scope.VC.db" />
-    <None Include="attys_scope.pro" />
+    <CustomBuild Include="application.qrc">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <None Include="attys.png">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

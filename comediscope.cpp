@@ -19,15 +19,11 @@ extern "C" {
 DEFINE_GUID(g_guidServiceClass, 0xb62c4e8d, 0x62cc, 0x404b, 0xbb, 0xbf, 0xbf, 0x3e, 0x3b, 0xbb, 0x13, 0x74);
 
 ComediScope::ComediScope(Attys_scope *attys_scope_tmp,
-	int,
-	float f,
-	int maxComediDevs,
-	int, // first_dev_no,
-	int req_sampling_rate
+	float f
 )
 	: QWidget(attys_scope_tmp) {
 
-	sampling_rate = req_sampling_rate;
+	int maxComediDevs = 3;
 
 	tb_init = 1;
 	tb_counter = tb_init;
@@ -92,6 +88,7 @@ ComediScope::ComediScope(Attys_scope *attys_scope_tmp,
 		if (wcsstr(name,L"GN-ATTYS1")!=0) {
 			OutputDebugStringW(L" -- Found an Attys!\n");
 
+			attys_scope->splash->showMessage("Connecting to Attys");
 			// allocate a socket
 			SOCKET s = ::socket(AF_BTH, SOCK_STREAM, BTHPROTO_RFCOMM);
 
@@ -137,6 +134,8 @@ ComediScope::ComediScope(Attys_scope *attys_scope_tmp,
 	// none detected
 	if (nComediDevices<1) {
 		OutputDebugStringW(L"No rfcomm devices detected!\n");
+		attys_scope->splash->showMessage("Cound not connect and/or no devices paired.");
+		Sleep(3000);
 		exit(1);
 	}
 
@@ -246,18 +245,18 @@ ComediScope::~ComediScope() {
 }
 
 void ComediScope::setNotchFrequency(float f) {
-	if (f>sampling_rate) {
+	if (f>attysComm[0]->getSamplingRateInHz()) {
 		fprintf(stderr,
 			"Error: The notch frequency %f "
 			"is higher than the sampling rate of %dHz.\n",
-			f,sampling_rate);
+			f, attysComm[0]->getSamplingRateInHz());
 		return;
 	}
 	for(int j=0;j<nComediDevices;j++) {
 		for(int i=0;i<channels_in_use;i++) {
 			float frequency_width = f/10;
 			iirnotch[j][i]->setup (IIRORDER, 
-					       sampling_rate, 
+				attysComm[0]->getSamplingRateInHz(),
 					       f, 
 					       frequency_width);
 		}
@@ -281,7 +280,7 @@ void ComediScope::updateTime() {
 		}
 	} else {
 		s = (*rec_filename) + 
-			QString().sprintf("--- rec: %ldsec", nsamples/sampling_rate );
+			QString().sprintf("--- rec: %ldsec", nsamples/ attysComm[0]->getSamplingRateInHz());
 	}
 	attys_scope->setWindowTitle( s );
 
@@ -309,7 +308,7 @@ void ComediScope::setFilename(QString name,int csv) {
 
 void ComediScope::writeFile() {
 	if (!rec_file) return;
-	fprintf(rec_file, "%f", ((float)nsamples) / ((float)sampling_rate));
+	fprintf(rec_file, "%f", ((float)nsamples) / ((float)attysComm[0]->getSamplingRateInHz()));
 	for (int n = 0; n < nComediDevices; n++) {
 		for (int i = 0; i < channels_in_use; i++) {
 			if (attys_scope->
@@ -523,7 +522,7 @@ void ComediScope::paintEvent(QPaintEvent *) {
 
 
 void ComediScope::setTB(int us) {
-	tb_init=us/(1000000/sampling_rate);
+	tb_init=us/(1000000/ attysComm[0]->getSamplingRateInHz());
 	tb_counter=tb_init;
 	for(int n=0;n<nComediDevices;n++) {
 		for(int i=0;i<channels_in_use;i++) {

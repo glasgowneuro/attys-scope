@@ -9,6 +9,7 @@
 #include <QSizePolicy>
 #include <QSettings>
 #include <QScrollArea>
+#include <qsplashscreen.h>
 
 #include <stdio.h>
 #include <fcntl.h>
@@ -45,32 +46,20 @@ protected:
 };
 
 
-Attys_scope::Attys_scope( QWidget *parent, 
-			    int ignoreSettings,
-			    int nchannels,
-			    float notchF,
-			    int port,
-			    int num_of_devices,
-			    int first_dev_no,
-			    int requrested_sampling_rate,
-			    const char* defaultTextStringForMissingExtData,
-			    const char* filename,
-			    int csv,
-			    int fftdev, 
-			    int fftch,
-			    int fftmaxf,
-			    float lpFreq,
-			    float hpFreq
+Attys_scope::Attys_scope(QWidget *parent,
+	    QSplashScreen *_splash,
+		int ignoreSettings,
+		float notch,
+		int num_of_devices,
+		int csv,
+		float lpFreq,
+		float hpFreq
 	)
     : QWidget( parent ) {
 
-        comediScope=new ComediScope(this,
-				    nchannels,
-				    notchF,
-				    num_of_devices,
-				    first_dev_no,
-				    requrested_sampling_rate
-		);
+	splash = _splash;
+
+    comediScope=new ComediScope(this,notch);
 
 	int n_devs = comediScope->getNcomediDevices();
 	int channels = comediScope->getNchannels();
@@ -254,7 +243,7 @@ Attys_scope::Attys_scope( QWidget *parent,
 //	notchGroupBox->setStyleSheet(styleSheet);
 	QHBoxLayout *notchLayout = new QHBoxLayout();
 	char tmp[128];
-	sprintf(tmp,"%2.0fHz notch",notchF);
+	sprintf(tmp,"%2.0fHz notch",notch);
 	filterCheckbox=new QCheckBox( tmp );
 	filterCheckbox->setChecked(false);
 	notchLayout->addWidget(filterCheckbox);
@@ -388,12 +377,7 @@ Attys_scope::Attys_scope( QWidget *parent,
 
 	comediScope->startDAQ();
 
-	if (filename) {
-		setFilename(filename,csv);
-		recPushButton->setChecked( true );
-		comediScope->startRec();
-	}
-		
+	splash->finish(this);
 }
 
 Attys_scope::~Attys_scope() {
@@ -532,19 +516,11 @@ int main( int argc, char **argv )
 {
 	int num_of_channels = 0;
 	int num_of_devices = 16;
-	const char *filename = NULL;
 	float notch = 50;
-	int port = 0;
-	int sampling_rate = 250;
-	int first_dev_no = 0;
 	int csv = 0;
-	int fftdevno = -1;
-	int fftch = -1;
-	int fftmaxf = -1;
 	float lpFreq = 20;
 	float hpFreq = 1;
 	int ignoreSettings = 0;
-	const char* defaultTextStringForMissingExtData = NULL;
 
 	QSettings settings(QSettings::IniFormat, 
 			   QSettings::UserScope,
@@ -552,6 +528,11 @@ int main( int argc, char **argv )
 			   PROGRAM_NAME);
 
 	QApplication a( argc, argv );		// create application object
+
+	QPixmap pixmap(":/attys.png");
+	QSplashScreen splash(pixmap);
+	splash.show();
+	splash.showMessage("Scanning for paired devices");
 
 	for(int i = 0;i<argc;i++) {
 		if (strstr(argv[i],"-i")) ignoreSettings = 1;	
@@ -561,7 +542,6 @@ int main( int argc, char **argv )
 		settings.beginGroup(SETTINGS_GLOBAL);
 		num_of_channels = settings.value("num_of_channels",0).toInt();
 		num_of_devices = settings.value("num_of_devices",16).toInt();
-		first_dev_no = settings.value("first_dev_no",0).toInt();
 		notch = settings.value("notch",50).toFloat();
 		lpFreq = settings.value("lowpass",20).toFloat();
 		hpFreq = settings.value("highpass",1).toFloat();
@@ -633,7 +613,6 @@ int main( int argc, char **argv )
 	settings.beginGroup(SETTINGS_GLOBAL);
 	settings.setValue("num_of_channels",num_of_channels);
 	settings.setValue("num_of_devices",num_of_devices);
-	settings.setValue("first_dev_no",first_dev_no);
 	settings.setValue("notch",notch);
 	settings.setValue("lowpass",lpFreq);
 	settings.setValue("highpass",hpFreq);
@@ -641,19 +620,11 @@ int main( int argc, char **argv )
 	settings.endGroup();
 
 	Attys_scope attys_scope(0,
+		      &splash,
 			  ignoreSettings,
-			  num_of_channels,
 			  notch,
-			  port,
 			  num_of_devices,
-			  first_dev_no,
-			  sampling_rate,
-			  defaultTextStringForMissingExtData,
-			  filename,
 			  csv,
-			  fftdevno,
-			  fftch,
-			  fftmaxf,
 			  lpFreq,
 			  hpFreq
 		);

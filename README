@@ -7,6 +7,7 @@ Requires:
 Compile with:
 - Install: Visual Studio 2015 community edition
 - cd attys_scope, Check out iir1 as a subproject: https://github.com/berndporr/iir1
+- qmake -tp vc
 - Open the .sln file
 - Build solution
 

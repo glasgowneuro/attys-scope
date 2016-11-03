@@ -5,6 +5,7 @@
 #include <ws2bth.h>
 #include <BluetoothAPIs.h>
 #include <QThread>
+#include<regex>
 
 #include "base64.h"
 
