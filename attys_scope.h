@@ -11,6 +11,7 @@ class Attys_scope;
 #include <QTextEdit>
 #include <QGroupBox>
 #include <QLabel>
+#include <QScrollArea>
 #include <qsplashscreen.h>
 
 #include "comediscope.h"
@@ -219,6 +220,42 @@ private:
     QHBoxLayout*** hbox;
 
     QLabel *statusLabel;
+
+	QGroupBox *controlBox;
+
+	QVBoxLayout * controlLayout;
+	QVBoxLayout *scopeLayout;
+	QGroupBox *scopeGroup;
+
+	QScrollArea *allChScrollArea;
+	QVBoxLayout *allChScrollLayout;
+
+	QGridLayout *allChLayout;
+	QGroupBox *allChGroup;
+
+	QHBoxLayout *mainLayout;
+
+	QVBoxLayout * restLayout;
+
+	QGroupBox *restGroup;
+
+	QGroupBox* notchGroupBox;
+	QHBoxLayout *notchLayout;
+
+	QGroupBox *tbgrp;
+	QHBoxLayout *tbLayout;
+
+	QGroupBox *statusgrp;
+	QHBoxLayout *statusLayout;
+
+	QGroupBox* recGroupBox;
+	QHBoxLayout *recLayout;
+
+	QFont *voltageFont;
+
+	QFont *commentFont;
+
+	QFont *tbFont;
 
 };
 

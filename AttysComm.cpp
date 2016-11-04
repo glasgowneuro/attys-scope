@@ -161,6 +161,8 @@ void AttysComm::sendInit() {
 
 
 void AttysComm::run() {
+	char linebuffer[8192];
+
 	int nTrans = 1;
 
 	sendInit();
@@ -172,7 +174,6 @@ void AttysComm::run() {
 	// Keep listening to the InputStream until an exception occurs
 	while (doRun) {
 
-		char linebuffer[8192];
 		int ret = recv(btsocket, linebuffer, 8290, 0);
 		if (ret > 0) {
 			linebuffer[ret] = 0;
@@ -182,6 +183,7 @@ void AttysComm::run() {
 		}
 
 		int hasData = 1;
+
 		// search for LF (CR is first)
 		char* lf = strchr(inbuffer, 0x0A);
 		if (!lf) {
@@ -195,9 +197,6 @@ void AttysComm::run() {
 		}
 
 		if ((hasData)&&(!strstr(inbuffer,"OK"))) {
-
-			// _RPT1(0, "%d -- ", strlen(inbuffer));
-			// _RPT1(0, "%s\n",inbuffer);
 
 			if (strlen(inbuffer) == 28) {
 
@@ -258,6 +257,11 @@ void AttysComm::run() {
 						- INDEX_Analogue_channel_1]];
 				}
 
+			}
+			else {
+				_RPT1(0, "%d -- ", strlen(inbuffer));
+				_RPT1(0, "%s,    ",inbuffer);
+				_RPT1(0, "%s\n,",linebuffer);
 			}
 
 			lf++;

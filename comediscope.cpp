@@ -111,18 +111,23 @@ ComediScope::ComediScope(Attys_scope *attys_scope_tmp,
 
 			int btAddrLen = pwsaResults->lpcsaBuffer->RemoteAddr.iSockaddrLength;
 
-			// connect to server
-			int status = ::connect(s, (struct sockaddr *)btAddr,btAddrLen);
-			
-			if (status == 0) {
+			for(int i = 0;i<5; i++) {
 
-				attysComm[nComediDevices] = new AttysComm(s);
-				channels_in_use = attysComm[nComediDevices]->NCHANNELS;
-				nComediDevices++;
+				// connect to server
+				int status = ::connect(s, (struct sockaddr *)btAddr, btAddrLen);
 
-			} else {
-				OutputDebugStringW(L"Connect failed\n");
-				OutputDebugStringW(L"Has the device been paired?\n");
+				if (status == 0) {
+
+					attysComm[nComediDevices] = new AttysComm(s);
+					channels_in_use = attysComm[nComediDevices]->NCHANNELS;
+					nComediDevices++;
+					break;
+				}
+				else {
+					OutputDebugStringW(L"Connect failed\n");
+					OutputDebugStringW(L"Has the device been paired?\n");
+				}
+
 			}
 		} else {
 			OutputDebugStringW(L"\n");

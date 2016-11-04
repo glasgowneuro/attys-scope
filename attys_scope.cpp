@@ -67,37 +67,37 @@ Attys_scope::Attys_scope(QWidget *parent,
 	tb_us = 1000000 / comediScope->getActualSamplingRate();
 
 	// fonts
-	QFont voltageFont("Courier",10);
-	QFontMetrics voltageMetrics(voltageFont);
+	voltageFont = new QFont("Courier",10);
+	QFontMetrics voltageMetrics(*voltageFont);
 
 	// this the main layout which contains two sub-windows:
 	// the control window and the oscilloscope window
-	QHBoxLayout *mainLayout = new QHBoxLayout;
+	mainLayout = new QHBoxLayout;
 	mainLayout->setSpacing(0);
 	setLayout(mainLayout);
 
 	// the corresponding box which contains all the controls
-	QGroupBox *controlBox = new QGroupBox ();
+	controlBox = new QGroupBox ();
 	controlBox->setSizePolicy ( QSizePolicy(QSizePolicy::Fixed,
 						QSizePolicy::Minimum ) );
 
 	// now we create another layout which contains all the controls
-	QVBoxLayout * controlLayout = new QVBoxLayout(controlBox);
+	controlLayout = new QVBoxLayout(controlBox);
 	// this is the vertical layout for all the controls
-	QVBoxLayout *scopeLayout = new QVBoxLayout(0);
+	scopeLayout = new QVBoxLayout(0);
 	// the corresponding box which contains all the controls
-	QGroupBox *scopeGroup = new QGroupBox ();
+	scopeGroup = new QGroupBox ();
 
 	// we create a scroll area
-	QScrollArea *allChScrollArea = new QScrollArea();
+	allChScrollArea = new QScrollArea();
 	// this is the layout containing the scrollArea
-	QVBoxLayout *allChScrollLayout = new QVBoxLayout();
+	allChScrollLayout = new QVBoxLayout();
 	// to this layout we add just one widget which is the scroll area
 	allChScrollLayout->addWidget(allChScrollArea);
 
 
-	QGridLayout *allChLayout = new QGridLayout;
-	QGroupBox *allChGroup = new QGroupBox;
+	allChLayout = new QGridLayout;
+	allChGroup = new QGroupBox;
 	allChLayout->setSpacing(0);
 	allChGroup->setLayout(allChLayout);
 	allChGroup->setSizePolicy ( QSizePolicy(QSizePolicy::Fixed,
@@ -119,7 +119,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	lpLabel=new QLabel**[n_devs];
 	
 	// to the get the stuff a bit closer together
-//	char styleSheet[] = "padding:0px;margin:0px;border:0px;";
+	char styleSheet[] = "padding:0px;margin:0px;border:0px;";
 
 	QSettings settings(QSettings::IniFormat, 
 			   QSettings::UserScope,
@@ -146,14 +146,14 @@ Attys_scope::Attys_scope(QWidget *parent,
 			// create the group for a channel
 			char tmp[10];
 			channelgrp[n][i] = new QGroupBox();
-//			channelgrp[n][i]->setStyleSheet(styleSheet);
+			channelgrp[n][i]->setStyleSheet(styleSheet);
 			// the corresponding layout
 			hbox[n][i] = new QHBoxLayout();
 			channelgrp[n][i]->setLayout(hbox[n][i]);
 			sprintf(tmp,"%02d:",i);
 			channelLabel[n][i] = new QLabel(tmp);
-//			channelLabel[n][i]->setStyleSheet(styleSheet);
-			channelLabel[n][i]->setFont(voltageFont);
+			channelLabel[n][i]->setStyleSheet(styleSheet);
+			channelLabel[n][i]->setFont(*voltageFont);
 			hbox[n][i]->addWidget(channelLabel[n][i]);
 			hbox[n][i]->setSpacing(1);
 			channel[n][i] = new Channel(channels);
@@ -167,12 +167,12 @@ Attys_scope::Attys_scope(QWidget *parent,
 			}
 			if ( channel[n][i] -> isActive() )
 				nch_enabled++;
-//			channel[n][i]->setStyleSheet(styleSheet);
+			channel[n][i]->setStyleSheet(styleSheet);
 			hbox[n][i]->addWidget(channel[n][i]);
 			voltageTextEdit[n][i]=new QTextEdit(channelgrp[n][i]);
-//			voltageTextEdit[n][i]->setStyleSheet(styleSheet);
+			voltageTextEdit[n][i]->setStyleSheet(styleSheet);
 			hbox[n][i]->addWidget(voltageTextEdit[n][i]);
-			voltageTextEdit[n][i]->setFont(voltageFont);
+			voltageTextEdit[n][i]->setFont(*voltageFont);
 			char tmpVolt[128];
 			sprintf(tmpVolt,"%f",1.0);
 			voltageTextEdit[n][i]->setMaximumSize
@@ -181,40 +181,40 @@ Attys_scope::Attys_scope(QWidget *parent,
 			voltageTextEdit[n][i]->
 				setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff ); 
 			voltageTextEdit[n][i]->setReadOnly(true);
-			voltageTextEdit[n][i]->setFont(voltageFont);
+			voltageTextEdit[n][i]->setFont(*voltageFont);
 			// voltageTextEdit[i]->setLineWidth(1);
 
 			subDClabel[n][i] = new QLabel(" -DC");
-//			subDClabel[n][i]->setStyleSheet(styleSheet);
-			subDClabel[n][i]->setFont(voltageFont);
+			subDClabel[n][i]->setStyleSheet(styleSheet);
+			subDClabel[n][i]->setFont(*voltageFont);
 			hbox[n][i]->addWidget(subDClabel[n][i]);
 
 			dcSub[n][i] = new DCSub((float)INERTIA_FOR_DC_DETECTION);
-//			dcSub[n][i]->setStyleSheet(styleSheet);
+			dcSub[n][i]->setStyleSheet(styleSheet);
 			hbox[n][i]->addWidget(dcSub[n][i]);
 
 			hpLabel[n][i] = new QLabel(" HP");
-//			hpLabel[n][i]->setStyleSheet(styleSheet);
-			hpLabel[n][i]->setFont(voltageFont);
+			hpLabel[n][i]->setStyleSheet(styleSheet);
+			hpLabel[n][i]->setFont(*voltageFont);
 			hbox[n][i]->addWidget(hpLabel[n][i]);
 
 			hp[n][i] = new Hp(comediScope->getActualSamplingRate(),
 					  hpFreq);
-//			hp[n][i] ->setStyleSheet(styleSheet);
+			hp[n][i] ->setStyleSheet(styleSheet);
 			hbox[n][i]->addWidget(hp[n][i]);
 
 			lpLabel[n][i] = new QLabel(" LP");
-//			lpLabel[n][i]->setStyleSheet(styleSheet);
-			lpLabel[n][i]->setFont(voltageFont);
+			lpLabel[n][i]->setStyleSheet(styleSheet);
+			lpLabel[n][i]->setFont(*voltageFont);
 			hbox[n][i]->addWidget(lpLabel[n][i]);
 
 			lp[n][i] = new Lp(comediScope->getActualSamplingRate(),
 					  lpFreq);
-//			lp[n][i] ->setStyleSheet(styleSheet);
+			lp[n][i] ->setStyleSheet(styleSheet);
 			hbox[n][i]->addWidget(lp[n][i]);
 
 			gain[n][i] = new Gain();
-//			gain[n][i]->setStyleSheet(styleSheet);
+			gain[n][i]->setStyleSheet(styleSheet);
 			hbox[n][i]->addWidget(gain[n][i]);
 
 			allChLayout->addWidget(channelgrp[n][i],row,1);
@@ -232,29 +232,29 @@ Attys_scope::Attys_scope(QWidget *parent,
 		channel[0][0]->setChannel( 0 );
 
 	// now we create another layout which contains all the remaining controls
-	QVBoxLayout * restLayout = new QVBoxLayout;
+	restLayout = new QVBoxLayout;
 	// the corresponding box which contains all the controls
-	QGroupBox *restGroup = new QGroupBox;
+	restGroup = new QGroupBox;
 
 	// notch filter
 	// create a group for the notch filter
-	QGroupBox* notchGroupBox = new QGroupBox();
+	notchGroupBox = new QGroupBox();
 	notchGroupBox->setFlat(true);
-//	notchGroupBox->setStyleSheet(styleSheet);
-	QHBoxLayout *notchLayout = new QHBoxLayout();
+	notchGroupBox->setStyleSheet(styleSheet);
+	notchLayout = new QHBoxLayout();
 	char tmp[128];
 	sprintf(tmp,"%2.0fHz notch",notch);
 	filterCheckbox=new QCheckBox( tmp );
 	filterCheckbox->setChecked(false);
 	notchLayout->addWidget(filterCheckbox);
 	commentTextEdit=new QCommentTextEdit();
-	QFont commentFont("Courier",10);
-	QFontMetrics commentMetrics(commentFont);
+	QFont* commentFont = new QFont();
+	QFontMetrics commentMetrics(*commentFont);
 	commentTextEdit->setMaximumHeight ( commentMetrics.height() );
 	commentTextEdit->setMaximumWidth ( 10*commentMetrics.width('X') );
 	commentTextEdit->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	commentTextEdit->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	commentTextEdit->setFont(commentFont);
+	commentTextEdit->setFont(*commentFont);
 	QLabel *l=new QLabel("Comment:");
 	notchLayout->addWidget(l);
 	notchLayout->addWidget(commentTextEdit);
@@ -263,11 +263,11 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 
 	// group for the record stuff
-	QGroupBox* recGroupBox = new QGroupBox();
-	QHBoxLayout *recLayout = new QHBoxLayout();
+	recGroupBox = new QGroupBox();
+	recLayout = new QHBoxLayout();
 
-	QLabel* recLabel = new QLabel("Write to file:");
-	recLayout->addWidget(recLabel);
+	QLabel recLabel("Write to file:");
+	recLayout->addWidget(&recLabel);
 
 	filePushButton = new QPushButton( "&filename" );
 	filePushButton->setSizePolicy ( QSizePolicy(QSizePolicy::Fixed,
@@ -289,14 +289,14 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 
 	// group for the time base
-	QGroupBox *tbgrp = new QGroupBox();
-	QHBoxLayout *tbLayout = new QHBoxLayout;
-	QFont tbFont("Courier",12);
-	tbFont.setBold(true);
-	QFontMetrics tbMetrics(tbFont);
+	tbgrp = new QGroupBox();
+	tbLayout = new QHBoxLayout;
+	tbFont = new QFont("Courier",12);
+	tbFont->setBold(true);
+	QFontMetrics tbMetrics(*tbFont);
 
-	QLabel* tbLabel = new QLabel("Timebase:");
-	tbLayout->addWidget(tbLabel);
+	QLabel tbLabel("Timebase:");
+	tbLayout->addWidget(&tbLabel);
 
 	tbIncPushButton = new QPushButton( "slower" );
 
@@ -304,7 +304,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	tbIncPushButton->setStyleSheet(tbStyle);
 	tbIncPushButton->setMaximumSize ( tbMetrics.width(" slower ") ,  
 					  tbMetrics.height()*5/4 );
-	tbIncPushButton->setFont(tbFont);
+	tbIncPushButton->setFont(*tbFont);
 	tbgrp->connect(tbIncPushButton, SIGNAL( clicked() ),
 		this, SLOT( incTbEvent() ) );
 	tbLayout->addWidget(tbIncPushButton);
@@ -313,14 +313,14 @@ Attys_scope::Attys_scope(QWidget *parent,
 	tbDecPushButton->setStyleSheet(tbStyle);
 	tbDecPushButton->setMaximumSize ( tbMetrics.width(" faster ") ,  
 					  tbMetrics.height()*5/4 );
-	tbDecPushButton->setFont(tbFont);	
+	tbDecPushButton->setFont(*tbFont);	
 	tbgrp->connect(tbDecPushButton, SIGNAL( clicked() ),
 		       this, SLOT( decTbEvent() ) );
 	tbLayout->addWidget(tbDecPushButton);
 
 	tbInfoTextEdit = new QTextEdit(tbgrp);
-	tbInfoTextEdit->setFont (tbFont);
-	QFontMetrics metricsTb(tbFont);
+	tbInfoTextEdit->setFont (*tbFont);
+	QFontMetrics metricsTb(*tbFont);
 	tbInfoTextEdit->setMaximumHeight ( commentMetrics.height() * 1.5 );
 	tbInfoTextEdit->setMaximumWidth ( commentMetrics.width('X') * 13 );
 	tbInfoTextEdit->setReadOnly(true);
@@ -331,7 +331,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	tbResetPushButton->setStyleSheet("background-color: white;border-style:outset;border-width: 2px;border-color: black;font: bold 10px;padding: 4px;");
 	tbResetPushButton->setMaximumSize ( tbMetrics.width("restart ") ,  
 					  tbMetrics.height() );
-	tbResetPushButton->setFont(tbFont);	
+	tbResetPushButton->setFont(*tbFont);	
 	tbgrp->connect(tbResetPushButton, SIGNAL( clicked() ),
 		       this, SLOT( resetTbEvent() ) );
 	tbLayout->addWidget(tbResetPushButton);
@@ -339,8 +339,8 @@ Attys_scope::Attys_scope(QWidget *parent,
 	tbgrp->setLayout(tbLayout);
 	restLayout->addWidget(tbgrp);
 
-	QGroupBox *statusgrp = new QGroupBox;
-	QHBoxLayout *statusLayout = new QHBoxLayout;
+	statusgrp = new QGroupBox;
+	statusLayout = new QHBoxLayout;
 
 	char status[256];
 	sprintf(status,"# of devs: %d, Fs: %d Hz, lp: %1.1f Hz, hp: %1.1f Hz",
