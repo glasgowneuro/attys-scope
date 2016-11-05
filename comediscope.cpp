@@ -52,7 +52,7 @@ ComediScope::ComediScope(Attys_scope *attys_scope_tmp,
 	}
 
 	WSADATA wsd;
-	WSAStartup(MAKEWORD(1, 0), &wsd);
+	WSAStartup(MAKEWORD(2, 2), &wsd);
 
 	WSAQUERYSET wsaq;
 	ZeroMemory(&wsaq, sizeof(wsaq));
@@ -100,17 +100,10 @@ ComediScope::ComediScope(Attys_scope *attys_scope_tmp,
 					exit(1);
 				}
 
-				GUID service_UUID = { /* 00001101-0000-1000-8000-00805F9B34FB */
-					0x00001101,
-					0x0000,
-					0x1000,
-					{ 0x80, 0x00, 0x00, 0x80, 0x5F, 0x9B, 0x34, 0xFB }
-				};
-
 				PSOCKADDR_BTH btAddr = (SOCKADDR_BTH *)(pwsaResults->lpcsaBuffer->RemoteAddr.lpSockaddr);
 				btAddr->addressFamily = AF_BTH;
-				btAddr->serviceClassId = service_UUID;
-				btAddr->port = 0;
+				btAddr->serviceClassId = RFCOMM_PROTOCOL_UUID;
+				btAddr->port = BT_PORT_ANY;
 
 				int btAddrLen = pwsaResults->lpcsaBuffer->RemoteAddr.iSockaddrLength;
 
