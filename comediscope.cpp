@@ -85,33 +85,34 @@ ComediScope::ComediScope(Attys_scope *attys_scope_tmp,
 	while (WSALookupServiceNext(hLookup, LUP_RETURN_NAME | LUP_RETURN_ADDR, &dwSize, pwsaResults) == 0) {
 		LPWSTR name = pwsaResults->lpszServiceInstanceName;
 		OutputDebugStringW(name);
-		if (wcsstr(name,L"GN-ATTYS1")!=0) {
+		if (wcsstr(name, L"GN-ATTYS1") != 0) {
 			OutputDebugStringW(L" -- Found an Attys!\n");
 
 			attys_scope->splash->showMessage("Connecting to Attys");
-			// allocate a socket
-			SOCKET s = ::socket(AF_BTH, SOCK_STREAM, BTHPROTO_RFCOMM);
 
-			if (INVALID_SOCKET == s) {
-				OutputDebugStringW(L"=CRITICAL= | socket() call failed.\n");
-				exit(1);
-			}
+			for (int i = 0; i < 2; i++) {
 
-			GUID service_UUID = { /* 00001101-0000-1000-8000-00805F9B34FB */
-				0x00001101,
-				0x0000,
-				0x1000,
-				{ 0x80, 0x00, 0x00, 0x80, 0x5F, 0x9B, 0x34, 0xFB }
-			};
+				// allocate a socket
+				SOCKET s = ::socket(AF_BTH, SOCK_STREAM, BTHPROTO_RFCOMM);
 
-			PSOCKADDR_BTH btAddr = (SOCKADDR_BTH *)(pwsaResults->lpcsaBuffer->RemoteAddr.lpSockaddr);
-			btAddr->addressFamily = AF_BTH;
-			btAddr->serviceClassId = service_UUID;
-			btAddr->port = 0;
+				if (INVALID_SOCKET == s) {
+					OutputDebugStringW(L"=CRITICAL= | socket() call failed.\n");
+					exit(1);
+				}
 
-			int btAddrLen = pwsaResults->lpcsaBuffer->RemoteAddr.iSockaddrLength;
+				GUID service_UUID = { /* 00001101-0000-1000-8000-00805F9B34FB */
+					0x00001101,
+					0x0000,
+					0x1000,
+					{ 0x80, 0x00, 0x00, 0x80, 0x5F, 0x9B, 0x34, 0xFB }
+				};
 
-			for(int i = 0;i<5; i++) {
+				PSOCKADDR_BTH btAddr = (SOCKADDR_BTH *)(pwsaResults->lpcsaBuffer->RemoteAddr.lpSockaddr);
+				btAddr->addressFamily = AF_BTH;
+				btAddr->serviceClassId = service_UUID;
+				btAddr->port = 0;
+
+				int btAddrLen = pwsaResults->lpcsaBuffer->RemoteAddr.iSockaddrLength;
 
 				// connect to server
 				int status = ::connect(s, (struct sockaddr *)btAddr, btAddrLen);
@@ -126,8 +127,9 @@ ComediScope::ComediScope(Attys_scope *attys_scope_tmp,
 				else {
 					OutputDebugStringW(L"Connect failed\n");
 					OutputDebugStringW(L"Has the device been paired?\n");
+					shutdown(s, SD_BOTH);
+					closesocket(s);
 				}
-
 			}
 		} else {
 			OutputDebugStringW(L"\n");
@@ -140,7 +142,7 @@ ComediScope::ComediScope(Attys_scope *attys_scope_tmp,
 	if (nComediDevices<1) {
 		OutputDebugStringW(L"No rfcomm devices detected!\n");
 		attys_scope->splash->showMessage("Cound not connect and/or no devices paired.");
-		Sleep(3000);
+		Sleep(1000);
 		exit(1);
 	}
 
