@@ -67,8 +67,8 @@ Attys_scope::Attys_scope(QWidget *parent,
 	tb_us = 1000000 / comediScope->getActualSamplingRate();
 
 	// fonts
-	voltageFont = new QFont("Courier",10);
-	QFontMetrics voltageMetrics(*voltageFont);
+	QFont voltageFont("Courier",10);
+	QFontMetrics voltageMetrics(voltageFont);
 
 	// this the main layout which contains two sub-windows:
 	// the control window and the oscilloscope window
@@ -105,18 +105,18 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	int row = 1;
 
-	channelLabel=new QLabel**[n_devs];
-	channel=new Channel**[n_devs];
-	voltageTextEdit=new QTextEdit**[n_devs];
-	channelgrp=new QGroupBox**[n_devs];
-	hbox=new QHBoxLayout**[n_devs];
-	gain=new Gain**[n_devs];
-	dcSub=new DCSub**[n_devs];
-	hp=new Hp**[n_devs];
-	lp=new Lp**[n_devs];
-	subDClabel=new QLabel**[n_devs];
-	hpLabel=new QLabel**[n_devs];
-	lpLabel=new QLabel**[n_devs];
+	channelLabel=new QPointer<QLabel>*[n_devs];
+	channel=new QPointer<Channel>*[n_devs];
+	voltageTextEdit=new QPointer<QTextEdit>*[n_devs];
+	channelgrp=new QPointer<QGroupBox>*[n_devs];
+	hbox=new QPointer<QHBoxLayout>*[n_devs];
+	gain=new QPointer<Gain>*[n_devs];
+	dcSub=new QPointer<DCSub>*[n_devs];
+	hp=new QPointer<Hp>*[n_devs];
+	lp=new QPointer<Lp>*[n_devs];
+	subDClabel=new QPointer<QLabel>*[n_devs];
+	hpLabel=new QPointer<QLabel>*[n_devs];
+	lpLabel=new QPointer<QLabel>*[n_devs];
 	
 	// to the get the stuff a bit closer together
 	char styleSheet[] = "padding:0px;margin:0px;border:0px;";
@@ -130,18 +130,18 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	int nch_enabled = 0;
 	for(int n=0;n<n_devs;n++) {
-		channelLabel[n]=new QLabel*[channels];
-		channel[n]=new Channel*[channels];
-		voltageTextEdit[n]=new QTextEdit*[channels];
-		channelgrp[n]=new QGroupBox*[channels];
-		hbox[n]=new QHBoxLayout*[channels];
-		gain[n]=new Gain*[channels];
-		dcSub[n]=new DCSub*[channels];
-		subDClabel[n]=new QLabel*[channels];
-		hp[n]=new Hp*[channels];
-		hpLabel[n]= new QLabel*[channels];
-		lp[n]=new Lp*[channels];
-		lpLabel[n]= new QLabel*[channels];
+		channelLabel[n]=new QPointer<QLabel>[channels];
+		channel[n]=new QPointer<Channel>[channels];
+		voltageTextEdit[n]=new QPointer<QTextEdit>[channels];
+		channelgrp[n]=new QPointer<QGroupBox>[channels];
+		hbox[n]=new QPointer<QHBoxLayout>[channels];
+		gain[n]=new QPointer<Gain>[channels];
+		dcSub[n]=new QPointer<DCSub>[channels];
+		subDClabel[n]=new QPointer<QLabel>[channels];
+		hp[n]=new QPointer<Hp>[channels];
+		hpLabel[n]= new QPointer<QLabel>[channels];
+		lp[n]=new QPointer<Lp>[channels];
+		lpLabel[n]= new QPointer<QLabel>[channels];
 		for(int i=0;i<channels;i++) {
 			// create the group for a channel
 			char tmp[10];
@@ -153,7 +153,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 			sprintf(tmp,"%02d:",i);
 			channelLabel[n][i] = new QLabel(tmp);
 			channelLabel[n][i]->setStyleSheet(styleSheet);
-			channelLabel[n][i]->setFont(*voltageFont);
+			channelLabel[n][i]->setFont(voltageFont);
 			hbox[n][i]->addWidget(channelLabel[n][i]);
 			hbox[n][i]->setSpacing(1);
 			channel[n][i] = new Channel(channels);
@@ -172,7 +172,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 			voltageTextEdit[n][i]=new QTextEdit(channelgrp[n][i]);
 			voltageTextEdit[n][i]->setStyleSheet(styleSheet);
 			hbox[n][i]->addWidget(voltageTextEdit[n][i]);
-			voltageTextEdit[n][i]->setFont(*voltageFont);
+			voltageTextEdit[n][i]->setFont(voltageFont);
 			char tmpVolt[128];
 			sprintf(tmpVolt,"%f",1.0);
 			voltageTextEdit[n][i]->setMaximumSize
@@ -181,12 +181,12 @@ Attys_scope::Attys_scope(QWidget *parent,
 			voltageTextEdit[n][i]->
 				setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff ); 
 			voltageTextEdit[n][i]->setReadOnly(true);
-			voltageTextEdit[n][i]->setFont(*voltageFont);
+			voltageTextEdit[n][i]->setFont(voltageFont);
 			// voltageTextEdit[i]->setLineWidth(1);
 
 			subDClabel[n][i] = new QLabel(" -DC");
 			subDClabel[n][i]->setStyleSheet(styleSheet);
-			subDClabel[n][i]->setFont(*voltageFont);
+			subDClabel[n][i]->setFont(voltageFont);
 			hbox[n][i]->addWidget(subDClabel[n][i]);
 
 			dcSub[n][i] = new DCSub((float)INERTIA_FOR_DC_DETECTION);
@@ -195,7 +195,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 			hpLabel[n][i] = new QLabel(" HP");
 			hpLabel[n][i]->setStyleSheet(styleSheet);
-			hpLabel[n][i]->setFont(*voltageFont);
+			hpLabel[n][i]->setFont(voltageFont);
 			hbox[n][i]->addWidget(hpLabel[n][i]);
 
 			hp[n][i] = new Hp(comediScope->getActualSamplingRate(),
@@ -205,7 +205,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 			lpLabel[n][i] = new QLabel(" LP");
 			lpLabel[n][i]->setStyleSheet(styleSheet);
-			lpLabel[n][i]->setFont(*voltageFont);
+			lpLabel[n][i]->setFont(voltageFont);
 			hbox[n][i]->addWidget(lpLabel[n][i]);
 
 			lp[n][i] = new Lp(comediScope->getActualSamplingRate(),
@@ -248,26 +248,25 @@ Attys_scope::Attys_scope(QWidget *parent,
 	filterCheckbox->setChecked(false);
 	notchLayout->addWidget(filterCheckbox);
 	commentTextEdit=new QCommentTextEdit();
-	QFont* commentFont = new QFont();
-	QFontMetrics commentMetrics(*commentFont);
+	QFont commentFont;
+	QFontMetrics commentMetrics(commentFont);
 	commentTextEdit->setMaximumHeight ( commentMetrics.height() );
 	commentTextEdit->setMaximumWidth ( 10*commentMetrics.width('X') );
 	commentTextEdit->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	commentTextEdit->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	commentTextEdit->setFont(*commentFont);
-	QLabel *l=new QLabel("Comment:");
-	notchLayout->addWidget(l);
+	commentTextEdit->setFont(commentFont);
+	comment=new QLabel("Comment:");
+	notchLayout->addWidget(comment);
 	notchLayout->addWidget(commentTextEdit);
        	notchGroupBox->setLayout(notchLayout);
 	restLayout->addWidget(notchGroupBox);
-
 
 	// group for the record stuff
 	recGroupBox = new QGroupBox();
 	recLayout = new QHBoxLayout();
 
-	QLabel recLabel("Write to file:");
-	recLayout->addWidget(&recLabel);
+	recLabel = new QLabel("Write to file:");
+	recLayout->addWidget(recLabel);
 
 	filePushButton = new QPushButton( "&filename" );
 	filePushButton->setSizePolicy ( QSizePolicy(QSizePolicy::Fixed,
@@ -291,9 +290,9 @@ Attys_scope::Attys_scope(QWidget *parent,
 	// group for the time base
 	tbgrp = new QGroupBox();
 	tbLayout = new QHBoxLayout;
-	tbFont = new QFont("Courier",12);
-	tbFont->setBold(true);
-	QFontMetrics tbMetrics(*tbFont);
+	QFont tbFont("Courier",12);
+	tbFont.setBold(true);
+	QFontMetrics tbMetrics(tbFont);
 
 	QLabel tbLabel("Timebase:");
 	tbLayout->addWidget(&tbLabel);
@@ -304,7 +303,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	tbIncPushButton->setStyleSheet(tbStyle);
 	tbIncPushButton->setMaximumSize ( tbMetrics.width(" slower ") ,  
 					  tbMetrics.height()*5/4 );
-	tbIncPushButton->setFont(*tbFont);
+	tbIncPushButton->setFont(tbFont);
 	tbgrp->connect(tbIncPushButton, SIGNAL( clicked() ),
 		this, SLOT( incTbEvent() ) );
 	tbLayout->addWidget(tbIncPushButton);
@@ -313,14 +312,14 @@ Attys_scope::Attys_scope(QWidget *parent,
 	tbDecPushButton->setStyleSheet(tbStyle);
 	tbDecPushButton->setMaximumSize ( tbMetrics.width(" faster ") ,  
 					  tbMetrics.height()*5/4 );
-	tbDecPushButton->setFont(*tbFont);	
+	tbDecPushButton->setFont(tbFont);	
 	tbgrp->connect(tbDecPushButton, SIGNAL( clicked() ),
 		       this, SLOT( decTbEvent() ) );
 	tbLayout->addWidget(tbDecPushButton);
 
 	tbInfoTextEdit = new QTextEdit(tbgrp);
-	tbInfoTextEdit->setFont (*tbFont);
-	QFontMetrics metricsTb(*tbFont);
+	tbInfoTextEdit->setFont (tbFont);
+	QFontMetrics metricsTb(tbFont);
 	tbInfoTextEdit->setMaximumHeight ( commentMetrics.height() * 1.5 );
 	tbInfoTextEdit->setMaximumWidth ( commentMetrics.width('X') * 13 );
 	tbInfoTextEdit->setReadOnly(true);
@@ -331,7 +330,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	tbResetPushButton->setStyleSheet("background-color: white;border-style:outset;border-width: 2px;border-color: black;font: bold 10px;padding: 4px;");
 	tbResetPushButton->setMaximumSize ( tbMetrics.width("restart ") ,  
 					  tbMetrics.height() );
-	tbResetPushButton->setFont(*tbFont);	
+	tbResetPushButton->setFont(tbFont);	
 	tbgrp->connect(tbResetPushButton, SIGNAL( clicked() ),
 		       this, SLOT( resetTbEvent() ) );
 	tbLayout->addWidget(tbResetPushButton);
@@ -376,8 +375,6 @@ Attys_scope::Attys_scope(QWidget *parent,
 	changeTB();
 
 	comediScope->startDAQ();
-
-	splash->finish(this);
 }
 
 Attys_scope::~Attys_scope() {
@@ -630,6 +627,7 @@ int main( int argc, char **argv )
 
 	// show widget
 	attys_scope.show();
+	splash.finish(&attys_scope);
 	// run event loop
 	return a.exec();
 }

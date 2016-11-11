@@ -13,6 +13,8 @@ class Attys_scope;
 #include <QLabel>
 #include <QScrollArea>
 #include <qsplashscreen.h>
+#include <qpointer.h>
+#include <qfont.h>
 
 #include "comediscope.h"
 #include "gain.h"
@@ -60,110 +62,110 @@ public:
 
 public:
 
-	QSplashScreen *splash;
+	QPointer<QSplashScreen> splash;
 
 /**
  * Button which controls recording
  **/
-    QCheckBox *recPushButton;
+    QPointer<QCheckBox> recPushButton;
 
 /**
  * channel label
  **/
-    QLabel*** channelLabel;
+	QPointer<QLabel>** channelLabel;
 
-    QLabel*** subDClabel;
+	QPointer<QLabel>** subDClabel;
 
-    QLabel*** hpLabel;
+	QPointer<QLabel>** hpLabel;
 
-    QLabel*** lpLabel;
+	QPointer<QLabel>** lpLabel;
 
     /**
      * Notch filter on?
      **/
-    QCheckBox* filterCheckbox;
+	QPointer<QCheckBox> filterCheckbox;
 
 public:
     /**
      * Comments
      **/
-    QTextEdit* commentTextEdit;
+	QPointer<QTextEdit> commentTextEdit;
 
     /**
      * Shows the filter frequency
      **/
-    QTextEdit*  filterTextEdit;
+	QPointer<QTextEdit>  filterTextEdit;
 
     /**
      * Array of the voltages
      **/
-    QTextEdit***  voltageTextEdit;
+	QPointer<QTextEdit>**  voltageTextEdit;
 
     /**
      * Array for the gain settings
      **/
-    Channel*** channel;
+	QPointer<Channel>** channel;
 
     /**
      * Array for the gain settings
      **/
-    Gain*** gain;
+	QPointer<Gain>** gain;
 
     /**
      * subtracting DC
      **/
-    DCSub*** dcSub;
+	QPointer<DCSub>** dcSub;
 
     /**
      * highpass filter
      **/
-    Hp*** hp;
+	QPointer<Hp>** hp;
 
     /**
      * lowpass filter
      **/
-    Lp*** lp;
+	QPointer<Lp>** lp;
 
     /**
      * The widget which contains the graphical plots of the AD-data
      **/
-    ComediScope* comediScope;
+	QPointer<ComediScope> comediScope;
 
     /**
      * Text-field: elapsed time
      **/
-    QTextEdit* timeInfoTextEdit;
+	QPointer<QTextEdit> timeInfoTextEdit;
 
     /**
      * Text-field for the file-name
      **/
-    QPushButton *filePushButton;
+	QPointer<QPushButton> filePushButton;
 
  private:
     /**
      * Button: Increase the time between samples
      **/
-    QPushButton *tbIncPushButton;
+	 QPointer<QPushButton> tbIncPushButton;
 
     /**
      * Button: Decrease the time between samples
      **/
-    QPushButton *tbDecPushButton;
+	 QPointer<QPushButton> tbDecPushButton;
 
     /**
      * Button: Reset screen
      **/
-    QPushButton *tbResetPushButton;
+	 QPointer<QPushButton> tbResetPushButton;
 
 /**
  * Text-field: time between samples
  **/
-    QTextEdit   *tbInfoTextEdit;
+	 QPointer<QTextEdit> tbInfoTextEdit;
 
 /**
  * Button: clears the screen
  **/
-    QPushButton *clearScreenPushButton;
+	 QPointer<QPushButton> clearScreenPushButton;
 
 private slots:
 /**
@@ -212,51 +214,49 @@ private:
 /**
  * Group which keeps one channel together
  **/
-    QGroupBox*** channelgrp;
+	QPointer<QGroupBox>** channelgrp;
 
 /**
  * Layout which keeps one channel together
  **/
-    QHBoxLayout*** hbox;
+	QPointer<QHBoxLayout>** hbox;
 
-    QLabel *statusLabel;
+	QPointer<QLabel> statusLabel;
 
-	QGroupBox *controlBox;
+	QPointer<QGroupBox> controlBox;
 
-	QVBoxLayout * controlLayout;
-	QVBoxLayout *scopeLayout;
-	QGroupBox *scopeGroup;
+	QPointer<QVBoxLayout> controlLayout;
+	QPointer<QVBoxLayout> scopeLayout;
+	QPointer<QGroupBox> scopeGroup;
 
-	QScrollArea *allChScrollArea;
-	QVBoxLayout *allChScrollLayout;
+	QPointer<QScrollArea> allChScrollArea;
+	QPointer<QVBoxLayout> allChScrollLayout;
 
-	QGridLayout *allChLayout;
-	QGroupBox *allChGroup;
+	QPointer<QGridLayout> allChLayout;
+	QPointer<QGroupBox> allChGroup;
 
-	QHBoxLayout *mainLayout;
+	QPointer<QHBoxLayout> mainLayout;
 
-	QVBoxLayout * restLayout;
+	QPointer<QVBoxLayout> restLayout;
 
-	QGroupBox *restGroup;
+	QPointer<QGroupBox> restGroup;
 
-	QGroupBox* notchGroupBox;
-	QHBoxLayout *notchLayout;
+	QPointer<QGroupBox> notchGroupBox;
+	QPointer<QHBoxLayout> notchLayout;
 
-	QGroupBox *tbgrp;
-	QHBoxLayout *tbLayout;
+	QPointer<QGroupBox> tbgrp;
+	QPointer<QHBoxLayout> tbLayout;
 
-	QGroupBox *statusgrp;
-	QHBoxLayout *statusLayout;
+	QPointer<QGroupBox> statusgrp;
+	QPointer<QHBoxLayout> statusLayout;
 
-	QGroupBox* recGroupBox;
-	QHBoxLayout *recLayout;
+	QPointer<QGroupBox> recGroupBox;
+	QPointer<QHBoxLayout> recLayout;
 
-	QFont *voltageFont;
+	QPointer<QLabel> comment;
+	QPointer<QLabel> recLabel;
 
-	QFont *commentFont;
-
-	QFont *tbFont;
-
+	QPointer<QFont> voltageFont;
 };
 
 
