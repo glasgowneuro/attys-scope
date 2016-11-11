@@ -67,8 +67,8 @@ Attys_scope::Attys_scope(QWidget *parent,
 	tb_us = 1000000 / comediScope->getActualSamplingRate();
 
 	// fonts
-	QFont voltageFont("Courier",10);
-	QFontMetrics voltageMetrics(voltageFont);
+	voltageFont = new QFont("Courier",10);
+	QFontMetrics voltageMetrics(*voltageFont);
 
 	// this the main layout which contains two sub-windows:
 	// the control window and the oscilloscope window
@@ -80,6 +80,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	controlBox = new QGroupBox ();
 	controlBox->setSizePolicy ( QSizePolicy(QSizePolicy::Fixed,
 						QSizePolicy::Minimum ) );
+	controlBox->setAttribute(Qt::WA_DeleteOnClose, false);
 
 	// now we create another layout which contains all the controls
 	controlLayout = new QVBoxLayout(controlBox);
@@ -87,9 +88,11 @@ Attys_scope::Attys_scope(QWidget *parent,
 	scopeLayout = new QVBoxLayout(0);
 	// the corresponding box which contains all the controls
 	scopeGroup = new QGroupBox ();
+	scopeGroup->setAttribute(Qt::WA_DeleteOnClose, false);
 
 	// we create a scroll area
 	allChScrollArea = new QScrollArea();
+	allChScrollArea->setAttribute(Qt::WA_DeleteOnClose, false);
 	// this is the layout containing the scrollArea
 	allChScrollLayout = new QVBoxLayout();
 	// to this layout we add just one widget which is the scroll area
@@ -98,6 +101,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	allChLayout = new QGridLayout;
 	allChGroup = new QGroupBox;
+	allChGroup->setAttribute(Qt::WA_DeleteOnClose, false);
 	allChLayout->setSpacing(0);
 	allChGroup->setLayout(allChLayout);
 	allChGroup->setSizePolicy ( QSizePolicy(QSizePolicy::Fixed,
@@ -147,13 +151,14 @@ Attys_scope::Attys_scope(QWidget *parent,
 			char tmp[10];
 			channelgrp[n][i] = new QGroupBox();
 			channelgrp[n][i]->setStyleSheet(styleSheet);
+			channelgrp[n][i]->setAttribute(Qt::WA_DeleteOnClose,false);
 			// the corresponding layout
 			hbox[n][i] = new QHBoxLayout();
 			channelgrp[n][i]->setLayout(hbox[n][i]);
 			sprintf(tmp,"%02d:",i);
 			channelLabel[n][i] = new QLabel(tmp);
 			channelLabel[n][i]->setStyleSheet(styleSheet);
-			channelLabel[n][i]->setFont(voltageFont);
+			channelLabel[n][i]->setFont(*voltageFont);
 			hbox[n][i]->addWidget(channelLabel[n][i]);
 			hbox[n][i]->setSpacing(1);
 			channel[n][i] = new Channel(channels);
@@ -172,7 +177,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 			voltageTextEdit[n][i]=new QTextEdit(channelgrp[n][i]);
 			voltageTextEdit[n][i]->setStyleSheet(styleSheet);
 			hbox[n][i]->addWidget(voltageTextEdit[n][i]);
-			voltageTextEdit[n][i]->setFont(voltageFont);
+			voltageTextEdit[n][i]->setFont(*voltageFont);
 			char tmpVolt[128];
 			sprintf(tmpVolt,"%f",1.0);
 			voltageTextEdit[n][i]->setMaximumSize
@@ -181,12 +186,12 @@ Attys_scope::Attys_scope(QWidget *parent,
 			voltageTextEdit[n][i]->
 				setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff ); 
 			voltageTextEdit[n][i]->setReadOnly(true);
-			voltageTextEdit[n][i]->setFont(voltageFont);
+			voltageTextEdit[n][i]->setFont(*voltageFont);
 			// voltageTextEdit[i]->setLineWidth(1);
 
 			subDClabel[n][i] = new QLabel(" -DC");
 			subDClabel[n][i]->setStyleSheet(styleSheet);
-			subDClabel[n][i]->setFont(voltageFont);
+			subDClabel[n][i]->setFont(*voltageFont);
 			hbox[n][i]->addWidget(subDClabel[n][i]);
 
 			dcSub[n][i] = new DCSub((float)INERTIA_FOR_DC_DETECTION);
@@ -195,7 +200,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 			hpLabel[n][i] = new QLabel(" HP");
 			hpLabel[n][i]->setStyleSheet(styleSheet);
-			hpLabel[n][i]->setFont(voltageFont);
+			hpLabel[n][i]->setFont(*voltageFont);
 			hbox[n][i]->addWidget(hpLabel[n][i]);
 
 			hp[n][i] = new Hp(comediScope->getActualSamplingRate(),
@@ -205,7 +210,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 			lpLabel[n][i] = new QLabel(" LP");
 			lpLabel[n][i]->setStyleSheet(styleSheet);
-			lpLabel[n][i]->setFont(voltageFont);
+			lpLabel[n][i]->setFont(*voltageFont);
 			hbox[n][i]->addWidget(lpLabel[n][i]);
 
 			lp[n][i] = new Lp(comediScope->getActualSamplingRate(),
@@ -235,10 +240,12 @@ Attys_scope::Attys_scope(QWidget *parent,
 	restLayout = new QVBoxLayout;
 	// the corresponding box which contains all the controls
 	restGroup = new QGroupBox;
+	restGroup->setAttribute(Qt::WA_DeleteOnClose, false);
 
 	// notch filter
 	// create a group for the notch filter
 	notchGroupBox = new QGroupBox();
+	notchGroupBox->setAttribute(Qt::WA_DeleteOnClose, false);
 	notchGroupBox->setFlat(true);
 	notchGroupBox->setStyleSheet(styleSheet);
 	notchLayout = new QHBoxLayout();
@@ -248,13 +255,13 @@ Attys_scope::Attys_scope(QWidget *parent,
 	filterCheckbox->setChecked(false);
 	notchLayout->addWidget(filterCheckbox);
 	commentTextEdit=new QCommentTextEdit();
-	QFont commentFont;
-	QFontMetrics commentMetrics(commentFont);
+	commentFont = new QFont();
+	QFontMetrics commentMetrics(*commentFont);
 	commentTextEdit->setMaximumHeight ( commentMetrics.height() );
 	commentTextEdit->setMaximumWidth ( 10*commentMetrics.width('X') );
 	commentTextEdit->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	commentTextEdit->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	commentTextEdit->setFont(commentFont);
+	commentTextEdit->setFont(*commentFont);
 	comment=new QLabel("Comment:");
 	notchLayout->addWidget(comment);
 	notchLayout->addWidget(commentTextEdit);
@@ -263,6 +270,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	// group for the record stuff
 	recGroupBox = new QGroupBox();
+	recGroupBox->setAttribute(Qt::WA_DeleteOnClose, false);
 	recLayout = new QHBoxLayout();
 
 	recLabel = new QLabel("Write to file:");
@@ -289,10 +297,11 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	// group for the time base
 	tbgrp = new QGroupBox();
+	tbgrp->setAttribute(Qt::WA_DeleteOnClose, false);
 	tbLayout = new QHBoxLayout;
-	QFont tbFont("Courier",12);
-	tbFont.setBold(true);
-	QFontMetrics tbMetrics(tbFont);
+	tbFont = new QFont("Courier",12);
+	tbFont->setBold(true);
+	QFontMetrics tbMetrics(*tbFont);
 
 	QLabel tbLabel("Timebase:");
 	tbLayout->addWidget(&tbLabel);
@@ -303,7 +312,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	tbIncPushButton->setStyleSheet(tbStyle);
 	tbIncPushButton->setMaximumSize ( tbMetrics.width(" slower ") ,  
 					  tbMetrics.height()*5/4 );
-	tbIncPushButton->setFont(tbFont);
+	tbIncPushButton->setFont(*tbFont);
 	tbgrp->connect(tbIncPushButton, SIGNAL( clicked() ),
 		this, SLOT( incTbEvent() ) );
 	tbLayout->addWidget(tbIncPushButton);
@@ -312,14 +321,14 @@ Attys_scope::Attys_scope(QWidget *parent,
 	tbDecPushButton->setStyleSheet(tbStyle);
 	tbDecPushButton->setMaximumSize ( tbMetrics.width(" faster ") ,  
 					  tbMetrics.height()*5/4 );
-	tbDecPushButton->setFont(tbFont);	
+	tbDecPushButton->setFont(*tbFont);	
 	tbgrp->connect(tbDecPushButton, SIGNAL( clicked() ),
 		       this, SLOT( decTbEvent() ) );
 	tbLayout->addWidget(tbDecPushButton);
 
 	tbInfoTextEdit = new QTextEdit(tbgrp);
-	tbInfoTextEdit->setFont (tbFont);
-	QFontMetrics metricsTb(tbFont);
+	tbInfoTextEdit->setFont (*tbFont);
+	QFontMetrics metricsTb(*tbFont);
 	tbInfoTextEdit->setMaximumHeight ( commentMetrics.height() * 1.5 );
 	tbInfoTextEdit->setMaximumWidth ( commentMetrics.width('X') * 13 );
 	tbInfoTextEdit->setReadOnly(true);
@@ -330,7 +339,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	tbResetPushButton->setStyleSheet("background-color: white;border-style:outset;border-width: 2px;border-color: black;font: bold 10px;padding: 4px;");
 	tbResetPushButton->setMaximumSize ( tbMetrics.width("restart ") ,  
 					  tbMetrics.height() );
-	tbResetPushButton->setFont(tbFont);	
+	tbResetPushButton->setFont(*tbFont);	
 	tbgrp->connect(tbResetPushButton, SIGNAL( clicked() ),
 		       this, SLOT( resetTbEvent() ) );
 	tbLayout->addWidget(tbResetPushButton);
@@ -339,6 +348,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	restLayout->addWidget(tbgrp);
 
 	statusgrp = new QGroupBox;
+	statusgrp->setAttribute(Qt::WA_DeleteOnClose, false);
 	statusLayout = new QHBoxLayout;
 
 	char status[256];
@@ -510,7 +520,6 @@ void Attys_scope::resetTbEvent() {
 
 int main( int argc, char **argv )
 {
-	int num_of_channels = 0;
 	int num_of_devices = 16;
 	float notch = 50;
 	int csv = 0;
@@ -531,12 +540,11 @@ int main( int argc, char **argv )
 	splash.showMessage("Scanning for paired devices");
 
 	for(int i = 0;i<argc;i++) {
-		if (strstr(argv[i],"-i")) ignoreSettings = 1;	
+		if (strstr(argv[i],"/i")) ignoreSettings = 1;	
 	}
 
 	if (!ignoreSettings) {
 		settings.beginGroup(SETTINGS_GLOBAL);
-		num_of_channels = settings.value("num_of_channels",0).toInt();
 		num_of_devices = settings.value("num_of_devices",16).toInt();
 		notch = settings.value("notch",50).toFloat();
 		lpFreq = settings.value("lowpass",20).toFloat();
@@ -545,76 +553,6 @@ int main( int argc, char **argv )
 		settings.endGroup();
 	}
 	
-
-	/**
-	while (-1 != (c = getopt(argc, argv, "a:b:x:l:t:r:d:p:f:c:n:hvi"))) {
-		switch (c) {
-		case 'x':
-			sscanf(optarg,"%d,%d,%d",&fftdevno,&fftch,&fftmaxf);
-			break;
-		case 'f':
-			csv = atoi(optarg);
-			break;
-		case 'c':
-			num_of_channels = strtoul(optarg,NULL,0);
-			break;
-		case 'd':
-			num_of_devices = atoi(optarg);
-			break;
-		case 'l':
-			first_dev_no = atoi(optarg);
-			break;
-		case 'n':
-			notch = atof(optarg);
-			break;
-		case 'a':
-			lpFreq = atof(optarg);
-			break;
-		case 'b':
-			hpFreq = atof(optarg);
-			break;
-		case 'p':
-			port = atof(optarg);
-			break;
-		case 't':
-			defaultTextStringForMissingExtData = optarg;
-			break;
-		case 'i':
-			break;
-		case 'h':
-		default:
-		printf("%s [options] [filename]\n"
-                       "   -f <ASCII data format: 0=space separated, 1=csv>\n"
-                       "   -c <number of channels>\n"
-		       "   -m <number of channel tickbox-rows>\n"
-                       "   -n <notch_frequency> \n"
-		       "   -d <max number of comedi devices>\n"
-		       "   -l <lowest comedi device number used>\n"
-		       "   -p <TCP port for receiving external data>\n"
-		       "   -t <default outp when external data hasn't been rec'd>\n"
-		       "   -x <device,channel,max_freq> gives the Fequency spectrum of this dev,channel,max frequency\n"
-		       "   -a lowpass frequency\n"
-		       "   -b highpass frequency\n"
-		       "   -h prints this help screen\n",
-		       argv[0]);
-		exit(1);
-		}
-	}
-
-	if (optind < argc) {
-		filename = argv[optind];
-	}
-	**/
-
-	settings.beginGroup(SETTINGS_GLOBAL);
-	settings.setValue("num_of_channels",num_of_channels);
-	settings.setValue("num_of_devices",num_of_devices);
-	settings.setValue("notch",notch);
-	settings.setValue("lowpass",lpFreq);
-	settings.setValue("highpass",hpFreq);
-	settings.setValue("csv",csv);
-	settings.endGroup();
-
 	Attys_scope attys_scope(0,
 		      &splash,
 			  ignoreSettings,

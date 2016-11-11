@@ -256,7 +256,9 @@ private:
 	QPointer<QLabel> comment;
 	QPointer<QLabel> recLabel;
 
-	QPointer<QFont> voltageFont;
+	QFont* voltageFont;
+	QFont* tbFont;
+	QFont* commentFont;
 };
 
 
