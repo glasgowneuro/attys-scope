@@ -181,96 +181,92 @@ void AttysComm::run() {
 		int ret = recv(btsocket, recvbuffer, 8191, 0);
 		if (ret > 0) {
 			recvbuffer[ret] = 0;
-			if (!strstr(recvbuffer, "OK")) {
-				strcat(inbuffer, recvbuffer);
+			strcat(inbuffer, recvbuffer);
+			// search for LF (CR is first)
+			while (lf = strchr(inbuffer, 0x0A)) {
 
-				// search for LF (CR is first)
-				while (lf = strchr(inbuffer, 0x0A)) {
+				*lf = 0;
 
-					*lf = 0;
+				if (strlen(inbuffer) == 29) {
 
-					if (strlen(inbuffer) == 29) {
+					Base64decode(raw, inbuffer);
 
-						Base64decode(raw, inbuffer);
-
-						for (int i = 0; i < 2; i++) {
-							long v = (raw[i * 3] & 0xff)
-								| ((raw[i * 3 + 1] & 0xff) << 8)
-								| ((raw[i * 3 + 2] & 0xff) << 16);
-							data[INDEX_Analogue_channel_1 + i] = v;
-						}
-
-						for (int i = 0; i < 6; i++) {
-							long v = (raw[8 + i * 2] & 0xff)
-								| ((raw[8 + i * 2 + 1] & 0xff) << 8);
-							data[i] = v;
-						}
-
-						// check that the timestamp is the expected one
-						int ts = 0;
-						nTrans = 1;
-						ts = raw[7];
-						if ((ts - expectedTimestamp) > 0) {
-							if (correctTimestampDifference) {
-								nTrans = 1 + (ts - expectedTimestamp);
-							}
-							else {
-								correctTimestampDifference = true;
-							}
-						}
-						// update timestamp
-						expectedTimestamp = ++ts;
-
-						// acceleration
-						for (int i = INDEX_Acceleration_X;
-							i <= INDEX_Acceleration_Z; i++) {
-							float norm = 0x8000;
-							sample[i] = ((float)data[i] - norm) / norm *
-								getAccelFullScaleRange();
-						}
-
-						// magnetometer
-						for (int i = INDEX_Magnetic_field_X;
-							i <= INDEX_Magnetic_field_Z; i++) {
-							float norm = 0x8000;
-							sample[i] = ((float)data[i] - norm) / norm *
-								MAG_FULL_SCALE;
-							//Log.d(TAG,"i="+i+","+sample[i]);
-						}
-
-						for (int i = INDEX_Analogue_channel_1;
-							i <= INDEX_Analogue_channel_2; i++) {
-							float norm = 0x800000;
-							sample[i] = ((float)data[i] - norm) / norm *
-								ADC_REF / ADC_GAIN_FACTOR[adcGainRegister[i
-								- INDEX_Analogue_channel_1]];
-						}
-
-					}
-					else {
-						_RPT1(0, "%d:\n ", strlen(inbuffer));
-						_RPT1(0, "inbuffer=>>>%s<<<\n    ", inbuffer);
-						_RPT1(0, "recbuffer=>>>%s<<<\n\n,", recvbuffer);
+					for (int i = 0; i < 2; i++) {
+						long v = (raw[i * 3] & 0xff)
+							| ((raw[i * 3 + 1] & 0xff) << 8)
+							| ((raw[i * 3 + 2] & 0xff) << 16);
+						data[INDEX_Analogue_channel_1 + i] = v;
 					}
 
-					// in case a sample has been lost
-					for (int j = 0; j < nTrans; j++) {
-						for (int k = 0; k < NCHANNELS; k++) {
-							ringBuffer[inPtr][k] = sample[k];
-						}
-						timestamp = timestamp + 1.0 / getSamplingRateInHz();
-						sampleNumber++;
-						inPtr++;
-						if (inPtr == nMem) {
-							inPtr = 0;
-						}
+					for (int i = 0; i < 6; i++) {
+						long v = (raw[8 + i * 2] & 0xff)
+							| ((raw[8 + i * 2 + 1] & 0xff) << 8);
+						data[i] = v;
 					}
 
-					lf++;
-					int rem = (int)strlen(lf) + 1;
-					memmove(inbuffer, lf, rem);
+					// check that the timestamp is the expected one
+					int ts = 0;
+					nTrans = 1;
+					ts = raw[7];
+					if ((ts - expectedTimestamp) > 0) {
+						if (correctTimestampDifference) {
+							nTrans = 1 + (ts - expectedTimestamp);
+						}
+						else {
+							correctTimestampDifference = true;
+						}
+					}
+					// update timestamp
+					expectedTimestamp = ++ts;
+
+					// acceleration
+					for (int i = INDEX_Acceleration_X;
+						i <= INDEX_Acceleration_Z; i++) {
+						float norm = 0x8000;
+						sample[i] = ((float)data[i] - norm) / norm *
+							getAccelFullScaleRange();
+					}
+
+					// magnetometer
+					for (int i = INDEX_Magnetic_field_X;
+						i <= INDEX_Magnetic_field_Z; i++) {
+						float norm = 0x8000;
+						sample[i] = ((float)data[i] - norm) / norm *
+							MAG_FULL_SCALE;
+						//Log.d(TAG,"i="+i+","+sample[i]);
+					}
+
+					for (int i = INDEX_Analogue_channel_1;
+						i <= INDEX_Analogue_channel_2; i++) {
+						float norm = 0x800000;
+						sample[i] = ((float)data[i] - norm) / norm *
+							ADC_REF / ADC_GAIN_FACTOR[adcGainRegister[i
+							- INDEX_Analogue_channel_1]];
+					}
 
 				}
+				else {
+					_RPT1(0, "Reception error, length=%d, ", strlen(inbuffer));
+					_RPT1(0, "recbuffer=>>>%s<<<\n\n,", recvbuffer);
+				}
+
+				// in case a sample has been lost
+				for (int j = 0; j < nTrans; j++) {
+					for (int k = 0; k < NCHANNELS; k++) {
+						ringBuffer[inPtr][k] = sample[k];
+					}
+					timestamp = timestamp + 1.0 / getSamplingRateInHz();
+					sampleNumber++;
+					inPtr++;
+					if (inPtr == nMem) {
+						inPtr = 0;
+					}
+				}
+
+				lf++;
+				int rem = (int)strlen(lf) + 1;
+				memmove(inbuffer, lf, rem);
+
 			}
 		}
 	}

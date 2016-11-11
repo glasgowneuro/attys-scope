@@ -238,8 +238,6 @@ ComediScope::~ComediScope() {
 	for(int i=0; i<nComediDevices;i++) {
 		if (attysComm[i]) {
 			attysComm[i]->quit();
-			delete attysComm[i];
-			attysComm[i] = nullptr;
 		}
 	}
 }

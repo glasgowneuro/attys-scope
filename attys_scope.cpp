@@ -398,7 +398,6 @@ Attys_scope::~Attys_scope() {
 		}
 	}
 	settings.endGroup();
-	delete comediScope;
 }
 
 
