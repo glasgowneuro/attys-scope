@@ -10,8 +10,8 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #define Sleep(u) usleep((u*1000))
-#define _RPT0(u,v)
-#define _RPT1(u,v,w)
+#define _RPT0(u,v) fprintf(stderr,v)
+#define _RPT1(u,v,w) fprintf(stderr,v,w)
 #define OutputDebugStringW(s)
 #elif _WIN32
 #include <winsock2.h>

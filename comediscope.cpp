@@ -54,6 +54,7 @@ ComediScope::ComediScope(Attys_scope *attys_scope_tmp,
 	}
 
 	nComediDevices = 0;
+	channels_in_use = 0;
 
 #ifdef __linux__
 
@@ -64,6 +65,7 @@ ComediScope::ComediScope(Attys_scope *attys_scope_tmp,
 	char addr[19] = { 0 };
 	char name[248] = { 0 };
 	struct sockaddr_rc saddr;
+	memset(&saddr,0,sizeof(struct sockaddr_rc));
 
 	dev_id = hci_get_route(NULL);
 	sock = hci_open_dev( dev_id );
@@ -76,11 +78,16 @@ ComediScope::ComediScope(Attys_scope *attys_scope_tmp,
 	max_rsp = 255;
 	flags = IREQ_CACHE_FLUSH;
 	ii = new inquiry_info[max_rsp];
+	for(int i = 0;i<max_rsp;i++) {
+		memset(ii+i,0,sizeof(inquiry_info));
+	}
     
 	num_rsp = hci_inquiry(dev_id, len, max_rsp, NULL, &ii, flags);
-	if( num_rsp < 0 ) perror("hci_inquiry");
+	if( num_rsp < 0 ) {
+		perror("hci_inquiry");
+		exit(1);
+	}
 		
-
 	// let's probe how many we have
 	nComediDevices = 0;
 	for (i = 0; i < num_rsp; i++) {
@@ -94,7 +101,8 @@ ComediScope::ComediScope(Attys_scope *attys_scope_tmp,
 			printf("!\n");
 			// allocate a socket
 			int s = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
-			
+
+			memset(&saddr,0,sizeof(struct sockaddr_rc));
 			// set the connection parameters (who to connect to)
 			saddr.rc_family = AF_BLUETOOTH;
 			saddr.rc_channel = (uint8_t) 1;
@@ -136,11 +144,11 @@ ComediScope::ComediScope(Attys_scope *attys_scope_tmp,
 	int iRet = WSALookupServiceBegin(&wsaq, LUP_CONTAINERS, &hLookup);
 	if (0 != iRet) {
 		if (WSAGetLastError() != WSASERVICE_NOT_FOUND) {
-			OutputDebugStringW(L"WSALookupServiceBegin failed\n");
+			_RPT0("WSALookupServiceBegin failed\n");
 			exit(1);
 		}
 		else {
-			OutputDebugStringW(L"No bluetooth devices found\n");
+			_RPT0("No bluetooth devices found\n");
 			exit(1);
 		}
 	}
@@ -155,9 +163,9 @@ ComediScope::ComediScope(Attys_scope *attys_scope_tmp,
 	DWORD dwSize = sizeof(buf);
 	while (WSALookupServiceNext(hLookup, LUP_RETURN_NAME | LUP_RETURN_ADDR, &dwSize, pwsaResults) == 0) {
 		LPWSTR name = pwsaResults->lpszServiceInstanceName;
-		OutputDebugStringW(name);
-		if (wcsstr(name, L"GN-ATTYS1") != 0) {
-			OutputDebugStringW(L" -- Found an Attys!\n");
+		_RPT0(name);
+		if (wcsstr(name,"GN-ATTYS1") != 0) {
+			_RPT0(L" -- Found an Attys!\n");
 
 			attys_scope->splash->showMessage("Connecting to Attys");
 
@@ -167,7 +175,7 @@ ComediScope::ComediScope(Attys_scope *attys_scope_tmp,
 				SOCKET s = ::socket(AF_BTH, SOCK_STREAM, BTHPROTO_RFCOMM);
 
 				if (INVALID_SOCKET == s) {
-					OutputDebugStringW(L"=CRITICAL= | socket() call failed.\n");
+					_RPT0("=CRITICAL= | socket() call failed.\n");
 					exit(1);
 				}
 
@@ -189,14 +197,14 @@ ComediScope::ComediScope(Attys_scope *attys_scope_tmp,
 					break;
 				}
 				else {
-					OutputDebugStringW(L"Connect failed\n");
-					OutputDebugStringW(L"Has the device been paired?\n");
+					_RPT0("Connect failed\n");
+					_RPT0("Has the device been paired?\n");
 					shutdown(s, SD_BOTH);
 					closesocket(s);
 				}
 			}
 		} else {
-			OutputDebugStringW(L"\n");
+			_RPT0("\n");
 		}
 	}
 
@@ -212,7 +220,7 @@ ComediScope::ComediScope(Attys_scope *attys_scope_tmp,
 	
 	// none detected
 	if (nComediDevices<1) {
-		OutputDebugStringW(L"No rfcomm devices detected!\n");
+		_RPT0(0,"No rfcomm devices detected!\n");
 		attys_scope->splash->showMessage("Cound not connect and/or no devices paired.");
 		Sleep(1000);
 		exit(1);

@@ -74,15 +74,9 @@ float* AttysComm::getSampleFromBuffer() {
 void AttysComm::sendSyncCommand(const char *message, int waitForOK) {
 	// Put the socket in non-blocking mode:
 	char cr[] = "\n";
-	#ifdef _WIN32
-	_RPT0(0, message);
-	_RPT0(0, ": ");
-	#endif
+	_RPT1(0,"Sending: %s",message);
 	send(btsocket, message, (int)strlen(message), 0);
 	if (!waitForOK) {
-		#ifdef _WIN32
-		_RPT0(0, "not waiting for OK\n");
-		#endif
 		return;
 	}
 	for (int k = 0; k < 10; k++) {
@@ -95,8 +89,7 @@ void AttysComm::sendSyncCommand(const char *message, int waitForOK) {
 			if (ret > 1) {
 				linebuffer[ret] = 0;
 				if (strstr(linebuffer, "OK")) {
-					_RPT0(0, linebuffer);
-					_RPT0(0, " -- OK received\n");
+					_RPT1(0, " -- OK received: %s \n",linebuffer);
 					return;
 				}
 			}
@@ -150,10 +143,12 @@ void AttysComm::sendGainMux(int channel, int gain, int mux) {
 
 void AttysComm::sendInit() {
 	char rststr[] = "\n\n\n\n\r";
-	OutputDebugStringW(L"Sending Init\n");
+	_RPT0(0,"Sending Init\n");
 #ifdef _WIN32
 	u_long iMode = 1;
 	ioctlsocket(btsocket, FIONBIO, &iMode);
+#else
+	fcntl(btsocket, F_SETFL, fcntl(btsocket, F_GETFL, 0) | O_NONBLOCK);
 #endif
 	send(btsocket, rststr, (int)strlen(rststr), 0);
 	sendSyncCommand("x=0", 1);
@@ -169,8 +164,10 @@ void AttysComm::sendInit() {
 #ifdef _WIN32
 	iMode = 0;
 	ioctlsocket(btsocket, FIONBIO, &iMode);
+#else
+	fcntl(btsocket, F_SETFL, fcntl(btsocket, F_GETFL, 0) & ~O_NONBLOCK);
 #endif
-	OutputDebugStringW(L"Init finished. Waiting for data.\n");
+	_RPT0(0,"Init finished. Waiting for data.\n");
 }
 
 
@@ -195,7 +192,7 @@ void AttysComm::run() {
 			recvbuffer[ret] = 0;
 			strcat(inbuffer, recvbuffer);
 			// search for LF (CR is first)
-			while (lf = strchr(inbuffer, 0x0A)) {
+			while ((lf = strchr(inbuffer, 0x0A))) {
 
 				*lf = 0;
 
@@ -258,7 +255,7 @@ void AttysComm::run() {
 
 				}
 				else {
-					_RPT1(0, "Reception error, length=%d, ", strlen(inbuffer));
+					_RPT1(0, "Reception error, length=%d, ", (int)strlen(inbuffer));
 					_RPT1(0, "recbuffer=>>>%s<<<\n\n,", recvbuffer);
 				}
 

@@ -131,7 +131,7 @@ private:
     /**
      * current x-pos
      **/
-    int         xpos;
+    int         xpos = 0;
 
     /**
      * elapsed msec
@@ -156,7 +156,7 @@ private:
     /**
      * pointer to the parent widget which contains all the controls
      **/
-    Attys_scope* attys_scope;
+    Attys_scope* attys_scope = nullptr;
   
 
 private:
@@ -168,12 +168,12 @@ private:
     /**
      * the file descriptor to the data-file
      **/
-    FILE*       rec_file;
+    FILE*       rec_file = nullptr;
 
     /**
      * number of channels switched on
      **/
-    int         num_channels;
+    int         num_channels = 0;
 
 private:
     /**
@@ -211,7 +211,7 @@ private:
     /**
      * the number of channels actually used per comedi device
      **/
-    int channels_in_use;
+    int channels_in_use = 0;
 
 public:
     int getNchannels() {return channels_in_use;};
@@ -220,7 +220,7 @@ private:
     /**
      * Frequency for the notch filter in Hz
      **/
-    float notchFrequency;
+    float notchFrequency = 50;
 
 public:
     /**
