@@ -1,6 +1,5 @@
 #include "AttysComm.h"
 
-#include <regex>
 
 AttysComm::AttysComm(SOCKET _btsocket)
 {
@@ -43,8 +42,13 @@ AttysComm::AttysComm(SOCKET _btsocket)
 
 
 AttysComm::~AttysComm() {
+#ifdef __linux__ 
+	close(btsocket);
+#elif _WIN32
 	shutdown(btsocket, SD_BOTH);
 	closesocket(btsocket);
+#else
+#endif
 	doRun = 0;
 }
 
@@ -70,11 +74,15 @@ float* AttysComm::getSampleFromBuffer() {
 void AttysComm::sendSyncCommand(const char *message, int waitForOK) {
 	// Put the socket in non-blocking mode:
 	char cr[] = "\n";
+	#ifdef _WIN32
 	_RPT0(0, message);
 	_RPT0(0, ": ");
+	#endif
 	send(btsocket, message, (int)strlen(message), 0);
 	if (!waitForOK) {
+		#ifdef _WIN32
 		_RPT0(0, "not waiting for OK\n");
+		#endif
 		return;
 	}
 	for (int k = 0; k < 10; k++) {
@@ -143,8 +151,10 @@ void AttysComm::sendGainMux(int channel, int gain, int mux) {
 void AttysComm::sendInit() {
 	char rststr[] = "\n\n\n\n\r";
 	OutputDebugStringW(L"Sending Init\n");
+#ifdef _WIN32
 	u_long iMode = 1;
 	ioctlsocket(btsocket, FIONBIO, &iMode);
+#endif
 	send(btsocket, rststr, (int)strlen(rststr), 0);
 	sendSyncCommand("x=0", 1);
 	// switching to base64 encoding
@@ -156,8 +166,10 @@ void AttysComm::sendInit() {
 	sendCurrentMask();
 	sendBiasCurrent();
 	sendSyncCommand("x=1\n", 0);
+#ifdef _WIN32
 	iMode = 0;
 	ioctlsocket(btsocket, FIONBIO, &iMode);
+#endif
 	OutputDebugStringW(L"Init finished. Waiting for data.\n");
 }
 

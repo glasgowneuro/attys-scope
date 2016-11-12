@@ -1,11 +1,31 @@
+#ifdef __linux__ 
+#include<sys/ioctl.h>
+#include<stdio.h>
+#include<fcntl.h>
+#include<unistd.h>
+#include<stdlib.h>
+#include<termios.h>
+#define SOCKET int
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <unistd.h>
+#define Sleep(u) usleep((u*1000))
+#define _RPT0(u,v)
+#define _RPT1(u,v,w)
+#define OutputDebugStringW(s)
+#elif _WIN32
 #include <winsock2.h>
 #include <ws2tcpip.h>
-#include <stdio.h>
 #include <winsock2.h>
 #include <ws2bth.h>
 #include <BluetoothAPIs.h>
+#else
+#endif
+
+
+
+#include <stdio.h>
 #include <QThread>
-#include<regex>
 
 #include "base64.h"
 

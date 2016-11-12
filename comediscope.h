@@ -1,4 +1,6 @@
+#ifdef _WIN32
 #pragma comment(lib, "Ws2_32.lib")
+#endif
 
 class ComediScope;
 #ifndef COMEDISCOPE_H
@@ -13,16 +15,33 @@ class ComediScope;
 #include <QPaintEvent>
 #include <QTimerEvent>
 
+#ifdef __linux__ 
+#include<sys/ioctl.h>
+#include<stdio.h>
+#include<fcntl.h>
+#include<unistd.h>
+#include<stdlib.h>
+#include<termios.h>
+#include <bluetooth/bluetooth.h>
+#include <bluetooth/hci.h>
+#include <bluetooth/hci_lib.h>
+#include <bluetooth/rfcomm.h>
+#include <sys/socket.h>
+#elif _WIN32
 #include <winsock2.h>
 #include <ws2tcpip.h>
-#include <stdio.h>
 #include <winsock2.h>
 #include <ws2bth.h>
 #include <BluetoothAPIs.h>
+#else
 
-#include <Iir.h>
+#endif
 
 #include <fcntl.h>
+
+#include <stdio.h>
+
+#include <Iir.h>
 
 #include <string>
 

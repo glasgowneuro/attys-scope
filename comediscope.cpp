@@ -14,9 +14,11 @@ extern "C" {
 #include "comediscope.h"
 
 
+#ifdef _WIN32
 #include <initguid.h>
-
 DEFINE_GUID(g_guidServiceClass, 0xb62c4e8d, 0x62cc, 0x404b, 0xbb, 0xbf, 0xbf, 0x3e, 0x3b, 0xbb, 0x13, 0x74);
+#endif
+
 
 ComediScope::ComediScope(Attys_scope *attys_scope_tmp,
 	float f
@@ -41,7 +43,7 @@ ComediScope::ComediScope(Attys_scope *attys_scope_tmp,
 	recorded = 0;
 
 	//////////////////////////////////////////////////////////////
-
+	
 	setAttribute(Qt::WA_OpaquePaintEvent);
 
 	dev = new SOCKET[maxComediDevs];
@@ -50,6 +52,77 @@ ComediScope::ComediScope(Attys_scope *attys_scope_tmp,
 		dev[devNo] = 0;
 		attysComm[devNo] = nullptr;
 	}
+
+	nComediDevices = 0;
+
+#ifdef __linux__
+
+	inquiry_info *ii = NULL;
+	int max_rsp, num_rsp;
+	int dev_id, sock, len, flags;
+	int i;
+	char addr[19] = { 0 };
+	char name[248] = { 0 };
+	struct sockaddr_rc saddr;
+
+	dev_id = hci_get_route(NULL);
+	sock = hci_open_dev( dev_id );
+	if (dev_id < 0 || sock < 0) {
+		perror("opening socket");
+		exit(1);
+	}
+	
+	len  = 8;
+	max_rsp = 255;
+	flags = IREQ_CACHE_FLUSH;
+	ii = new inquiry_info[max_rsp];
+    
+	num_rsp = hci_inquiry(dev_id, len, max_rsp, NULL, &ii, flags);
+	if( num_rsp < 0 ) perror("hci_inquiry");
+		
+
+	// let's probe how many we have
+	nComediDevices = 0;
+	for (i = 0; i < num_rsp; i++) {
+		ba2str(&(ii+i)->bdaddr, addr);
+		memset(name, 0, sizeof(name));
+		if (hci_read_remote_name(sock, &(ii+i)->bdaddr, sizeof(name), 
+					 name, 0) < 0)
+			strcpy(name, "[unknown]");
+		printf("%s  %s", addr, name);
+		if (strstr(name,"GN-ATTYS")!=0) {
+			printf("!\n");
+			// allocate a socket
+			int s = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
+			
+			// set the connection parameters (who to connect to)
+			saddr.rc_family = AF_BLUETOOTH;
+			saddr.rc_channel = (uint8_t) 1;
+			str2ba( addr, &saddr.rc_bdaddr );
+
+			// connect to server
+			int status = ::connect(s,
+					       (struct sockaddr *)&saddr,
+					       sizeof(saddr));
+			
+			if (status == 0) {
+				attysComm[nComediDevices] = new AttysComm(s);
+				channels_in_use = attysComm[nComediDevices]->NCHANNELS;
+				nComediDevices++;
+				break;
+			} else {
+				printf("Connect failed: %d\n",status);
+				printf("Has the device been paired?\n");
+			}
+		} else {
+			printf("\n");
+		}
+	}
+
+	delete ii;
+	
+	
+#elif _WIN32
 
 	WSADATA wsd;
 	WSAStartup(MAKEWORD(2, 2), &wsd);
@@ -79,8 +152,6 @@ ComediScope::ComediScope(Attys_scope *attys_scope_tmp,
 	pwsaResults->dwNameSpace = NS_BTH;
 	pwsaResults->lpBlob = NULL;
 
-	// let's probe how many we have
-	nComediDevices = 0;
 	DWORD dwSize = sizeof(buf);
 	while (WSALookupServiceNext(hLookup, LUP_RETURN_NAME | LUP_RETURN_ADDR, &dwSize, pwsaResults) == 0) {
 		LPWSTR name = pwsaResults->lpszServiceInstanceName;
@@ -130,6 +201,13 @@ ComediScope::ComediScope(Attys_scope *attys_scope_tmp,
 	}
 
 	WSALookupServiceEnd(hLookup);
+
+
+#else
+
+#endif
+
+	printf("%d rfcomm devices detected\n",nComediDevices);
 	
 	// none detected
 	if (nComediDevices<1) {
