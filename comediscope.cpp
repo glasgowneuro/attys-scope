@@ -119,7 +119,7 @@ ComediScope::ComediScope(Attys_scope *attys_scope_tmp,
 		}
 	}
 
-	delete ii;
+	delete[] ii;
 	
 	
 #elif _WIN32
@@ -237,30 +237,6 @@ ComediScope::ComediScope(Attys_scope *attys_scope_tmp,
 
 	xpos=0;
 	nsamples=0;
-
-	maxdata = new int*[nComediDevices];
-	assert( maxdata != NULL );
-	for(int devNo=0;devNo<nComediDevices;devNo++) {
-		// we just go for the default ranges
-		maxdata[devNo]=new int[channels_in_use];
-		// accelerometer
-		int idx=0;
-		for(int ch=0;ch<3;ch++) {
-			maxdata[devNo][idx++]=0xffff;
-		}
-		// gyro
-		for(int ch=0;ch<3;ch++) {
-			maxdata[devNo][idx++]=0xffff;
-		}
-		// compass
-		for(int ch=0;ch<3;ch++) {
-			maxdata[devNo][idx++]=0xffff;
-		}		
-		// bio amp
-		for(int ch=0;ch<2;ch++) {
-			maxdata[devNo][idx++]=0xffffff;
-		}		
-	}
 
 	// 50Hz or 60Hz mains notch filter
 	iirnotch = new Iir::Butterworth::BandStop<IIRORDER>**[nComediDevices];

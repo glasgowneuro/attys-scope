@@ -240,10 +240,6 @@ public:
      * flag if data has been recorded. Prevents overwrite.
      **/
     int recorded;
-    /**
-     * the max value of the A/D converter
-     **/
-    int** maxdata;
 
     /**
      * notch filter
