@@ -208,6 +208,7 @@ ComediScope::ComediScope(Attys_scope *attys_scope_tmp,
 #endif
 
 	printf("%d rfcomm devices detected\n",nComediDevices);
+	printf("%d channels in use\n",channels_in_use);
 	
 	// none detected
 	if (nComediDevices<1) {

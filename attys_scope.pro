@@ -21,4 +21,5 @@ INSTALLS        += target
 LIBS            += -liir -lbluetooth
 QT             += widgets
 target.path     = /usr/local/bin
+RESOURCES     = application.qrc
 }
