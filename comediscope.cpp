@@ -144,11 +144,11 @@ ComediScope::ComediScope(Attys_scope *attys_scope_tmp,
 	int iRet = WSALookupServiceBegin(&wsaq, LUP_CONTAINERS, &hLookup);
 	if (0 != iRet) {
 		if (WSAGetLastError() != WSASERVICE_NOT_FOUND) {
-			_RPT0("WSALookupServiceBegin failed\n");
+			_RPT0(0,"WSALookupServiceBegin failed\n");
 			exit(1);
 		}
 		else {
-			_RPT0("No bluetooth devices found\n");
+			_RPT0(0,"No bluetooth devices found\n");
 			exit(1);
 		}
 	}
@@ -163,9 +163,8 @@ ComediScope::ComediScope(Attys_scope *attys_scope_tmp,
 	DWORD dwSize = sizeof(buf);
 	while (WSALookupServiceNext(hLookup, LUP_RETURN_NAME | LUP_RETURN_ADDR, &dwSize, pwsaResults) == 0) {
 		LPWSTR name = pwsaResults->lpszServiceInstanceName;
-		_RPT0(name);
-		if (wcsstr(name,"GN-ATTYS1") != 0) {
-			_RPT0(L" -- Found an Attys!\n");
+		if (wcsstr(name,L"GN-ATTYS1") != 0) {
+			_RPT0(0,"Found an Attys!\n");
 
 			attys_scope->splash->showMessage("Connecting to Attys");
 
@@ -175,7 +174,7 @@ ComediScope::ComediScope(Attys_scope *attys_scope_tmp,
 				SOCKET s = ::socket(AF_BTH, SOCK_STREAM, BTHPROTO_RFCOMM);
 
 				if (INVALID_SOCKET == s) {
-					_RPT0("=CRITICAL= | socket() call failed.\n");
+					_RPT0(0,"=CRITICAL= | socket() call failed.\n");
 					exit(1);
 				}
 
@@ -197,14 +196,14 @@ ComediScope::ComediScope(Attys_scope *attys_scope_tmp,
 					break;
 				}
 				else {
-					_RPT0("Connect failed\n");
-					_RPT0("Has the device been paired?\n");
+					_RPT0(0,"Connect failed\n");
+					_RPT0(0,"Has the device been paired?\n");
 					shutdown(s, SD_BOTH);
 					closesocket(s);
 				}
 			}
 		} else {
-			_RPT0("\n");
+			_RPT0(0,"\n");
 		}
 	}
 
