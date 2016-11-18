@@ -66,6 +66,18 @@ public:
 		"Analogue channel 2"
 	};
 
+	// descriptions the channels in text form
+	const char* const CHANNEL_SHORT_DESCRIPTION[NCHANNELS] = {
+		"Acc X",
+		"Acc Y",
+		"Acc Z",
+		"Mag X",
+		"Mag Y",
+		"Mag Z",
+		"ADC 1",
+		"ADC 2"
+	};
+
 	// units of the channels
 	const char* const CHANNEL_UNITS[NCHANNELS] = {
 		"m/s^2",
