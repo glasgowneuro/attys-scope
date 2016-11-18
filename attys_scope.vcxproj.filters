@@ -88,9 +88,6 @@
     <ClCompile Include="channel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="comediscope.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="dc_sub.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -101,6 +98,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="lp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="scopewindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -159,9 +159,6 @@
     <CustomBuild Include="channel.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="comediscope.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="dc_sub.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
@@ -177,6 +174,9 @@
     <CustomBuild Include="lp.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="scopewindow.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="debug\moc_attys_scope.cpp">
@@ -189,12 +189,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="release\moc_channel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="debug\moc_comediscope.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="release\moc_comediscope.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="debug\moc_dc_sub.cpp">
@@ -219,6 +213,12 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="release\moc_lp.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_scopewindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_scopewindow.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="debug\qrc_application.cpp">

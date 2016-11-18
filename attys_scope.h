@@ -16,7 +16,7 @@ class Attys_scope;
 #include <qpointer.h>
 #include <qfont.h>
 
-#include "comediscope.h"
+#include "scopewindow.h"
 #include "gain.h"
 #include "channel.h"
 #include "dc_sub.h"
@@ -89,7 +89,7 @@ public:
     /**
      * Comments
      **/
-	QPointer<QTextEdit> commentTextEdit;
+	QPointer<QTextEdit> notchTextEdit;
 
     /**
      * Shows the filter frequency
@@ -129,7 +129,7 @@ public:
     /**
      * The widget which contains the graphical plots of the AD-data
      **/
-	QPointer<ComediScope> comediScope;
+	QPointer<ScopeWindow> comediScope;
 
     /**
      * Text-field: elapsed time
@@ -259,6 +259,9 @@ private:
 	QFont* voltageFont;
 	QFont* tbFont;
 	QFont* commentFont;
+
+private slots:
+	void notchFreqChanged();
 };
 
 

@@ -2,7 +2,7 @@
 #pragma comment(lib, "Ws2_32.lib")
 #endif
 
-class ComediScope;
+class ScopeWindow;
 #ifndef COMEDISCOPE_H
 #define COMEDISCOPE_H
 
@@ -55,20 +55,20 @@ class ComediScope;
 
 #define VOLT_FORMAT_STRING "%+.3f"
 
-class ComediScope : public QWidget
+class ScopeWindow : public QWidget
 {
     Q_OBJECT
 public:
 /**
  * Constructor:
  **/
-    ComediScope( Attys_scope* attys_scope_tmp,
+    ScopeWindow( Attys_scope* attys_scope_tmp,
 		 float notchF = 50
 	);
 /**
  * Destructor: close the file if necessary
  **/
-    ~ComediScope();
+    ~ScopeWindow();
 
 
 private:

@@ -21,11 +21,11 @@
 #include <iostream>
 #include <fstream>
 
-#include "comediscope.h"
+#include "scopewindow.h"
 #include "attys_scope.h"
 
 // version number
-#define VERSION "1.24"
+#define VERSION "0.5"
 
 // config constants
 #define SETTINGS_GLOBAL "global"
@@ -59,7 +59,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	splash = _splash;
 
-    comediScope=new ComediScope(this,notch);
+    comediScope=new ScopeWindow(this,notch);
 
 	int n_devs = comediScope->getNcomediDevices();
 	int channels = comediScope->getNchannels();
@@ -250,23 +250,26 @@ Attys_scope::Attys_scope(QWidget *parent,
 	notchGroupBox->setStyleSheet(styleSheet);
 	notchLayout = new QHBoxLayout();
 	char tmp[128];
-	sprintf(tmp,"%2.0fHz notch",notch);
+	sprintf(tmp,"notch on",notch);
 	filterCheckbox=new QCheckBox( tmp );
 	filterCheckbox->setChecked(false);
 	notchLayout->addWidget(filterCheckbox);
-	commentTextEdit=new QCommentTextEdit();
+	notchTextEdit=new QCommentTextEdit();
 	commentFont = new QFont();
 	QFontMetrics commentMetrics(*commentFont);
-	commentTextEdit->setMaximumHeight ( commentMetrics.height() );
-	commentTextEdit->setMaximumWidth ( 10*commentMetrics.width('X') );
-	commentTextEdit->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	commentTextEdit->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	commentTextEdit->setFont(*commentFont);
-	comment=new QLabel("Comment:");
+	notchTextEdit->setMaximumHeight ( commentMetrics.height() );
+	notchTextEdit->setMaximumWidth ( 10*commentMetrics.width('X') );
+	notchTextEdit->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	notchTextEdit->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	notchTextEdit->setFont(*commentFont);
+	comment=new QLabel("Notch frequency (Hz):");
 	notchLayout->addWidget(comment);
-	notchLayout->addWidget(commentTextEdit);
+	notchLayout->addWidget(notchTextEdit);
        	notchGroupBox->setLayout(notchLayout);
 	restLayout->addWidget(notchGroupBox);
+
+	connect(notchTextEdit, SIGNAL(textChanged()),
+		this, SLOT(notchFreqChanged()));
 
 	// group for the record stuff
 	recGroupBox = new QGroupBox();
@@ -308,7 +311,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	tbIncPushButton = new QPushButton( "slower" );
 
-	char tbStyle[]="background-color: white;border-style:outset;border-width: 2px;border-color: black;font: bold 10px;padding: 4px;";
+	char tbStyle[]="background-color: white;border-style:outset;border-width: 1px;border-color: black;font: bold 10px;padding: 6px;";
 	tbIncPushButton->setStyleSheet(tbStyle);
 	tbIncPushButton->setMaximumSize ( tbMetrics.width(" slower ") ,  
 					  tbMetrics.height()*5/4 );
@@ -330,15 +333,15 @@ Attys_scope::Attys_scope(QWidget *parent,
 	tbInfoTextEdit->setFont (*tbFont);
 	QFontMetrics metricsTb(*tbFont);
 	tbInfoTextEdit->setMaximumHeight ( commentMetrics.height() * 1.5 );
-	tbInfoTextEdit->setMaximumWidth ( commentMetrics.width('X') * 13 );
+	tbInfoTextEdit->setMaximumWidth ( commentMetrics.width('X') * 17 );
 	tbInfoTextEdit->setReadOnly(true);
 	tbInfoTextEdit->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
 	tbLayout->addWidget(tbInfoTextEdit);
 
 	tbResetPushButton = new QPushButton( "clear" );
-	tbResetPushButton->setStyleSheet("background-color: white;border-style:outset;border-width: 2px;border-color: black;font: bold 10px;padding: 4px;");
-	tbResetPushButton->setMaximumSize ( tbMetrics.width("restart ") ,  
-					  tbMetrics.height() );
+	tbResetPushButton->setStyleSheet("background-color: white;border-style:outset;border-width: 1px;border-color: black;font: bold 10px;padding: 6px;");
+	tbResetPushButton->setMaximumSize ( tbMetrics.width("clear ") *10/9,  
+					  tbMetrics.height() *11/9);
 	tbResetPushButton->setFont(*tbFont);	
 	tbgrp->connect(tbResetPushButton, SIGNAL( clicked() ),
 		       this, SLOT( resetTbEvent() ) );
@@ -432,6 +435,12 @@ void Attys_scope::enableControls() {
 }
 
 
+void Attys_scope::notchFreqChanged() {
+	QString str = notchTextEdit->toPlainText();
+	comediScope->setNotchFrequency(str.toFloat());
+}
+
+
 void Attys_scope::setFilename(QString fn,int csv) {
 	comediScope->setFilename(fn,csv);
 	QString tmp;
@@ -503,10 +512,8 @@ void Attys_scope::changeTB() {
 	if (tb_us<1000) {
 		s.sprintf( "%d usec", tb_us);
 	} else if (tb_us<1000000) {
-		tb_us = (tb_us / 1000) * 1000;
 		s.sprintf( "%d msec", tb_us/1000);
 	} else {
-		tb_us = (tb_us / 1000000) * 1000000;
 		s.sprintf( "%d sec", tb_us/1000000);
 	}		
 	tbInfoTextEdit->setText(s);

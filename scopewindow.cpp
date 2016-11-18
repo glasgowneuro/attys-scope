@@ -11,7 +11,7 @@ extern "C" {
 #include<fcntl.h>
 }
 
-#include "comediscope.h"
+#include "scopewindow.h"
 
 
 #ifdef _WIN32
@@ -20,7 +20,7 @@ DEFINE_GUID(g_guidServiceClass, 0xb62c4e8d, 0x62cc, 0x404b, 0xbb, 0xbf, 0xbf, 0x
 #endif
 
 
-ComediScope::ComediScope(Attys_scope *attys_scope_tmp,
+ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp,
 	float f
 )
 	: QWidget(attys_scope_tmp) {
@@ -270,12 +270,11 @@ ComediScope::ComediScope(Attys_scope *attys_scope_tmp,
 			daqData[devNo][i]=0;
 		}
 	}
-
 	setNotchFrequency(f);
 }
 
 
-void ComediScope::startDAQ() {
+void ScopeWindow::startDAQ() {
 	// ready steady go!
 	counter = new QTimer(this);
 	assert(counter != NULL);
@@ -293,7 +292,7 @@ void ComediScope::startDAQ() {
 }
 
 
-ComediScope::~ComediScope() {
+ScopeWindow::~ScopeWindow() {
 	if (rec_file) {
 		fclose(rec_file);
 	}
@@ -304,14 +303,15 @@ ComediScope::~ComediScope() {
 	}
 }
 
-void ComediScope::setNotchFrequency(float f) {
-	if (f>attysComm[0]->getSamplingRateInHz()) {
+void ScopeWindow::setNotchFrequency(float f) {
+	if (f>(attysComm[0]->getSamplingRateInHz()/2)) {
 		fprintf(stderr,
 			"Error: The notch frequency %f "
-			"is higher than the sampling rate of %dHz.\n",
-			f, attysComm[0]->getSamplingRateInHz());
+			"is higher than the nyquist freq of %dHz.\n",
+			f, attysComm[0]->getSamplingRateInHz()/2);
 		return;
 	}
+	if (f <= 0) return;
 	for(int j=0;j<nComediDevices;j++) {
 		for(int i=0;i<channels_in_use;i++) {
 			float frequency_width = f/10;
@@ -322,11 +322,12 @@ void ComediScope::setNotchFrequency(float f) {
 		}
 		notchFrequency = f;
 	}
+	_RPT1(0, "Notch set to %f Hz.\n", f);
 }
 
 
 
-void ComediScope::updateTime() {
+void ScopeWindow::updateTime() {
 	QString s;
 	if (!rec_file) {
 		if (rec_filename->isEmpty()) {
@@ -355,7 +356,7 @@ void ComediScope::updateTime() {
 }
 
 
-void ComediScope::setFilename(QString name,int csv) {
+void ScopeWindow::setFilename(QString name,int csv) {
 	(*rec_filename)=name;
 	recorded=0;
 	if (csv) {
@@ -366,7 +367,7 @@ void ComediScope::setFilename(QString name,int csv) {
 }
 
 
-void ComediScope::writeFile() {
+void ScopeWindow::writeFile() {
 	if (!rec_file) return;
 	fprintf(rec_file, "%f", ((float)nsamples) / ((float)attysComm[0]->getSamplingRateInHz()));
 	for (int n = 0; n < nComediDevices; n++) {
@@ -382,14 +383,14 @@ void ComediScope::writeFile() {
 	fprintf(rec_file, "\n");
 }
 
-void ComediScope::startRec() {
+void ScopeWindow::startRec() {
 	if (recorded) return;
 	if (rec_filename->isEmpty()) return;
 	attys_scope->disableControls();
 	// counter for samples
 	nsamples=0;
 	// get possible comments
-	QString comment = attys_scope->commentTextEdit->toPlainText();
+	QString comment = attys_scope->notchTextEdit->toPlainText();
 	// ASCII
 	rec_file=NULL;
 	// do we have a valid filename?
@@ -413,7 +414,7 @@ void ComediScope::startRec() {
 }
 
 
-void ComediScope::stopRec() {
+void ScopeWindow::stopRec() {
 	if (rec_file) {
 		fclose(rec_file);
 		rec_file = NULL;
@@ -428,7 +429,7 @@ void ComediScope::stopRec() {
 
 
 
-void ComediScope::paintData(float** buffer) {
+void ScopeWindow::paintData(float** buffer) {
 	QPainter paint( this );
 	QPen penData[3]={QPen(Qt::blue,1),
 			 QPen(Qt::green,1),
@@ -470,11 +471,11 @@ void ComediScope::paintData(float** buffer) {
 		for(int i=0;i<channels_in_use;i++) {
 			float minV = -10;
 			float maxV = 10;
-			if ((i >= attysComm[n]->INDEX_Acceleration_X) && (i >= attysComm[n]->INDEX_Acceleration_Z)) {
+			if ((i >= attysComm[n]->INDEX_Acceleration_X) && (i <= attysComm[n]->INDEX_Acceleration_Z)) {
 				minV = -attysComm[n]->getAccelFullScaleRange();
 				maxV = attysComm[n]->getAccelFullScaleRange();
 			}
-			if ((i >= attysComm[n]->INDEX_Magnetic_field_X) && (i >= attysComm[n]->INDEX_Magnetic_field_Z)) {
+			if ((i >= attysComm[n]->INDEX_Magnetic_field_X) && (i <= attysComm[n]->INDEX_Magnetic_field_Z)) {
 				minV = -attysComm[n]->getMagFullScaleRange();
 				maxV = attysComm[n]->getMagFullScaleRange();
 			}
@@ -522,7 +523,7 @@ void ComediScope::paintData(float** buffer) {
 // displayed and saved to disk.
 //
 
-void ComediScope::paintEvent(QPaintEvent *) {
+void ScopeWindow::paintEvent(QPaintEvent *) {
 
 	for (;;) {
 
@@ -581,7 +582,7 @@ void ComediScope::paintEvent(QPaintEvent *) {
 }
 
 
-void ComediScope::setTB(int us) {
+void ScopeWindow::setTB(int us) {
 	tb_init=us/(1000000/ attysComm[0]->getSamplingRateInHz());
 	tb_counter=tb_init;
 	for(int n=0;n<nComediDevices;n++) {
@@ -595,12 +596,12 @@ void ComediScope::setTB(int us) {
 // Handles timer events for the ComediScope widget.
 //
 
-void ComediScope::timerEvent( QTimerEvent * )
+void ScopeWindow::timerEvent( QTimerEvent * )
 {
 	repaint();
 }
 
-void ComediScope::clearScreen()
+void ScopeWindow::clearScreen()
 {
 	eraseFlag = 1;
 	repaint();
