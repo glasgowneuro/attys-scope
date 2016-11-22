@@ -135,7 +135,15 @@ public:
 	const float ADC_REF = 2.42F;
 
 	float getADCFullScaleRange(int channel) {
-		return ADC_REF / ADC_GAIN_FACTOR[adcGainRegister[channel]];
+		switch (channel) {
+		case 0:
+			return ADC_REF / ADC_GAIN_FACTOR[adc0_gain_index];
+		case 1:
+			return ADC_REF / ADC_GAIN_FACTOR[adc1_gain_index];
+		default:
+			fprintf(stderr, "getADCFullScaleRange wrong index\n");
+			exit(1);
+		}
 	}
 
 	void setAdc1_gain_index(int idx) {

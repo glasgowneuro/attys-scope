@@ -305,10 +305,12 @@ void ScopeWindow::startDAQ() {
 			minV[n][i] = -attysComm[n]->getMagFullScaleRange();
 			maxV[n][i] = attysComm[n]->getMagFullScaleRange();
 		}
-		minV[n][attysComm[n]->INDEX_Analogue_channel_1] = -attysComm[n]->getADCFullScaleRange(0);
+		minV[n][attysComm[n]->INDEX_Analogue_channel_1] = - attysComm[n]->getADCFullScaleRange(0);
 		maxV[n][attysComm[n]->INDEX_Analogue_channel_1] = attysComm[n]->getADCFullScaleRange(0);
-		minV[n][attysComm[n]->INDEX_Analogue_channel_2] = -attysComm[n]->getADCFullScaleRange(1);
+		_RPT1(0, "ADC1 max = %f\n", attysComm[n]->getADCFullScaleRange(0));
+		minV[n][attysComm[n]->INDEX_Analogue_channel_2] = - attysComm[n]->getADCFullScaleRange(1);
 		maxV[n][attysComm[n]->INDEX_Analogue_channel_2] = attysComm[n]->getADCFullScaleRange(1);
+		_RPT1(0, "ADC2 max = %f\n", attysComm[n]->getADCFullScaleRange(1));
 	}
 
 }
@@ -494,10 +496,13 @@ void ScopeWindow::paintData(float** buffer) {
 			if (attys_scope->
 				channel[n][i]->
 				isActive()) {
-				float dy = (float)base / (float)(maxV[n][attys_scope->channel[n][i]->getChannel()] - minV[n][attys_scope->channel[n][i]->getChannel()]);
+				float dy = (float)base / (float)(maxV[n][attys_scope->channel[n][i]->getChannel()] 
+					- minV[n][attys_scope->channel[n][i]->getChannel()]);
 				paint.setPen(penData[act % 3]);
 				float gain = attys_scope->gain[n][i]->getGain();
 				float value = buffer[n][i] * gain;
+				//if (i == 6 ) 
+				//	_RPT1(0, "%f\n", value);
 				int yZero = base*act - (int)((0 - minV[n][attys_scope->channel[n][i]->getChannel()])*dy);
 				int yTmp = base*act - (int)((value - minV[n][attys_scope->channel[n][i]->getChannel()])*dy);
 				ypos[n][i][xpos + 1] = yTmp;
@@ -543,6 +548,8 @@ void ScopeWindow::paintEvent(QPaintEvent *) {
 				if (attys_scope->channel[n][i]->isActive()) {
 					// filtering
 					float value = values[attys_scope->channel[n][i]->getChannel()];
+//					if (i == 6)
+//					_RPT1(0, "%f\n",value);
 					value = attys_scope->dcSub[n][i]->filter(value);
 					value = attys_scope->hp[n][i]->filter(value);
 					value = attys_scope->lp[n][i]->filter(value);
