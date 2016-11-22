@@ -11,7 +11,7 @@ public:
     /**
      * constructor
      **/
-	Channel(int nChannels);
+	Channel(int nChannels, std::string* _channelLabels);
 
 private slots:
 	void channelChanged(int i);
@@ -19,6 +19,7 @@ private slots:
 private:
 	int channel;
 	int numberOfChannels;
+	std::string* channelLabels;
 	
 public:
 	inline int getChannel() {return channel;};

@@ -5,6 +5,7 @@
 #include<unistd.h>
 #include<stdlib.h>
 #include<termios.h>
+#include <string>
 #define SOCKET int
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -55,7 +56,7 @@ public:
 	const int INDEX_Analogue_channel_2 = 7;
 
 	// descriptions the channels in text form
-	const char* const CHANNEL_DESCRIPTION[NCHANNELS] = {
+	std::string CHANNEL_DESCRIPTION[NCHANNELS] = {
 		"Acceleration X",
 		"Acceleration Y",
 		"Acceleration Z",
@@ -66,8 +67,8 @@ public:
 		"Analogue channel 2"
 	};
 
-	// descriptions the channels in text form
-	const char* const CHANNEL_SHORT_DESCRIPTION[NCHANNELS] = {
+	// descriptions of the channels in text form
+	std::string CHANNEL_SHORT_DESCRIPTION[NCHANNELS] = {
 		"Acc X",
 		"Acc Y",
 		"Acc Z",
@@ -79,7 +80,7 @@ public:
 	};
 
 	// units of the channels
-	const char* const CHANNEL_UNITS[NCHANNELS] = {
+	std::string const CHANNEL_UNITS[NCHANNELS] = {
 		"m/s^2",
 		"m/s^2",
 		"m/s^2",

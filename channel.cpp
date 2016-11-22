@@ -4,16 +4,16 @@
 #include<stdio.h>
 
 
-Channel::Channel(int nChannels) : QComboBox() {
+Channel::Channel(int nChannels, std::string* _channelLabels) : QComboBox() {
 
 	numberOfChannels = nChannels;
+	channelLabels = _channelLabels;
 
-	setMinimumWidth ( fontMetrics().width("x50XX") );
+	setMinimumWidth ( fontMetrics().width("x50XXg") );
 
 	for(int i=0;i<nChannels;i++) {
-		char tmp[10];
-		sprintf(tmp,"%02d",i);
-		addItem(tr(tmp),i);
+		QString str = QString::fromUtf8(channelLabels[i].c_str());
+		addItem(str,i);
 	}
 	addItem(tr("off"),nChannels);
 		
@@ -25,7 +25,7 @@ Channel::Channel(int nChannels) : QComboBox() {
 }
 
 void Channel::channelChanged ( int index ) {
- 	channel = itemData(index).toInt();
+ 	channel = index;
 }
 
 void Channel::setChannel( int c ) {

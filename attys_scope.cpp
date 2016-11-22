@@ -132,6 +132,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	settings.beginGroup(SETTINGS_CHANNELS);
 
+	AttysComm attysCommTmp(0);
 	int nch_enabled = 0;
 	for(int n=0;n<n_devs;n++) {
 		channelLabel[n]=new QPointer<QLabel>[channels];
@@ -161,7 +162,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 			channelLabel[n][i]->setFont(*voltageFont);
 			hbox[n][i]->addWidget(channelLabel[n][i]);
 			hbox[n][i]->setSpacing(1);
-			channel[n][i] = new Channel(channels);
+			channel[n][i] = new Channel(channels,attysCommTmp.CHANNEL_SHORT_DESCRIPTION);
 			char tmpCh[128];
 			sprintf(tmpCh,CHSETTING_FORMAT,n,i);
 			if (ignoreSettings) {

@@ -372,8 +372,13 @@ void ScopeWindow::updateTime() {
 	char tmp[256];
 	for(int n=0;n<nComediDevices;n++) {
 		for(int i=0;i<channels_in_use;i++) {
-			float phys = daqData[n][i];
-			sprintf(tmp,VOLT_FORMAT_STRING,phys);
+			if (attys_scope->channel[n][i]->isActive()) {
+				float phys = daqData[n][attys_scope->channel[n][i]->getChannel()];
+				sprintf(tmp, VOLT_FORMAT_STRING, phys);
+			}
+			else {
+				sprintf(tmp, "---");
+			}
 			attys_scope->voltageTextEdit[n][i]->setText(tmp);
 		}
 	}
@@ -399,7 +404,7 @@ void ScopeWindow::writeFile() {
 			if (attys_scope->
 				channel[n][i]->isActive()
 				) {
-				float phy = daqData[n][i];
+				float phy = daqData[n][attys_scope->channel[n][i]->getChannel()];
 				fprintf(rec_file, "%c%f", separator, phy);
 			}
 		}
