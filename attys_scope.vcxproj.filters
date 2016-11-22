@@ -236,4 +236,7 @@
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="attysapp.rc" />
+  </ItemGroup>
 </Project>

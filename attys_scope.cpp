@@ -250,7 +250,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	notchGroupBox->setStyleSheet(styleSheet);
 	notchLayout = new QHBoxLayout();
 	char tmp[128];
-	sprintf(tmp,"notch on",notch);
+	sprintf(tmp,"notch");
 	filterCheckbox=new QCheckBox( tmp );
 	filterCheckbox->setChecked(false);
 	notchLayout->addWidget(filterCheckbox);

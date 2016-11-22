@@ -314,6 +314,9 @@
     </CustomBuild>
     <None Include="attys.png" />
   </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="attysapp.rc" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>

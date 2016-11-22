@@ -9,6 +9,7 @@ INSTALLS        += target
 QT             += widgets
 INCLUDEPATH     += iir1
 RESOURCES     = application.qrc
+RC_FILE = attysapp.rc
 }
 
 unix {
