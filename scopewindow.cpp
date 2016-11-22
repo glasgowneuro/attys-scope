@@ -230,10 +230,16 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp,
 	// initialise the graphics stuff
 	ypos = new int**[nComediDevices];
 	assert(ypos != NULL);
+	minV = new float*[nComediDevices];
+	maxV = new float*[nComediDevices];
 	for(int devNo=0;devNo<nComediDevices;devNo++) {
 		ypos[devNo]=new int*[channels_in_use];
+		minV[devNo] = new float[channels_in_use];
+		maxV[devNo] = new float[channels_in_use];
 		assert(ypos[devNo] != NULL);
 		for(int i=0;i<channels_in_use;i++) {
+			minV[devNo][i] = -10;
+			maxV[devNo][i] = 10;
 			ypos[devNo][i] = new int[MAX_DISP_X];
 			assert( ypos[devNo][i] != NULL);
 			for(int j=0;j<MAX_DISP_X;j++) {
@@ -283,12 +289,28 @@ void ScopeWindow::startDAQ() {
 		this,
 		SLOT(updateTime()));
 
-	startTimer( 50 );		// run continuous timer
-	counter->start( 500 );
+	startTimer(50);		// run continuous timer
+	counter->start(500);
 	for (int i = 0; i < nComediDevices; i++) {
 		if (attysComm[i])
-		attysComm[i]->start();
+			attysComm[i]->start();
 	}
+
+	for (int n = 0; n < nComediDevices; n++) {
+		for (int i = attysComm[n]->INDEX_Acceleration_X; i <= attysComm[n]->INDEX_Acceleration_Z; i++) {
+			minV[n][i] = -attysComm[n]->getAccelFullScaleRange();
+			maxV[n][i] = attysComm[n]->getAccelFullScaleRange();
+		}
+		for (int i = attysComm[n]->INDEX_Magnetic_field_X; i <= attysComm[n]->INDEX_Magnetic_field_Z; i++) {
+			minV[n][i] = -attysComm[n]->getMagFullScaleRange();
+			maxV[n][i] = attysComm[n]->getMagFullScaleRange();
+		}
+		minV[n][attysComm[n]->INDEX_Analogue_channel_1] = -attysComm[n]->getADCFullScaleRange(0);
+		maxV[n][attysComm[n]->INDEX_Analogue_channel_1] = attysComm[n]->getADCFullScaleRange(0);
+		minV[n][attysComm[n]->INDEX_Analogue_channel_2] = -attysComm[n]->getADCFullScaleRange(1);
+		maxV[n][attysComm[n]->INDEX_Analogue_channel_2] = attysComm[n]->getADCFullScaleRange(1);
+	}
+
 }
 
 
@@ -467,43 +489,25 @@ void ScopeWindow::paintData(float** buffer) {
 	paint.drawLine(xer,0,
 		       xer,h);
 	int act=1;
-	for(int n=0;n<nComediDevices;n++) {
-		for(int i=0;i<channels_in_use;i++) {
-			float minV = -10;
-			float maxV = 10;
-			if ((i >= attysComm[n]->INDEX_Acceleration_X) && (i <= attysComm[n]->INDEX_Acceleration_Z)) {
-				minV = -attysComm[n]->getAccelFullScaleRange();
-				maxV = attysComm[n]->getAccelFullScaleRange();
-			}
-			if ((i >= attysComm[n]->INDEX_Magnetic_field_X) && (i <= attysComm[n]->INDEX_Magnetic_field_Z)) {
-				minV = -attysComm[n]->getMagFullScaleRange();
-				maxV = attysComm[n]->getMagFullScaleRange();
-			}
-			if (i == attysComm[n]->INDEX_Analogue_channel_1) {
-				minV = -attysComm[n]->getADCFullScaleRange(0);
-				maxV = attysComm[n]->getADCFullScaleRange(0);
-			}
-			if (i == attysComm[n]->INDEX_Analogue_channel_2) {
-				minV = -attysComm[n]->getADCFullScaleRange(1);
-				maxV = attysComm[n]->getADCFullScaleRange(1);
-			}
-			float dy = (float)base / (float)(maxV - minV);
+	for (int n = 0; n < nComediDevices; n++) {
+		for (int i = 0; i < channels_in_use; i++) {
 			if (attys_scope->
-			    channel[n][i]->
-			    isActive()) {
-				paint.setPen(penData[act%3]);
-				float gain=attys_scope->gain[n][i]->getGain();
+				channel[n][i]->
+				isActive()) {
+				float dy = (float)base / (float)(maxV[n][attys_scope->channel[n][i]->getChannel()] - minV[n][attys_scope->channel[n][i]->getChannel()]);
+				paint.setPen(penData[act % 3]);
+				float gain = attys_scope->gain[n][i]->getGain();
 				float value = buffer[n][i] * gain;
-				int yZero=base*act-(int)((0-minV)*dy);
-				int yTmp=base*act-(int)((value-minV)*dy);
-				ypos[n][i][xpos+1]=yTmp;
-				paint.drawLine(xpos,ypos[n][i][xpos],
-					       xpos+1,ypos[n][i][xpos+1]);
-				if (xpos%2) {
-					paint.drawPoint(xpos,yZero);
+				int yZero = base*act - (int)((0 - minV[n][attys_scope->channel[n][i]->getChannel()])*dy);
+				int yTmp = base*act - (int)((value - minV[n][attys_scope->channel[n][i]->getChannel()])*dy);
+				ypos[n][i][xpos + 1] = yTmp;
+				paint.drawLine(xpos, ypos[n][i][xpos],
+					xpos + 1, ypos[n][i][xpos + 1]);
+				if (xpos % 2) {
+					paint.drawPoint(xpos, yZero);
 				}
-				if ((xpos+2)==w) {
-					ypos[n][i][0]=yTmp;
+				if ((xpos + 2) == w) {
+					ypos[n][i][0] = yTmp;
 				}
 				act++;
 			}
@@ -538,7 +542,8 @@ void ScopeWindow::paintEvent(QPaintEvent *) {
 				daqData[n][i] = values[i];
 				if (attys_scope->channel[n][i]->isActive()) {
 					// filtering
-					float value = attys_scope->dcSub[n][i]->filter(values[i]);
+					float value = values[attys_scope->channel[n][i]->getChannel()];
+					value = attys_scope->dcSub[n][i]->filter(value);
 					value = attys_scope->hp[n][i]->filter(value);
 					value = attys_scope->lp[n][i]->filter(value);
 					// remove 50Hz

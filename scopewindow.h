@@ -283,6 +283,11 @@ public:
 	public:
 	int getActualSamplingRate() { return attysComm[0]->getSamplingRateInHz(); }
 
+
+	private:
+		float **minV;
+		float **maxV;
+
 };
 
 

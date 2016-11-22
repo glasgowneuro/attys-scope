@@ -21,7 +21,7 @@ private:
 	int numberOfChannels;
 	
 public:
-	inline float getChannel() {return channel;};
+	inline int getChannel() {return channel;};
 
 	void setChannel(int Channel);
 
