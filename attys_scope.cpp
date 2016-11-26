@@ -25,7 +25,7 @@
 #include "attys_scope.h"
 
 // version number
-#define VERSION "0.5"
+#define VERSION "1.0.0"
 
 // config constants
 #define SETTINGS_GLOBAL "global"
@@ -59,12 +59,12 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	splash = _splash;
 
-    comediScope=new ScopeWindow(this,notch);
+    attysScopeWindow=new ScopeWindow(this,notch);
 
-	int n_devs = comediScope->getNcomediDevices();
-	int channels = comediScope->getNchannels();
+	int n_devs = attysScopeWindow->getNcomediDevices();
+	int channels = attysScopeWindow->getNchannels();
 
-	tb_us = 1000000 / comediScope->getActualSamplingRate();
+	tb_us = 1000000 / attysScopeWindow->getActualSamplingRate();
 
 	// fonts
 	voltageFont = new QFont("Courier",10);
@@ -204,7 +204,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 			hpLabel[n][i]->setFont(*voltageFont);
 			hbox[n][i]->addWidget(hpLabel[n][i]);
 
-			hp[n][i] = new Hp(comediScope->getActualSamplingRate(),
+			hp[n][i] = new Hp(attysScopeWindow->getActualSamplingRate(),
 					  hpFreq);
 			hp[n][i] ->setStyleSheet(styleSheet);
 			hbox[n][i]->addWidget(hp[n][i]);
@@ -214,7 +214,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 			lpLabel[n][i]->setFont(*voltageFont);
 			hbox[n][i]->addWidget(lpLabel[n][i]);
 
-			lp[n][i] = new Lp(comediScope->getActualSamplingRate(),
+			lp[n][i] = new Lp(attysScopeWindow->getActualSamplingRate(),
 					  lpFreq);
 			lp[n][i] ->setStyleSheet(styleSheet);
 			hbox[n][i]->addWidget(lp[n][i]);
@@ -357,8 +357,8 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	char status[256];
 	sprintf(status,"# of devs: %d, Fs: %d Hz, lp: %1.1f Hz, hp: %1.1f Hz",
-		comediScope->getNcomediDevices(),
-		comediScope->getActualSamplingRate(),
+		attysScopeWindow->getNcomediDevices(),
+		attysScopeWindow->getActualSamplingRate(),
 		lpFreq,hpFreq);
 	statusLabel = new QLabel(status);
 	statusLayout->addWidget(statusLabel);
@@ -372,10 +372,10 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	controlBox->setLayout(controlLayout);
 
-	comediScope->setMinimumWidth ( 400 );
-	comediScope->setMinimumHeight ( 200 );
+	attysScopeWindow->setMinimumWidth ( 400 );
+	attysScopeWindow->setMinimumHeight ( 200 );
 
-	scopeLayout->addWidget(comediScope);
+	scopeLayout->addWidget(attysScopeWindow);
 	scopeGroup->setLayout(scopeLayout);
 
 	allChScrollArea->setSizePolicy ( QSizePolicy(QSizePolicy::Fixed,
@@ -388,7 +388,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	changeTB();
 
-	comediScope->startDAQ();
+	attysScopeWindow->startDAQ();
 }
 
 Attys_scope::~Attys_scope() {
@@ -397,8 +397,8 @@ Attys_scope::~Attys_scope() {
 			   ATTYS_STRING,
 			   PROGRAM_NAME);
 
-	int n_devs = comediScope->getNcomediDevices();
-	int channels = comediScope->getNchannels();
+	int n_devs = attysScopeWindow->getNcomediDevices();
+	int channels = attysScopeWindow->getNchannels();
 	settings.beginGroup(SETTINGS_CHANNELS);
 	for(int n=0;n<n_devs;n++) {
 		for(int i=0;i<channels;i++) {
@@ -414,8 +414,8 @@ Attys_scope::~Attys_scope() {
 
 void Attys_scope::disableControls() {
 	filePushButton->setEnabled( false );
-	int n_devs = comediScope->getNcomediDevices();
-	int channels = comediScope->getNchannels();
+	int n_devs = attysScopeWindow->getNcomediDevices();
+	int channels = attysScopeWindow->getNchannels();
 	for(int n=0;n<n_devs;n++) {
 		for(int i=0;i<channels;i++) {
 			channel[n][i]->setEnabled( false );
@@ -426,8 +426,8 @@ void Attys_scope::disableControls() {
 
 void Attys_scope::enableControls() {
 	filePushButton->setEnabled( true );
-	int n_devs = comediScope->getNcomediDevices();
-	int channels = comediScope->getNchannels();
+	int n_devs = attysScopeWindow->getNcomediDevices();
+	int channels = attysScopeWindow->getNchannels();
 	for(int n=0;n<n_devs;n++) {
 		for(int i=0;i<channels;i++) {
 			channel[n][i]->setEnabled( true );
@@ -438,12 +438,12 @@ void Attys_scope::enableControls() {
 
 void Attys_scope::notchFreqChanged() {
 	QString str = notchTextEdit->toPlainText();
-	comediScope->setNotchFrequency(str.toFloat());
+	attysScopeWindow->setNotchFrequency(str.toFloat());
 }
 
 
-void Attys_scope::setFilename(QString fn,int csv) {
-	comediScope->setFilename(fn,csv);
+void Attys_scope::setFilename(QString fn,int tsv) {
+	attysScopeWindow->setFilename(fn,tsv);
 	QString tmp;
 	tmp="attys_scope - datafile: "+fn;
 	setWindowTitle( tmp );
@@ -453,8 +453,7 @@ void Attys_scope::setFilename(QString fn,int csv) {
 
 void Attys_scope::enterFileName() {
 	QFileDialog::Options options;
-	QString filters(tr("space separated values (*.dat);;"
-			   "space separated values (*.txt);;"
+	QString filters(tr("tab separated values (*.tsv);;"
 			   "comma separated values (*.csv)"
 				));
 
@@ -463,16 +462,16 @@ void Attys_scope::enterFileName() {
 	dialog.setNameFilter(filters);
 	dialog.setViewMode(QFileDialog::Detail);
 
-        if (dialog.exec()) {
+	if (dialog.exec()) {
 		QString fileName = dialog.selectedFiles()[0];
 		QString extension = dialog.selectedNameFilter();
-		extension=extension.mid(extension.indexOf("."),4);
-                if (fileName.indexOf(extension)==-1) {
-                        fileName=fileName+extension;
-                }
-		int isCSV = extension.indexOf("csv");
-                setFilename(QString(fileName),isCSV>-1);
-        }
+		extension = extension.mid(extension.indexOf("."), 4);
+		if (fileName.indexOf(extension) == -1) {
+			fileName = fileName + extension;
+		}
+		int isTSV = extension.indexOf("tsv");
+		setFilename(QString(fileName), isTSV > -1);
+	}
 }
 
 // callback
@@ -480,11 +479,11 @@ void Attys_scope::recstartstop(int)
 {
   if (recPushButton->checkState()==Qt::Checked) 
     {
-      comediScope->startRec();
+      attysScopeWindow->startRec();
     } 
   else 
     {
-      comediScope->stopRec();
+      attysScopeWindow->stopRec();
       // to force the user to enter a new filename
       recPushButton->setEnabled( false );
     }
@@ -499,7 +498,7 @@ void Attys_scope::incTbEvent() {
 
 
 void Attys_scope::decTbEvent() {
-	int minTBvalue = 1000000 / comediScope->getActualSamplingRate();
+	int minTBvalue = 1000000 / attysScopeWindow->getActualSamplingRate();
 	if (minTBvalue < 1) minTBvalue = 1;
 	if (tb_us > minTBvalue) {
 		tb_us=tb_us/2;
@@ -518,19 +517,20 @@ void Attys_scope::changeTB() {
 		s.sprintf( "%d sec", tb_us/1000000);
 	}		
 	tbInfoTextEdit->setText(s);
-	comediScope->setTB(tb_us);
+	attysScopeWindow->setTB(tb_us);
 }
 
 void Attys_scope::resetTbEvent() {
-	    comediScope->clearScreen();
+	    attysScopeWindow->clearScreen();
 };
 
 
 int main( int argc, char **argv )
 {
+	// default values
 	int num_of_devices = 16;
 	float notch = 50;
-	int csv = 0;
+	int tsv = 1;
 	float lpFreq = 20;
 	float hpFreq = 1;
 	int ignoreSettings = 0;
@@ -549,24 +549,15 @@ int main( int argc, char **argv )
 
 	for(int i = 0;i<argc;i++) {
 		if (strstr(argv[i],"/i")) ignoreSettings = 1;	
+		if (strstr(argv[i],"-i")) ignoreSettings = 1;
 	}
 
-	if (!ignoreSettings) {
-		settings.beginGroup(SETTINGS_GLOBAL);
-		num_of_devices = settings.value("num_of_devices",16).toInt();
-		notch = settings.value("notch",50).toFloat();
-		lpFreq = settings.value("lowpass",20).toFloat();
-		hpFreq = settings.value("highpass",1).toFloat();
-		csv = settings.value("csv",0).toInt();
-		settings.endGroup();
-	}
-	
 	Attys_scope attys_scope(0,
 		      &splash,
 			  ignoreSettings,
 			  notch,
 			  num_of_devices,
-			  csv,
+			  tsv,
 			  lpFreq,
 			  hpFreq
 		);

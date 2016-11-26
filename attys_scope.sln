@@ -5,6 +5,8 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "attys_scope", "attys_scope.vcxproj", "{4A680EF6-F25E-3D1D-8802-97CD2B44C634}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "installer", "installer\installer.vdproj", "{C954D487-0279-4AFC-98D4-BB925CBA7FD2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -15,6 +17,9 @@ Global
 		{4A680EF6-F25E-3D1D-8802-97CD2B44C634}.Debug|x64.Build.0 = Debug|x64
 		{4A680EF6-F25E-3D1D-8802-97CD2B44C634}.Release|x64.ActiveCfg = Release|x64
 		{4A680EF6-F25E-3D1D-8802-97CD2B44C634}.Release|x64.Build.0 = Release|x64
+		{4A680EF6-F25E-3D1D-8802-97CD2B44C634}.Release|x64.Deploy.0 = Release|x64
+		{C954D487-0279-4AFC-98D4-BB925CBA7FD2}.Debug|x64.ActiveCfg = Debug
+		{C954D487-0279-4AFC-98D4-BB925CBA7FD2}.Release|x64.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
