@@ -385,13 +385,13 @@ void ScopeWindow::updateTime() {
 }
 
 
-void ScopeWindow::setFilename(QString name,int csv) {
+void ScopeWindow::setFilename(QString name,int tsv) {
 	(*rec_filename)=name;
 	recorded=0;
-	if (csv) {
-		separator=',';
+	if (tsv) {
+		separator='\t';
 	} else {
-		separator=' ';
+		separator=',';
 	}
 }
 

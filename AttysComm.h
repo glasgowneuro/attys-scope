@@ -145,6 +145,7 @@ public:
 			fprintf(stderr, "getADCFullScaleRange wrong index\n");
 			exit(1);
 		}
+		return 0;
 	}
 
 	void setAdc1_gain_index(int idx) {

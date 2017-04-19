@@ -129,7 +129,7 @@ public:
     /**
      * The widget which contains the graphical plots of the AD-data
      **/
-	QPointer<ScopeWindow> comediScope;
+	QPointer<ScopeWindow> attysScopeWindow;
 
     /**
      * Text-field: elapsed time
