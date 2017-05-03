@@ -254,7 +254,7 @@ public:
 /**
  * Number of detected comedi devices
  **/
-    int nComediDevices;
+    int nAttysDevices;
 
 /**
  * Timer for printing the voltages in the textfields
@@ -265,6 +265,15 @@ public:
  * Raw daq data from the A/D converter which is saved to a file
  **/
     float** daqData;
+
+	/**
+	name of the Attys
+	**/
+	char** attysName;
+
+	public:
+
+		char* getAttysName(int i) { return attysName[i]; }
 
 
 public:
@@ -277,7 +286,7 @@ public:
 /**
  * Gets the number of comedi devices actually used here
  **/
-    int getNcomediDevices() {return nComediDevices;};
+    int getNattysDevices() {return nAttysDevices;};
 
 
 	public:

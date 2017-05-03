@@ -47,13 +47,16 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp,
 	setAttribute(Qt::WA_OpaquePaintEvent);
 
 	dev = new SOCKET[maxComediDevs];
+	attysName = new char*[maxComediDevs];
 	attysComm = new AttysComm*[maxComediDevs];
 	for (int devNo = 0; devNo < maxComediDevs; devNo++) {
 		dev[devNo] = 0;
 		attysComm[devNo] = nullptr;
+		attysName[devNo] = new char[256];
+		attysName[devNo][0] = 0;
 	}
 
-	nComediDevices = 0;
+	nAttysDevices = 0;
 	channels_in_use = 0;
 
 #ifdef __linux__
@@ -89,7 +92,7 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp,
 	}
 		
 	// let's probe how many we have
-	nComediDevices = 0;
+	nAttysDevices = 0;
 	for (i = 0; i < num_rsp; i++) {
 		ba2str(&(ii+i)->bdaddr, addr);
 		memset(name, 0, sizeof(name));
@@ -114,9 +117,10 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp,
 					       sizeof(saddr));
 			
 			if (status == 0) {
-				attysComm[nComediDevices] = new AttysComm(s);
-				channels_in_use = attysComm[nComediDevices]->NCHANNELS;
-				nComediDevices++;
+				attysComm[nAttysDevices] = new AttysComm(s);
+				sprintf(attysName[nAttysDevices], "%d:%s", nAttysDevices, name);
+				channels_in_use = attysComm[nAttysDevices]->NCHANNELS;
+				nAttysDevices++;
 				break;
 			} else {
 				printf("Connect failed: %d\n",status);
@@ -166,9 +170,11 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp,
 		if (wcsstr(name,L"GN-ATTYS1") != 0) {
 			_RPT0(0,"Found an Attys!\n");
 
-			attys_scope->splash->showMessage("Connecting to Attys");
+			char tmp[256];
+			sprintf(tmp, "Connecting to Attys #%d: %S", nAttysDevices,name);
+			attys_scope->splash->showMessage(tmp);
 
-			for (int i = 0; i < 2; i++) {
+			for (int i = 0; i < 5; i++) {
 
 				// allocate a socket
 				SOCKET s = ::socket(AF_BTH, SOCK_STREAM, BTHPROTO_RFCOMM);
@@ -190,9 +196,10 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp,
 
 				if (status == 0) {
 
-					attysComm[nComediDevices] = new AttysComm(s);
-					channels_in_use = attysComm[nComediDevices]->NCHANNELS;
-					nComediDevices++;
+					attysComm[nAttysDevices] = new AttysComm(s);
+					sprintf(attysName[nAttysDevices], "#%d: %S", nAttysDevices, name);
+					channels_in_use = attysComm[nAttysDevices]->NCHANNELS;
+					nAttysDevices++;
 					break;
 				}
 				else {
@@ -214,11 +221,11 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp,
 
 #endif
 
-	printf("%d rfcomm devices detected\n",nComediDevices);
+	printf("%d rfcomm devices detected\n",nAttysDevices);
 	printf("%d channels in use\n",channels_in_use);
 	
 	// none detected
-	if (nComediDevices<1) {
+	if (nAttysDevices<1) {
 		_RPT0(0,"No rfcomm devices detected!\n");
 		attys_scope->splash->showMessage("Cound not connect and/or no devices paired.");
 		Sleep(1000);
@@ -228,11 +235,11 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp,
 	assert(channels_in_use > 0);
 
 	// initialise the graphics stuff
-	ypos = new int**[nComediDevices];
+	ypos = new int**[nAttysDevices];
 	assert(ypos != NULL);
-	minV = new float*[nComediDevices];
-	maxV = new float*[nComediDevices];
-	for(int devNo=0;devNo<nComediDevices;devNo++) {
+	minV = new float*[nAttysDevices];
+	maxV = new float*[nAttysDevices];
+	for(int devNo=0;devNo<nAttysDevices;devNo++) {
 		ypos[devNo]=new int*[channels_in_use];
 		minV[devNo] = new float[channels_in_use];
 		maxV[devNo] = new float[channels_in_use];
@@ -252,13 +259,13 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp,
 	nsamples=0;
 
 	// 50Hz or 60Hz mains notch filter
-	iirnotch = new Iir::Butterworth::BandStop<IIRORDER>**[nComediDevices];
+	iirnotch = new Iir::Butterworth::BandStop<IIRORDER>**[nAttysDevices];
 	assert( iirnotch != NULL );
-	adAvgBuffer = new float*[nComediDevices];
+	adAvgBuffer = new float*[nAttysDevices];
 	assert( adAvgBuffer != NULL );
-	daqData = new float*[nComediDevices];
+	daqData = new float*[nAttysDevices];
 	assert( daqData != NULL );
-	for(int devNo=0;devNo<nComediDevices;devNo++) {
+	for(int devNo=0;devNo<nAttysDevices;devNo++) {
 		iirnotch[devNo] = new Iir::Butterworth::BandStop<IIRORDER>*[channels_in_use];
 		assert( iirnotch[devNo] != NULL );
 		// floating point buffer for plotting
@@ -291,12 +298,12 @@ void ScopeWindow::startDAQ() {
 
 	startTimer(50);		// run continuous timer
 	counter->start(500);
-	for (int i = 0; i < nComediDevices; i++) {
+	for (int i = 0; i < nAttysDevices; i++) {
 		if (attysComm[i])
 			attysComm[i]->start();
 	}
 
-	for (int n = 0; n < nComediDevices; n++) {
+	for (int n = 0; n < nAttysDevices; n++) {
 		for (int i = attysComm[n]->INDEX_Acceleration_X; i <= attysComm[n]->INDEX_Acceleration_Z; i++) {
 			minV[n][i] = -attysComm[n]->getAccelFullScaleRange();
 			maxV[n][i] = attysComm[n]->getAccelFullScaleRange();
@@ -320,7 +327,7 @@ ScopeWindow::~ScopeWindow() {
 	if (rec_file) {
 		fclose(rec_file);
 	}
-	for(int i=0; i<nComediDevices;i++) {
+	for(int i=0; i<nAttysDevices;i++) {
 		if (attysComm[i]) {
 			attysComm[i]->quit();
 		}
@@ -336,7 +343,7 @@ void ScopeWindow::setNotchFrequency(float f) {
 		return;
 	}
 	if (f <= 0) return;
-	for(int j=0;j<nComediDevices;j++) {
+	for(int j=0;j<nAttysDevices;j++) {
 		for(int i=0;i<channels_in_use;i++) {
 			float frequency_width = f/10;
 			iirnotch[j][i]->setup (IIRORDER, 
@@ -370,7 +377,7 @@ void ScopeWindow::updateTime() {
 	attys_scope->setWindowTitle( s );
 
 	char tmp[256];
-	for(int n=0;n<nComediDevices;n++) {
+	for(int n=0;n<nAttysDevices;n++) {
 		for(int i=0;i<channels_in_use;i++) {
 			if (attys_scope->channel[n][i]->isActive()) {
 				float phys = daqData[n][attys_scope->channel[n][i]->getChannel()];
@@ -399,7 +406,7 @@ void ScopeWindow::setFilename(QString name,int tsv) {
 void ScopeWindow::writeFile() {
 	if (!rec_file) return;
 	fprintf(rec_file, "%f", ((float)nsamples) / ((float)attysComm[0]->getSamplingRateInHz()));
-	for (int n = 0; n < nComediDevices; n++) {
+	for (int n = 0; n < nAttysDevices; n++) {
 		for (int i = 0; i < channels_in_use; i++) {
 			if (attys_scope->
 				channel[n][i]->isActive()
@@ -475,7 +482,7 @@ void ScopeWindow::paintData(float** buffer) {
 
 	// fprintf(stderr,".");
 	
-	for(int n=0;n<nComediDevices;n++) {
+	for(int n=0;n<nAttysDevices;n++) {
 		for(int i=0;i<channels_in_use;i++) {
 			if (attys_scope->channel[n][i]->isActive()) {
 				num_channels++;	
@@ -496,7 +503,7 @@ void ScopeWindow::paintData(float** buffer) {
 	paint.drawLine(xer,0,
 		       xer,h);
 	int act=1;
-	for (int n = 0; n < nComediDevices; n++) {
+	for (int n = 0; n < nAttysDevices; n++) {
 		for (int i = 0; i < channels_in_use; i++) {
 			if (attys_scope->
 				channel[n][i]->
@@ -541,12 +548,12 @@ void ScopeWindow::paintEvent(QPaintEvent *) {
 
 	for (;;) {
 
-		for (int n = 0; n < nComediDevices; n++) {
+		for (int n = 0; n < nAttysDevices; n++) {
 			int hasSample = attysComm[n]->hasSampleAvilabale();
 			if (!hasSample) return;
 		}
 
-		for (int n = 0; n < nComediDevices; n++) {
+		for (int n = 0; n < nAttysDevices; n++) {
 			float* values = attysComm[n]->getSampleFromBuffer();
 			for (int i = 0; i < channels_in_use; i++) {
 				daqData[n][i] = values[i];
@@ -578,7 +585,7 @@ void ScopeWindow::paintEvent(QPaintEvent *) {
 
 		// enough averaged?
 		if (tb_counter <= 0) {
-			for (int n = 0; n < nComediDevices; n++) {
+			for (int n = 0; n < nAttysDevices; n++) {
 				for (int i = 0; i < channels_in_use; i++) {
 					adAvgBuffer[n][i] = adAvgBuffer[n][i] / tb_init;
 				}
@@ -589,7 +596,7 @@ void ScopeWindow::paintEvent(QPaintEvent *) {
 
 			// clear buffer
 			tb_counter = tb_init;
-			for (int n = 0; n < nComediDevices; n++) {
+			for (int n = 0; n < nAttysDevices; n++) {
 				for (int i = 0; i < channels_in_use; i++) {
 					adAvgBuffer[n][i] = 0;
 				}
@@ -602,7 +609,7 @@ void ScopeWindow::paintEvent(QPaintEvent *) {
 void ScopeWindow::setTB(int us) {
 	tb_init=us/(1000000/ attysComm[0]->getSamplingRateInHz());
 	tb_counter=tb_init;
-	for(int n=0;n<nComediDevices;n++) {
+	for(int n=0;n<nAttysDevices;n++) {
 		for(int i=0;i<channels_in_use;i++) {
 			adAvgBuffer[n][i]=0;
 		}

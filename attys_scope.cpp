@@ -61,7 +61,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 
     attysScopeWindow=new ScopeWindow(this,notch);
 
-	int n_devs = attysScopeWindow->getNcomediDevices();
+	int n_devs = attysScopeWindow->getNattysDevices();
 	int channels = attysScopeWindow->getNchannels();
 
 	tb_us = 1000000 / attysScopeWindow->getActualSamplingRate();
@@ -147,6 +147,10 @@ Attys_scope::Attys_scope(QWidget *parent,
 		hpLabel[n]= new QPointer<QLabel>[channels];
 		lp[n]=new QPointer<Lp>[channels];
 		lpLabel[n]= new QPointer<QLabel>[channels];
+
+		allChLayout->addWidget(new QLabel(attysScopeWindow->getAttysName(n)), row, 1);
+		row++;
+
 		for(int i=0;i<channels;i++) {
 			// create the group for a channel
 			char tmp[10];
@@ -357,7 +361,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	char status[256];
 	sprintf(status,"# of devs: %d, Fs: %d Hz, lp: %1.1f Hz, hp: %1.1f Hz",
-		attysScopeWindow->getNcomediDevices(),
+		attysScopeWindow->getNattysDevices(),
 		attysScopeWindow->getActualSamplingRate(),
 		lpFreq,hpFreq);
 	statusLabel = new QLabel(status);
@@ -397,7 +401,7 @@ Attys_scope::~Attys_scope() {
 			   ATTYS_STRING,
 			   PROGRAM_NAME);
 
-	int n_devs = attysScopeWindow->getNcomediDevices();
+	int n_devs = attysScopeWindow->getNattysDevices();
 	int channels = attysScopeWindow->getNchannels();
 	settings.beginGroup(SETTINGS_CHANNELS);
 	for(int n=0;n<n_devs;n++) {
@@ -414,7 +418,7 @@ Attys_scope::~Attys_scope() {
 
 void Attys_scope::disableControls() {
 	filePushButton->setEnabled( false );
-	int n_devs = attysScopeWindow->getNcomediDevices();
+	int n_devs = attysScopeWindow->getNattysDevices();
 	int channels = attysScopeWindow->getNchannels();
 	for(int n=0;n<n_devs;n++) {
 		for(int i=0;i<channels;i++) {
@@ -426,7 +430,7 @@ void Attys_scope::disableControls() {
 
 void Attys_scope::enableControls() {
 	filePushButton->setEnabled( true );
-	int n_devs = attysScopeWindow->getNcomediDevices();
+	int n_devs = attysScopeWindow->getNattysDevices();
 	int channels = attysScopeWindow->getNchannels();
 	for(int n=0;n<n_devs;n++) {
 		for(int i=0;i<channels;i++) {
