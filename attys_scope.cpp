@@ -30,6 +30,8 @@
 // config constants
 #define SETTINGS_GLOBAL "global"
 #define SETTINGS_CHANNELS "channelconfig"
+#define SETTINGS_SPECIAL "special_config%09d_ch%09d"
+#define SETTINGS_CURRENT "current_config%09d"
 #define CHSETTING_FORMAT "ch_mapping_dev%09d_ch%09d"
 #define ATTYS_STRING "ATTYS"
 #define PROGRAM_NAME "attys_scope"
@@ -121,6 +123,9 @@ Attys_scope::Attys_scope(QWidget *parent,
 	subDClabel=new QPointer<QLabel>*[n_devs];
 	hpLabel=new QPointer<QLabel>*[n_devs];
 	lpLabel=new QPointer<QLabel>*[n_devs];
+	special = new QPointer<Special>*[n_devs];
+	current = new QPointer<Current>[n_devs];
+	specialLayout = new QPointer<QHBoxLayout>[n_devs];
 	
 	// to the get the stuff a bit closer together
 	char styleSheet[] = "padding:0px;margin:0px;border:0px;";
@@ -147,8 +152,35 @@ Attys_scope::Attys_scope(QWidget *parent,
 		hpLabel[n]= new QPointer<QLabel>[channels];
 		lp[n]=new QPointer<Lp>[channels];
 		lpLabel[n]= new QPointer<QLabel>[channels];
+		special[n] = new QPointer<Special>[2];
+		for (int i = 0; i < 2; i++) {
+			special[n][i] = new Special();
+			char tmpSp[256];
+			sprintf(tmpSp, SETTINGS_SPECIAL, n, i);
+			int a = settings.value(tmpSp, 0).toInt();
+			_RPT1(0, "settings special %d\n", a);
+			special[n][i]->setSpecial(a);
+		}
+		current[n] = new Current();
+		char tmpCur[256];
+		sprintf(tmpCur, SETTINGS_CURRENT, n);
+		int a = settings.value(tmpCur, 0).toInt();
+		_RPT1(0, "settings current %d\n", a);
+		current[n]->setCurrent(a);
 
 		allChLayout->addWidget(new QLabel(attysScopeWindow->getAttysName(n)), row, 1);
+		row++;
+		specialLayout[n] = new QHBoxLayout;
+		specialLayout[n]->addWidget(new QLabel("    "));
+		specialLayout[n]->addWidget(new QLabel("CH1:"));
+		specialLayout[n]->addWidget(special[n][0]);
+		specialLayout[n]->addWidget(new QLabel("    "));
+		specialLayout[n]->addWidget(new QLabel("CH2:"));
+		specialLayout[n]->addWidget(special[n][1]);
+		specialLayout[n]->addWidget(new QLabel(" "));
+		specialLayout[n]->addWidget(current[n]);
+		specialLayout[n]->addWidget(new QLabel(" "));
+		allChLayout->addLayout(specialLayout[n], row, 1);
 		row++;
 
 		for(int i=0;i<channels;i++) {
@@ -411,6 +443,14 @@ Attys_scope::~Attys_scope() {
 			settings.setValue(tmp, 
 					  channel[n][i] -> getChannel() );
 		}
+		for (int i = 0; i < 2; i++) {
+			char tmpSp[256];
+			sprintf(tmpSp, SETTINGS_SPECIAL, n, i);
+			settings.setValue(tmpSp, special[n][i]->getSpecial());
+		}
+		char tmpCur[256];
+		sprintf(tmpCur, SETTINGS_CURRENT, n);
+		settings.setValue(tmpCur, current[n]->getCurrent());
 	}
 	settings.endGroup();
 }

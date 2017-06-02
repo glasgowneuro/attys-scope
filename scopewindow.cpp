@@ -13,6 +13,7 @@ extern "C" {
 
 #include "scopewindow.h"
 
+#include "special.h"
 
 #ifdef _WIN32
 #include <initguid.h>
@@ -288,6 +289,40 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp,
 
 
 void ScopeWindow::startDAQ() {
+
+	for (int i = 0; i < nAttysDevices; i++) {
+		if (attysComm[i]) {
+			attysComm[i]->setBiasCurrent(attys_scope->current[i]->getCurrent());
+		}
+		int curr_ch1 = 0;
+		int curr_ch2 = 0;
+		switch (attys_scope->special[i][0]->getSpecial()) {
+		case SPECIAL_NORMAL:
+			attysComm[i]->setAdc0_mux_index(attysComm[i]->ADC_MUX_NORMAL);
+			break;
+		case SPECIAL_ECG:
+			attysComm[i]->setAdc0_mux_index(attysComm[i]->ADC_MUX_ECG_EINTHOVEN);
+			break;
+		case SPECIAL_I:
+			attysComm[i]->setAdc0_mux_index(attysComm[i]->ADC_MUX_NORMAL);
+			curr_ch1 = 1;
+			break;
+		}
+		switch (attys_scope->special[i][0]->getSpecial()) {
+		case SPECIAL_NORMAL:
+			attysComm[i]->setAdc1_mux_index(attysComm[i]->ADC_MUX_NORMAL);
+			break;
+		case SPECIAL_ECG:
+			attysComm[i]->setAdc1_mux_index(attysComm[i]->ADC_MUX_ECG_EINTHOVEN);
+			break;
+		case SPECIAL_I:
+			attysComm[i]->setAdc1_mux_index(attysComm[i]->ADC_MUX_NORMAL);
+			curr_ch2 = 1;
+			break;
+		}
+		attysComm[i]->enableCurrents(curr_ch1,0,curr_ch2);
+	}
+
 	// ready steady go!
 	counter = new QTimer(this);
 	assert(counter != NULL);
@@ -304,6 +339,7 @@ void ScopeWindow::startDAQ() {
 	}
 
 	for (int n = 0; n < nAttysDevices; n++) {
+
 		for (int i = attysComm[n]->INDEX_Acceleration_X; i <= attysComm[n]->INDEX_Acceleration_Z; i++) {
 			minV[n][i] = -attysComm[n]->getAccelFullScaleRange();
 			maxV[n][i] = attysComm[n]->getAccelFullScaleRange();

@@ -19,6 +19,8 @@ class Attys_scope;
 #include "scopewindow.h"
 #include "gain.h"
 #include "channel.h"
+#include "special.h"
+#include "current.h"
 #include "dc_sub.h"
 #include "hp.h"
 #include "lp.h"
@@ -69,7 +71,18 @@ public:
  **/
     QPointer<QCheckBox> recPushButton;
 
-/**
+	/**
+	* Array for the special settings
+	**/
+	QPointer<Special>** special;
+
+	/**
+	* Array for the current setting
+	**/
+	QPointer<Current>* current;
+
+
+	/**
  * channel label
  **/
 	QPointer<QLabel>** channelLabel;
@@ -102,7 +115,7 @@ public:
 	QPointer<QTextEdit>**  voltageTextEdit;
 
     /**
-     * Array for the gain settings
+     * Array for the channel settings
      **/
 	QPointer<Channel>** channel;
 
@@ -220,6 +233,7 @@ private:
  * Layout which keeps one channel together
  **/
 	QPointer<QHBoxLayout>** hbox;
+	QPointer<QHBoxLayout>* specialLayout;
 
 	QPointer<QLabel> statusLabel;
 
