@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.26430.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "attys_scope", "attys_scope.vcxproj", "{3046999D-5131-3832-BD46-04BB08A893F4}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "attys_scope_setup", "..\Setup2\Setup2.vdproj", "{58F72C13-1B1E-4280-8CB5-30E3475F888D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -16,6 +18,8 @@ Global
 		{3046999D-5131-3832-BD46-04BB08A893F4}.Release|x64.ActiveCfg = Release|x64
 		{3046999D-5131-3832-BD46-04BB08A893F4}.Release|x64.Build.0 = Release|x64
 		{3046999D-5131-3832-BD46-04BB08A893F4}.Release|x64.Deploy.0 = Release|x64
+		{58F72C13-1B1E-4280-8CB5-30E3475F888D}.Debug|x64.ActiveCfg = Debug
+		{58F72C13-1B1E-4280-8CB5-30E3475F888D}.Release|x64.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
