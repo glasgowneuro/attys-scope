@@ -308,7 +308,7 @@ void ScopeWindow::startDAQ() {
 			curr_ch1 = 1;
 			break;
 		}
-		switch (attys_scope->special[i][0]->getSpecial()) {
+		switch (attys_scope->special[i][1]->getSpecial()) {
 		case SPECIAL_NORMAL:
 			attysComm[i]->setAdc1_mux_index(attysComm[i]->ADC_MUX_NORMAL);
 			break;
