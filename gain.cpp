@@ -6,7 +6,7 @@
 
 Gain::Gain() : QComboBox() {
 
-	setMinimumWidth ( fontMetrics().width("x500XX") );
+	setMinimumWidth ( fontMetrics().width("_x5000XX_") );
 
 	addItem(tr("x1"),1);
 	addItem(tr("x2"),2);
@@ -19,6 +19,7 @@ Gain::Gain() : QComboBox() {
 	addItem(tr("x500"),500);
 	addItem(tr("x1000"), 1000);
 	addItem(tr("x2000"), 2000);
+	addItem(tr("x5000"), 2000);
 	gain = 1;
 
 	connect(this,

@@ -21,13 +21,8 @@ class Attys_scope;
 #include "channel.h"
 #include "special.h"
 #include "current.h"
-#include "dc_sub.h"
-#include "hp.h"
-#include "lp.h"
-
-// defines how quickly the DC detector follows the signal
-// the larger the value the slower
-#define INERTIA_FOR_DC_DETECTION 1000
+#include "highpass.h"
+#include "lowpass.h"
 
 class Attys_scope : public QWidget
 {
@@ -40,11 +35,7 @@ public:
 	Attys_scope( QWidget *parent,
 		      QSplashScreen *_splash,
 		      int ignoreSettings = 0,
-		      float notch = 50.0,
-		      int num_of_devices = 1,
-		      int csv = 0,
-		      float lpFreq = 10,
-		      float hpFreq = 1
+		      int num_of_devices = 1
 		);
 	
 	/**
@@ -87,12 +78,6 @@ public:
  **/
 	QPointer<QLabel>** channelLabel;
 
-	QPointer<QLabel>** subDClabel;
-
-	QPointer<QLabel>** hpLabel;
-
-	QPointer<QLabel>** lpLabel;
-
     /**
      * Notch filter on?
      **/
@@ -125,19 +110,14 @@ public:
 	QPointer<Gain>** gain;
 
     /**
-     * subtracting DC
-     **/
-	QPointer<DCSub>** dcSub;
-
-    /**
      * highpass filter
      **/
-	QPointer<Hp>** hp;
+	QPointer<Highpass>** highpass;
 
     /**
      * lowpass filter
      **/
-	QPointer<Lp>** lp;
+	QPointer<Lowpass>** lowpass;
 
     /**
      * The widget which contains the graphical plots of the AD-data

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Generated Files">
@@ -91,16 +91,13 @@
     <ClCompile Include="current.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="dc_sub.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="gain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hp.cpp">
+    <ClCompile Include="highpass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lp.cpp">
+    <ClCompile Include="lowpass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="scopewindow.cpp">
@@ -168,19 +165,16 @@
     <CustomBuild Include="current.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="dc_sub.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="gain.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="hp.h">
+    <CustomBuild Include="highpass.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <ClInclude Include="iir1\iir.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <CustomBuild Include="lp.h">
+    <CustomBuild Include="lowpass.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="scopewindow.h">
@@ -209,28 +203,22 @@
     <ClCompile Include="release\moc_current.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="debug\moc_dc_sub.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="release\moc_dc_sub.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="debug\moc_gain.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="release\moc_gain.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="debug\moc_hp.cpp">
+    <ClCompile Include="debug\moc_highpass.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="release\moc_hp.cpp">
+    <ClCompile Include="release\moc_highpass.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="debug\moc_lp.cpp">
+    <ClCompile Include="debug\moc_lowpass.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="release\moc_lp.cpp">
+    <ClCompile Include="release\moc_lowpass.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="debug\moc_scopewindow.cpp">
@@ -262,12 +250,5 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="attysapp.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="attys_scope.pro" />
-    <None Include="attys_scope.svg" />
-    <None Include="attys_scope.xpm" />
-    <None Include="attys.xcf" />
-    <None Include="README" />
   </ItemGroup>
 </Project>

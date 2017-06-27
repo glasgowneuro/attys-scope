@@ -264,8 +264,10 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp,
 	assert( iirnotch != NULL );
 	adAvgBuffer = new float*[nAttysDevices];
 	assert( adAvgBuffer != NULL );
-	daqData = new float*[nAttysDevices];
-	assert( daqData != NULL );
+	unfiltDAQData = new float*[nAttysDevices];
+	filtDAQData = new float*[nAttysDevices];
+	assert( unfiltDAQData != NULL );
+	assert(filtDAQData != NULL);
 	for(int devNo=0;devNo<nAttysDevices;devNo++) {
 		iirnotch[devNo] = new Iir::Butterworth::BandStop<IIRORDER>*[channels_in_use];
 		assert( iirnotch[devNo] != NULL );
@@ -278,10 +280,13 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp,
 			assert( iirnotch[devNo][i] != NULL );
 		}
 		// raw data buffer for saving the data
-		daqData[devNo] = new float[channels_in_use];
-		assert( daqData[devNo] != NULL );
+		unfiltDAQData[devNo] = new float[channels_in_use];
+		filtDAQData[devNo] = new float[channels_in_use];
+		assert( unfiltDAQData[devNo] != NULL );
+		assert(filtDAQData[devNo] != NULL);
 		for(int i=0;i<channels_in_use;i++) {
-			daqData[devNo][i]=0;
+			unfiltDAQData[devNo][i]=0;
+			filtDAQData[devNo][i] = 0;
 		}
 	}
 	setNotchFrequency(f);
@@ -416,7 +421,7 @@ void ScopeWindow::updateTime() {
 	for(int n=0;n<nAttysDevices;n++) {
 		for(int i=0;i<channels_in_use;i++) {
 			if (attys_scope->channel[n][i]->isActive()) {
-				float phys = daqData[n][attys_scope->channel[n][i]->getChannel()];
+				float phys = unfiltDAQData[n][attys_scope->channel[n][i]->getChannel()];
 				sprintf(tmp, VOLT_FORMAT_STRING, phys);
 			}
 			else {
@@ -443,13 +448,17 @@ void ScopeWindow::writeFile() {
 	if (!rec_file) return;
 	fprintf(rec_file, "%f", ((float)nsamples) / ((float)attysComm[0]->getSamplingRateInHz()));
 	for (int n = 0; n < nAttysDevices; n++) {
+		int nFiltered = 0;
 		for (int i = 0; i < channels_in_use; i++) {
-			if (attys_scope->
-				channel[n][i]->isActive()
-				) {
-				float phy = daqData[n][attys_scope->channel[n][i]->getChannel()];
-				fprintf(rec_file, "%c%f", separator, phy);
+			if (attys_scope->channel[n][i]->isActive()) {
+				nFiltered++;
 			}
+			float phy = unfiltDAQData[n][i];
+			fprintf(rec_file, "%c%f", separator, phy);
+		}
+		for (int i = 0; i < nFiltered; i++) {
+			float phy = filtDAQData[n][i];
+			fprintf(rec_file, "%c%f", separator, phy);
 		}
 	}
 	fprintf(rec_file, "\n");
@@ -591,20 +600,21 @@ void ScopeWindow::paintEvent(QPaintEvent *) {
 
 		for (int n = 0; n < nAttysDevices; n++) {
 			float* values = attysComm[n]->getSampleFromBuffer();
+			int nFiltered = 0;
 			for (int i = 0; i < channels_in_use; i++) {
-				daqData[n][i] = values[i];
+				unfiltDAQData[n][i] = values[i];
 				if (attys_scope->channel[n][i]->isActive()) {
 					// filtering
 					float value = values[attys_scope->channel[n][i]->getChannel()];
 //					if (i == 6)
 //					_RPT1(0, "%f\n",value);
-					value = attys_scope->dcSub[n][i]->filter(value);
-					value = attys_scope->hp[n][i]->filter(value);
-					value = attys_scope->lp[n][i]->filter(value);
+					value = attys_scope->highpass[n][i]->filter(value);
+					value = attys_scope->lowpass[n][i]->filter(value);
 					// remove 50Hz
 					if (attys_scope->filterCheckbox->checkState() == Qt::Checked) {
 						value = iirnotch[n][i]->filter(value);
 					}
+					filtDAQData[n][nFiltered++] = value;
 					// average response if TB is slower than sampling rate
 					adAvgBuffer[n][i] = adAvgBuffer[n][i] + value;
 				}

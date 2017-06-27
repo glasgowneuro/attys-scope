@@ -51,17 +51,13 @@ protected:
 Attys_scope::Attys_scope(QWidget *parent,
 	    QSplashScreen *_splash,
 		int ignoreSettings,
-		float notch,
-		int num_of_devices,
-		int csv,
-		float lpFreq,
-		float hpFreq
+		int num_of_devices
 	)
     : QWidget( parent ) {
 
 	splash = _splash;
 
-    attysScopeWindow=new ScopeWindow(this,notch);
+    attysScopeWindow=new ScopeWindow(this);
 
 	int n_devs = attysScopeWindow->getNattysDevices();
 	int channels = attysScopeWindow->getNchannels();
@@ -117,12 +113,8 @@ Attys_scope::Attys_scope(QWidget *parent,
 	channelgrp=new QPointer<QGroupBox>*[n_devs];
 	hbox=new QPointer<QHBoxLayout>*[n_devs];
 	gain=new QPointer<Gain>*[n_devs];
-	dcSub=new QPointer<DCSub>*[n_devs];
-	hp=new QPointer<Hp>*[n_devs];
-	lp=new QPointer<Lp>*[n_devs];
-	subDClabel=new QPointer<QLabel>*[n_devs];
-	hpLabel=new QPointer<QLabel>*[n_devs];
-	lpLabel=new QPointer<QLabel>*[n_devs];
+	highpass=new QPointer<Highpass>*[n_devs];
+	lowpass=new QPointer<Lowpass>*[n_devs];
 	special = new QPointer<Special>*[n_devs];
 	current = new QPointer<Current>[n_devs];
 	specialLayout = new QPointer<QHBoxLayout>[n_devs];
@@ -146,12 +138,8 @@ Attys_scope::Attys_scope(QWidget *parent,
 		channelgrp[n]=new QPointer<QGroupBox>[channels];
 		hbox[n]=new QPointer<QHBoxLayout>[channels];
 		gain[n]=new QPointer<Gain>[channels];
-		dcSub[n]=new QPointer<DCSub>[channels];
-		subDClabel[n]=new QPointer<QLabel>[channels];
-		hp[n]=new QPointer<Hp>[channels];
-		hpLabel[n]= new QPointer<QLabel>[channels];
-		lp[n]=new QPointer<Lp>[channels];
-		lpLabel[n]= new QPointer<QLabel>[channels];
+		highpass[n]=new QPointer<Highpass>[channels];
+		lowpass[n]=new QPointer<Lowpass>[channels];
 		special[n] = new QPointer<Special>[2];
 		for (int i = 0; i < 2; i++) {
 			special[n][i] = new Special();
@@ -226,34 +214,15 @@ Attys_scope::Attys_scope(QWidget *parent,
 			voltageTextEdit[n][i]->setFont(*voltageFont);
 			// voltageTextEdit[i]->setLineWidth(1);
 
-			subDClabel[n][i] = new QLabel(" -DC");
-			subDClabel[n][i]->setStyleSheet(styleSheet);
-			subDClabel[n][i]->setFont(*voltageFont);
-			hbox[n][i]->addWidget(subDClabel[n][i]);
+			hbox[n][i]->addWidget(new QLabel("HP:"));
+			highpass[n][i] = new Highpass(attysScopeWindow->getActualSamplingRate(),-1);
+			highpass[n][i] ->setStyleSheet(styleSheet);
+			hbox[n][i]->addWidget(highpass[n][i]);
 
-			dcSub[n][i] = new DCSub((float)INERTIA_FOR_DC_DETECTION);
-			dcSub[n][i]->setStyleSheet(styleSheet);
-			hbox[n][i]->addWidget(dcSub[n][i]);
-
-			hpLabel[n][i] = new QLabel(" HP");
-			hpLabel[n][i]->setStyleSheet(styleSheet);
-			hpLabel[n][i]->setFont(*voltageFont);
-			hbox[n][i]->addWidget(hpLabel[n][i]);
-
-			hp[n][i] = new Hp(attysScopeWindow->getActualSamplingRate(),
-					  hpFreq);
-			hp[n][i] ->setStyleSheet(styleSheet);
-			hbox[n][i]->addWidget(hp[n][i]);
-
-			lpLabel[n][i] = new QLabel(" LP");
-			lpLabel[n][i]->setStyleSheet(styleSheet);
-			lpLabel[n][i]->setFont(*voltageFont);
-			hbox[n][i]->addWidget(lpLabel[n][i]);
-
-			lp[n][i] = new Lp(attysScopeWindow->getActualSamplingRate(),
-					  lpFreq);
-			lp[n][i] ->setStyleSheet(styleSheet);
-			hbox[n][i]->addWidget(lp[n][i]);
+			hbox[n][i]->addWidget(new QLabel("LP:"));
+			lowpass[n][i] = new Lowpass(attysScopeWindow->getActualSamplingRate(),0);
+			lowpass[n][i] ->setStyleSheet(styleSheet);
+			hbox[n][i]->addWidget(lowpass[n][i]);
 
 			gain[n][i] = new Gain();
 			gain[n][i]->setStyleSheet(styleSheet);
@@ -392,10 +361,9 @@ Attys_scope::Attys_scope(QWidget *parent,
 	statusLayout = new QHBoxLayout;
 
 	char status[256];
-	sprintf(status,"# of devs: %d, Fs: %d Hz, lp: %1.1f Hz, hp: %1.1f Hz",
+	sprintf(status,"# of devs: %d, Fs: %d Hz",
 		attysScopeWindow->getNattysDevices(),
-		attysScopeWindow->getActualSamplingRate(),
-		lpFreq,hpFreq);
+		attysScopeWindow->getActualSamplingRate());
 	statusLabel = new QLabel(status);
 	statusLayout->addWidget(statusLabel);
 	statusgrp->setLayout(statusLayout);
@@ -573,10 +541,6 @@ int main( int argc, char **argv )
 {
 	// default values
 	int num_of_devices = 16;
-	float notch = 50;
-	int tsv = 1;
-	float lpFreq = 20;
-	float hpFreq = 1;
 	int ignoreSettings = 0;
 
 	QSettings settings(QSettings::IniFormat, 
@@ -599,12 +563,8 @@ int main( int argc, char **argv )
 	Attys_scope attys_scope(0,
 		      &splash,
 			  ignoreSettings,
-			  notch,
-			  num_of_devices,
-			  tsv,
-			  lpFreq,
-			  hpFreq
-		);
+			  num_of_devices
+	);
 
 	// show widget
 	attys_scope.show();

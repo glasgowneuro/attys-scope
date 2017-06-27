@@ -264,7 +264,12 @@ public:
 /**
  * Raw daq data from the A/D converter which is saved to a file
  **/
-    float** daqData;
+    float** unfiltDAQData;
+
+	/**
+	* Filtered daq data from the A/D converter which is saved to a file
+	**/
+	float** filtDAQData;
 
 	/**
 	name of the Attys
