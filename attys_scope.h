@@ -254,6 +254,9 @@ private:
 	QFont* tbFont;
 	QFont* commentFont;
 
+	private:
+		void readSettings();
+
 private slots:
 	void notchFreqChanged();
 };

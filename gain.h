@@ -14,14 +14,15 @@ public:
     Gain();
 
 private slots:
-    void setGain(int i);
+    void setGainIndex(int i);
 
 private:
-    int gain;
+    float gain;
 
 public:
-    inline float getGain() {return gain;};
+    float getGain() {return gain;};
 
+	void setGain(float g);
 };
 
 #endif

@@ -18,14 +18,16 @@ public:
 Lowpass(float _samplingrate, float cutoff = 0);
 
 private slots:
-    void setFrequency(int i);
+    void setFrequencyIndex(int i);
 
 private:
     float frequency;
 	float samplingrate;
 
 public:
-    inline int getFrequency() {return frequency;};
+    inline float getFrequency() {return frequency;};
+
+	void setFrequency(float f);
 
 private:
 	Iir::Butterworth::LowPass<LPORDER>* lp;

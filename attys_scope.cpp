@@ -25,14 +25,8 @@
 #include "attys_scope.h"
 
 // version number
-#define VERSION "1.0.0"
+#define VERSION "1.1.0"
 
-// config constants
-#define SETTINGS_GLOBAL "global"
-#define SETTINGS_CHANNELS "channelconfig"
-#define SETTINGS_SPECIAL "special_config%09d_ch%09d"
-#define SETTINGS_CURRENT "current_config%09d"
-#define CHSETTING_FORMAT "ch_mapping_dev%09d_ch%09d"
 #define ATTYS_STRING "ATTYS"
 #define PROGRAM_NAME "attys_scope"
 
@@ -46,6 +40,7 @@ protected:
 		}
 	}
 };
+
 
 
 Attys_scope::Attys_scope(QWidget *parent,
@@ -122,15 +117,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	// to the get the stuff a bit closer together
 	char styleSheet[] = "padding:0px;margin:0px;border:0px;";
 
-	QSettings settings(QSettings::IniFormat, 
-			   QSettings::UserScope,
-			   ATTYS_STRING,
-			   PROGRAM_NAME);
-
-	settings.beginGroup(SETTINGS_CHANNELS);
-
 	AttysComm attysCommTmp(0);
-	int nch_enabled = 0;
 	for(int n=0;n<n_devs;n++) {
 		channelLabel[n]=new QPointer<QLabel>[channels];
 		channel[n]=new QPointer<Channel>[channels];
@@ -141,24 +128,14 @@ Attys_scope::Attys_scope(QWidget *parent,
 		highpass[n]=new QPointer<Highpass>[channels];
 		lowpass[n]=new QPointer<Lowpass>[channels];
 		special[n] = new QPointer<Special>[2];
-		for (int i = 0; i < 2; i++) {
-			special[n][i] = new Special();
-			char tmpSp[256];
-			sprintf(tmpSp, SETTINGS_SPECIAL, n, i);
-			int a = settings.value(tmpSp, 0).toInt();
-			_RPT1(0, "settings special %d\n", a);
-			special[n][i]->setSpecial(a);
-		}
 		current[n] = new Current();
-		char tmpCur[256];
-		sprintf(tmpCur, SETTINGS_CURRENT, n);
-		int a = settings.value(tmpCur, 0).toInt();
-		_RPT1(0, "settings current %d\n", a);
-		current[n]->setCurrent(a);
 
 		allChLayout->addWidget(new QLabel(attysScopeWindow->getAttysName(n)), row, 1);
 		row++;
 		specialLayout[n] = new QHBoxLayout;
+		for (int i = 0; i < 2; i++) {
+			special[n][i] = new Special();
+		}
 		specialLayout[n]->addWidget(new QLabel("    "));
 		specialLayout[n]->addWidget(new QLabel("CH1:"));
 		specialLayout[n]->addWidget(special[n][0]);
@@ -187,16 +164,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 			hbox[n][i]->addWidget(channelLabel[n][i]);
 			hbox[n][i]->setSpacing(1);
 			channel[n][i] = new Channel(channels,attysCommTmp.CHANNEL_SHORT_DESCRIPTION);
-			char tmpCh[128];
-			sprintf(tmpCh,CHSETTING_FORMAT,n,i);
-			if (ignoreSettings) {
-				channel[n][i] -> setChannel( i );
-			} else {
-				channel[n][i] -> setChannel(
-					settings.value(tmpCh,i).toInt() );
-			}
-			if ( channel[n][i] -> isActive() )
-				nch_enabled++;
+			channel[n][i] -> setChannel( i );
 			channel[n][i]->setStyleSheet(styleSheet);
 			hbox[n][i]->addWidget(channel[n][i]);
 			voltageTextEdit[n][i]=new QTextEdit(channelgrp[n][i]);
@@ -233,14 +201,8 @@ Attys_scope::Attys_scope(QWidget *parent,
 		}
 	}
 
-	settings.endGroup();
-
 	controlLayout->addWidget(allChScrollArea);
 	allChScrollArea->setWidget(allChGroup);
-
-	// at least one should be active not to make the user nervous.
-	if (nch_enabled==0)
-		channel[0][0]->setChannel( 0 );
 
 	// now we create another layout which contains all the remaining controls
 	restLayout = new QVBoxLayout;
@@ -392,8 +354,79 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	changeTB();
 
+	if (!ignoreSettings) {
+		readSettings();
+	}
+
 	attysScopeWindow->startDAQ();
 }
+
+
+// config constants
+#define SETTINGS_GLOBAL "global"
+#define SETTINGS_CHANNELS "channelconfig"
+#define SETTINGS_SPECIAL "special_config%09d_ch%09d"
+#define SETTINGS_CURRENT "current_config%09d"
+#define CHSETTING_FORMAT "ch_mapping_dev%09d_ch%09d"
+#define HIGHPASS_SETTING_FORMAT "highpass_dev%09d_ch%09d"
+#define LOWPASS_SETTING_FORMAT "lowpass_dev%09d_ch%09d"
+#define GAIN_SETTING_FORMAT "gain_mapping_dev%09d_ch%09d"
+
+void Attys_scope::readSettings() {
+	QSettings settings(QSettings::IniFormat,
+		QSettings::UserScope,
+		ATTYS_STRING,
+		PROGRAM_NAME);
+
+	int n_devs = attysScopeWindow->getNattysDevices();
+	int channels = attysScopeWindow->getNchannels();
+	int nch_enabled = 0;
+
+	settings.beginGroup(SETTINGS_CHANNELS);
+
+	for (int n = 0; n < n_devs; n++) {
+		for (int i = 0; i < 2; i++) {
+			char tmpSp[256];
+			sprintf(tmpSp, SETTINGS_SPECIAL, n, i);
+			int a = settings.value(tmpSp, 0).toInt();
+			_RPT1(0, "settings special %d\n", a);
+			special[n][i]->setSpecial(a);
+		}
+		current[n] = new Current();
+		char tmpCur[256];
+		sprintf(tmpCur, SETTINGS_CURRENT, n);
+		int a = settings.value(tmpCur, 0).toInt();
+		_RPT1(0, "settings current %d\n", a);
+		current[n]->setCurrent(a);
+
+		char tmpCh[128];
+		for (int i = 0; i < channels; i++) {
+
+			sprintf(tmpCh, CHSETTING_FORMAT, n, i);
+			channel[n][i]->setChannel(
+				settings.value(tmpCh, i).toInt());
+			if (channel[n][i]->isActive())
+				nch_enabled++;
+
+			sprintf(tmpCh, HIGHPASS_SETTING_FORMAT, n, i);
+			highpass[n][i]->setFrequency(
+				settings.value(tmpCh, -1.0).toFloat());
+
+			sprintf(tmpCh, LOWPASS_SETTING_FORMAT, n, i);
+			float f = settings.value(tmpCh, 0.0).toFloat();
+			lowpass[n][i]->setFrequency(f);
+
+			sprintf(tmpCh, GAIN_SETTING_FORMAT, n, i);
+			gain[n][i]->setGain(
+				settings.value(tmpCh, 1.0).toFloat());
+		}
+	}
+	settings.endGroup();
+	// at least one should be active not to make the user nervous.
+	if (nch_enabled == 0)
+		channel[0][0]->setChannel(0);
+}
+
 
 Attys_scope::~Attys_scope() {
 	QSettings settings(QSettings::IniFormat, 
@@ -407,9 +440,22 @@ Attys_scope::~Attys_scope() {
 	for(int n=0;n<n_devs;n++) {
 		for(int i=0;i<channels;i++) {
 			char tmp[128];
+
 			sprintf(tmp,CHSETTING_FORMAT,n,i);
 			settings.setValue(tmp, 
 					  channel[n][i] -> getChannel() );
+
+			sprintf(tmp, GAIN_SETTING_FORMAT, n, i);
+			settings.setValue(tmp,
+				gain[n][i]->getGain());
+
+			sprintf(tmp, HIGHPASS_SETTING_FORMAT, n, i);
+			settings.setValue(tmp,
+				highpass[n][i]->getFrequency());
+
+			sprintf(tmp, LOWPASS_SETTING_FORMAT, n, i);
+			settings.setValue(tmp,
+				lowpass[n][i]->getFrequency());
 		}
 		for (int i = 0; i < 2; i++) {
 			char tmpSp[256];

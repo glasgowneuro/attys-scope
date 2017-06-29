@@ -21,31 +21,40 @@ Highpass::Highpass(float _samplingrate, float cutoff) : QComboBox() {
 
 	addItem(tr("off"),-1);
 	addItem(tr("-DC"),0);
-	addItem(tr("0.1Hz"),1);
-	addItem(tr("0.2Hz"),2);
-	addItem(tr("0.5Hz"),5);
-	addItem(tr("1Hz"),10);
-	addItem(tr("2Hz"), 20);
-	addItem(tr("5Hz"), 50);
-	addItem(tr("10Hz"),100);
+	addItem(tr("0.1Hz"),0.1);
+	addItem(tr("0.2Hz"),0.2);
+	addItem(tr("0.5Hz"),0.5);
+	addItem(tr("1Hz"),1);
+	addItem(tr("2Hz"), 2);
+	addItem(tr("5Hz"), 5);
+	addItem(tr("10Hz"),10);
 
 	connect(this,
 		SIGNAL( activated(int) ),
 		this,
-		SLOT( setFrequency(int) ) );
+		SLOT( setFrequencyIndex(int) ) );
 
 }
 
-void Highpass::setFrequency ( int index ) {
- 	frequency = itemData(index).toInt()/10.0;
+void Highpass::setFrequencyIndex ( int index ) {
+ 	frequency = itemData(index).toFloat();
 	if (frequency > 0) {
 		hp->setup(HPORDER,
 			samplingrate,
 			(float)frequency);
-		_RPT1(0, "%f\n", frequency);
+		_RPT1(0, "Highpass cutoff: %f Hz\n", frequency);
 		hp->reset();
 	}
 }
+
+void Highpass::setFrequency(float f) {
+	int index = findData(f);
+	if (index != -1) {
+		setCurrentIndex(index);
+		setFrequencyIndex(index);
+	}
+}
+
 
 float Highpass::filter(float v) {
 	if (frequency == 0) {

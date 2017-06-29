@@ -31,18 +31,27 @@ Lowpass::Lowpass(float _samplingrate, float cutoff) : QComboBox() {
 	connect(this,
 		SIGNAL( activated(int) ),
 		this,
-		SLOT( setFrequency(int) ) );
+		SLOT( setFrequencyIndex(int) ) );
 
 }
 
-void Lowpass::setFrequency ( int index ) {
- 	frequency = (float)(itemData(index).toInt());
+void Lowpass::setFrequencyIndex ( int index ) {
+ 	frequency = (float)(itemData(index).toFloat());
 	if (fabs(frequency) > 0) {
 		lp->setup(LPORDER,
 			samplingrate,
 			(float)fabs(frequency));
-		_RPT1(0, "lowpass=%f\n", frequency);
+		//_RPT2(0, "lowpass=%fHz,idx=%d\n", frequency,index);
 		lp->reset();
+	}
+}
+
+void Lowpass::setFrequency(float f) {
+	//_RPT1(0, "setFre lowpass=%fHz\n", f);
+	int index = findData(f);
+	if (index != -1) {
+		setCurrentIndex(index);
+		setFrequencyIndex(index);
 	}
 }
 
