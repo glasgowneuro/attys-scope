@@ -453,6 +453,7 @@ void ScopeWindow::startRec() {
 		// print error msg
 		fprintf(stderr,
 			"Writing failed.\n");
+		attys_scope->enableControls();
 	}
 }
 

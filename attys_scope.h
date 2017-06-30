@@ -63,6 +63,9 @@ public:
  **/
     QPointer<QCheckBox> recPushButton;
 
+	/**
+	Display on/off
+	**/
 	QPointer<QCheckBox> displayCheckbox;
 
 	/**
@@ -81,22 +84,7 @@ public:
  **/
 	QPointer<QLabel>** channelLabel;
 
-    /**
-     * Notch filter on?
-     **/
-	QPointer<QCheckBox> filterCheckbox;
-
 public:
-    /**
-     * Comments
-     **/
-	QPointer<QTextEdit> notchTextEdit;
-
-    /**
-     * Shows the filter frequency
-     **/
-	QPointer<QTextEdit>  filterTextEdit;
-
     /**
      * Array of the voltages
      **/
@@ -252,7 +240,6 @@ private:
 	QPointer<QGroupBox> recGroupBox;
 	QPointer<QHBoxLayout> recLayout;
 
-	QPointer<QLabel> comment;
 	QPointer<QLabel> recLabel;
 
 	QFont* voltageFont;

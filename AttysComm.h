@@ -312,7 +312,7 @@ public:
 	// ringbuffer
 	float** ringBuffer;
 	// number of entries in the ringbuffer
-	const int nMem = 1000;
+	const int nMem = 10000;
 	int inPtr = 0;
 	int outPtr = 0;
 	int isConnected = 0;
