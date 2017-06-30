@@ -28,6 +28,8 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp,
 
 	int maxComediDevs = 3;
 
+	display_data = 1;
+
 	tb_init = 1;
 	tb_counter = tb_init;
 	attys_scope = attys_scope_tmp;
@@ -259,9 +261,6 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp,
 	xpos=0;
 	nsamples=0;
 
-	// 50Hz or 60Hz mains notch filter
-	iirnotch = new Iir::Butterworth::BandStop<IIRORDER>**[nAttysDevices];
-	assert( iirnotch != NULL );
 	adAvgBuffer = new float*[nAttysDevices];
 	assert( adAvgBuffer != NULL );
 	unfiltDAQData = new float*[nAttysDevices];
@@ -269,15 +268,11 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp,
 	assert( unfiltDAQData != NULL );
 	assert(filtDAQData != NULL);
 	for(int devNo=0;devNo<nAttysDevices;devNo++) {
-		iirnotch[devNo] = new Iir::Butterworth::BandStop<IIRORDER>*[channels_in_use];
-		assert( iirnotch[devNo] != NULL );
 		// floating point buffer for plotting
 		adAvgBuffer[devNo]=new float[channels_in_use];
 		assert( adAvgBuffer[devNo] != NULL );
 		for(int i=0;i<channels_in_use;i++) {
 			adAvgBuffer[devNo][i]=0;
-			iirnotch[devNo][i] = new Iir::Butterworth::BandStop<IIRORDER>;
-			assert( iirnotch[devNo][i] != NULL );
 		}
 		// raw data buffer for saving the data
 		unfiltDAQData[devNo] = new float[channels_in_use];
@@ -289,7 +284,6 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp,
 			filtDAQData[devNo][i] = 0;
 		}
 	}
-	setNotchFrequency(f);
 }
 
 
@@ -375,30 +369,6 @@ ScopeWindow::~ScopeWindow() {
 	}
 }
 
-void ScopeWindow::setNotchFrequency(float f) {
-	if (f>(attysComm[0]->getSamplingRateInHz()/2)) {
-		fprintf(stderr,
-			"Error: The notch frequency %f "
-			"is higher than the nyquist freq of %dHz.\n",
-			f, attysComm[0]->getSamplingRateInHz()/2);
-		return;
-	}
-	if (f <= 0) return;
-	for(int j=0;j<nAttysDevices;j++) {
-		for(int i=0;i<channels_in_use;i++) {
-			float frequency_width = f/10;
-			iirnotch[j][i]->setup (IIRORDER, 
-				attysComm[0]->getSamplingRateInHz(),
-					       f, 
-					       frequency_width);
-		}
-		notchFrequency = f;
-	}
-	_RPT1(0, "Notch set to %f Hz.\n", f);
-}
-
-
-
 void ScopeWindow::updateTime() {
 	QString s;
 	if (!rec_file) {
@@ -470,8 +440,6 @@ void ScopeWindow::startRec() {
 	attys_scope->disableControls();
 	// counter for samples
 	nsamples=0;
-	// get possible comments
-	QString comment = attys_scope->notchTextEdit->toPlainText();
 	// ASCII
 	rec_file=NULL;
 	// do we have a valid filename?
@@ -485,12 +453,6 @@ void ScopeWindow::startRec() {
 		// print error msg
 		fprintf(stderr,
 			"Writing failed.\n");
-	}
-	// print comment
-	if ((rec_file)&&(!comment.isEmpty())) {
-		fprintf(rec_file,
-			"# %s\n",
-			comment.toLocal8Bit().constData());
 	}
 }
 
@@ -524,8 +486,6 @@ void ScopeWindow::paintData(float** buffer) {
 		xpos = 0;
 	}
 	num_channels=0;
-
-	// fprintf(stderr,".");
 	
 	for(int n=0;n<nAttysDevices;n++) {
 		for(int i=0;i<channels_in_use;i++) {
@@ -537,6 +497,15 @@ void ScopeWindow::paintData(float** buffer) {
 	if (!num_channels) {
 		return;
 	}
+
+	if (attys_scope->displayCheckbox->isChecked()) {
+		display_data = 1;
+	}
+
+	if (!display_data) {
+		return;
+	}
+
 	int base=h/num_channels;
 	if(w <= 0 || h <= 0) 
 		return;
@@ -578,6 +547,9 @@ void ScopeWindow::paintData(float** buffer) {
 	xpos++;
 	if ((xpos+1)>=w) {
 		xpos=0;
+		if (!(attys_scope->displayCheckbox->isChecked())) {
+			display_data = 0;
+		}
 	}
 }
 
@@ -610,10 +582,7 @@ void ScopeWindow::paintEvent(QPaintEvent *) {
 //					_RPT1(0, "%f\n",value);
 					value = attys_scope->highpass[n][i]->filter(value);
 					value = attys_scope->lowpass[n][i]->filter(value);
-					// remove 50Hz
-					if (attys_scope->filterCheckbox->checkState() == Qt::Checked) {
-						value = iirnotch[n][i]->filter(value);
-					}
+					value = attys_scope->bandstop[n][i]->filter(value);
 					filtDAQData[n][nFiltered++] = value;
 					// average response if TB is slower than sampling rate
 					adAvgBuffer[n][i] = adAvgBuffer[n][i] + value;

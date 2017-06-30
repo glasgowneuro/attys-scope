@@ -12,12 +12,6 @@ Highpass::Highpass(float _samplingrate, float cutoff) : QComboBox() {
 	dcValue = 0;
 	dcCtr = _samplingrate*10;
 
-	if (cutoff > 0) {
-		hp->setup(HPORDER,
-			_samplingrate,
-			cutoff);
-	}
-
 	setMinimumWidth ( fontMetrics().width("1000Hz") );
 
 	addItem(tr("off"),-1);
@@ -35,6 +29,7 @@ Highpass::Highpass(float _samplingrate, float cutoff) : QComboBox() {
 		this,
 		SLOT( setFrequencyIndex(int) ) );
 
+	setFrequency(cutoff);
 }
 
 void Highpass::setFrequencyIndex ( int index ) {

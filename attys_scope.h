@@ -23,6 +23,7 @@ class Attys_scope;
 #include "current.h"
 #include "highpass.h"
 #include "lowpass.h"
+#include "bandstop.h"
 
 class Attys_scope : public QWidget
 {
@@ -61,6 +62,8 @@ public:
  * Button which controls recording
  **/
     QPointer<QCheckBox> recPushButton;
+
+	QPointer<QCheckBox> displayCheckbox;
 
 	/**
 	* Array for the special settings
@@ -119,7 +122,12 @@ public:
      **/
 	QPointer<Lowpass>** lowpass;
 
-    /**
+	/**
+	* lowpass filter
+	**/
+	QPointer<Bandstop>** bandstop;
+
+	/**
      * The widget which contains the graphical plots of the AD-data
      **/
 	QPointer<ScopeWindow> attysScopeWindow;
@@ -235,9 +243,6 @@ private:
 
 	QPointer<QGroupBox> restGroup;
 
-	QPointer<QGroupBox> notchGroupBox;
-	QPointer<QHBoxLayout> notchLayout;
-
 	QPointer<QGroupBox> tbgrp;
 	QPointer<QHBoxLayout> tbLayout;
 
@@ -252,13 +257,9 @@ private:
 
 	QFont* voltageFont;
 	QFont* tbFont;
-	QFont* commentFont;
 
 	private:
 		void readSettings();
-
-private slots:
-	void notchFreqChanged();
 };
 
 

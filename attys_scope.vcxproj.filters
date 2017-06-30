@@ -82,6 +82,9 @@
     <ClCompile Include="attys_scope.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="bandstop.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="base64.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -156,6 +159,9 @@
     <CustomBuild Include="attys_scope.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="bandstop.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
     <ClInclude Include="base64.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -189,6 +195,12 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="release\moc_attys_scope.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_bandstop.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_bandstop.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="debug\moc_channel.cpp">

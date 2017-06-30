@@ -41,8 +41,6 @@ class ScopeWindow;
 
 #include <stdio.h>
 
-#include <Iir.h>
-
 #include <string>
 
 #include "attys_scope.h"
@@ -50,8 +48,6 @@ class ScopeWindow;
 #include "AttysComm.h"
 
 #define MAX_DISP_X 4096 // max screen width
-
-#define IIRORDER 2
 
 #define VOLT_FORMAT_STRING "%+.3f"
 
@@ -138,6 +134,11 @@ private:
      **/
     long int         nsamples;
 
+	/**
+	* flag if data is displayed
+	**/
+	int display_data;
+
 	AttysComm** attysComm;
 
 public:
@@ -222,29 +223,11 @@ private:
      **/
     float notchFrequency = 50;
 
-public:
-    /**
-     * sets the notch frequency
-     **/
-    void setNotchFrequency(float f);
-
-    /**
-     * gets the notch frequency
-     **/
-    float getNotchFrequency() {
-	    return notchFrequency;
-    }
-
- private:
+private:
     /**
      * flag if data has been recorded. Prevents overwrite.
      **/
     int recorded;
-
-    /**
-     * notch filter
-     **/
-    Iir::Butterworth::BandStop<IIRORDER>*** iirnotch;
 
     /**
      * comma separated?

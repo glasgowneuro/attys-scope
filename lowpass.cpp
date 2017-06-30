@@ -9,11 +9,6 @@ Lowpass::Lowpass(float _samplingrate, float cutoff) : QComboBox() {
 	lp = new Iir::Butterworth::LowPass<LPORDER>;
 	frequency = cutoff;
 	samplingrate = _samplingrate;
-	if (cutoff > 0) {
-		lp->setup(LPORDER,
-			_samplingrate,
-			cutoff);
-	}
 
 	setMinimumWidth ( fontMetrics().width("10000Hz") );
 
@@ -33,6 +28,7 @@ Lowpass::Lowpass(float _samplingrate, float cutoff) : QComboBox() {
 		this,
 		SLOT( setFrequencyIndex(int) ) );
 
+	setFrequency(cutoff);
 }
 
 void Lowpass::setFrequencyIndex ( int index ) {

@@ -110,6 +110,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	gain=new QPointer<Gain>*[n_devs];
 	highpass=new QPointer<Highpass>*[n_devs];
 	lowpass=new QPointer<Lowpass>*[n_devs];
+	bandstop = new QPointer<Bandstop>*[n_devs];
 	special = new QPointer<Special>*[n_devs];
 	current = new QPointer<Current>[n_devs];
 	specialLayout = new QPointer<QHBoxLayout>[n_devs];
@@ -127,6 +128,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 		gain[n]=new QPointer<Gain>[channels];
 		highpass[n]=new QPointer<Highpass>[channels];
 		lowpass[n]=new QPointer<Lowpass>[channels];
+		bandstop[n]=new QPointer<Bandstop>[channels];
 		special[n] = new QPointer<Special>[2];
 		current[n] = new Current();
 
@@ -192,6 +194,11 @@ Attys_scope::Attys_scope(QWidget *parent,
 			lowpass[n][i] ->setStyleSheet(styleSheet);
 			hbox[n][i]->addWidget(lowpass[n][i]);
 
+			hbox[n][i]->addWidget(new QLabel("BS:"));
+			bandstop[n][i] = new Bandstop(attysScopeWindow->getActualSamplingRate(), 0);
+			bandstop[n][i]->setStyleSheet(styleSheet);
+			hbox[n][i]->addWidget(bandstop[n][i]);
+
 			gain[n][i] = new Gain();
 			gain[n][i]->setStyleSheet(styleSheet);
 			hbox[n][i]->addWidget(gain[n][i]);
@@ -209,35 +216,6 @@ Attys_scope::Attys_scope(QWidget *parent,
 	// the corresponding box which contains all the controls
 	restGroup = new QGroupBox;
 	restGroup->setAttribute(Qt::WA_DeleteOnClose, false);
-
-	// notch filter
-	// create a group for the notch filter
-	notchGroupBox = new QGroupBox();
-	notchGroupBox->setAttribute(Qt::WA_DeleteOnClose, false);
-	notchGroupBox->setFlat(true);
-	notchGroupBox->setStyleSheet(styleSheet);
-	notchLayout = new QHBoxLayout();
-	char tmp[128];
-	sprintf(tmp,"notch");
-	filterCheckbox=new QCheckBox( tmp );
-	filterCheckbox->setChecked(false);
-	notchLayout->addWidget(filterCheckbox);
-	notchTextEdit=new QCommentTextEdit();
-	commentFont = new QFont();
-	QFontMetrics commentMetrics(*commentFont);
-	notchTextEdit->setMaximumHeight ( commentMetrics.height() );
-	notchTextEdit->setMaximumWidth ( 10*commentMetrics.width('X') );
-	notchTextEdit->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	notchTextEdit->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	notchTextEdit->setFont(*commentFont);
-	comment=new QLabel("Notch frequency (Hz):");
-	notchLayout->addWidget(comment);
-	notchLayout->addWidget(notchTextEdit);
-       	notchGroupBox->setLayout(notchLayout);
-	restLayout->addWidget(notchGroupBox);
-
-	connect(notchTextEdit, SIGNAL(textChanged()),
-		this, SLOT(notchFreqChanged()));
 
 	// group for the record stuff
 	recGroupBox = new QGroupBox();
@@ -300,8 +278,8 @@ Attys_scope::Attys_scope(QWidget *parent,
 	tbInfoTextEdit = new QTextEdit(tbgrp);
 	tbInfoTextEdit->setFont (*tbFont);
 	QFontMetrics metricsTb(*tbFont);
-	tbInfoTextEdit->setMaximumHeight ( commentMetrics.height() * 1.5 );
-	tbInfoTextEdit->setMaximumWidth ( commentMetrics.width('X') * 17 );
+	tbInfoTextEdit->setMaximumHeight ( tbMetrics.height() * 1.5 );
+	tbInfoTextEdit->setMaximumWidth ( tbMetrics.width('X') * 14 );
 	tbInfoTextEdit->setReadOnly(true);
 	tbInfoTextEdit->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
 	tbLayout->addWidget(tbInfoTextEdit);
@@ -315,6 +293,11 @@ Attys_scope::Attys_scope(QWidget *parent,
 		       this, SLOT( resetTbEvent() ) );
 	tbLayout->addWidget(tbResetPushButton);
 
+	displayCheckbox = new QCheckBox();
+	displayCheckbox->setChecked(TRUE);
+	tbLayout->addWidget(new QLabel("Running:"));
+	tbLayout->addWidget(displayCheckbox);
+
 	tbgrp->setLayout(tbLayout);
 	restLayout->addWidget(tbgrp);
 
@@ -323,7 +306,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	statusLayout = new QHBoxLayout;
 
 	char status[256];
-	sprintf(status,"# of devs: %d, Fs: %d Hz",
+	sprintf(status,"# of Attys devs: %d, Sampling rate: %d Hz.",
 		attysScopeWindow->getNattysDevices(),
 		attysScopeWindow->getActualSamplingRate());
 	statusLabel = new QLabel(status);
@@ -370,6 +353,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 #define CHSETTING_FORMAT "ch_mapping_dev%09d_ch%09d"
 #define HIGHPASS_SETTING_FORMAT "highpass_dev%09d_ch%09d"
 #define LOWPASS_SETTING_FORMAT "lowpass_dev%09d_ch%09d"
+#define BANDSTOP_SETTING_FORMAT "bandstop_dev%09d_ch%09d"
 #define GAIN_SETTING_FORMAT "gain_mapping_dev%09d_ch%09d"
 
 void Attys_scope::readSettings() {
@@ -418,6 +402,11 @@ void Attys_scope::readSettings() {
 			//_RPT2(0, "lp %d= %f\n", i,flp);
 			lowpass[n][i]->setFrequency(flp);
 
+			sprintf(tmpCh, BANDSTOP_SETTING_FORMAT, n, i);
+			float fbs = settings.value(tmpCh, 0.0).toFloat();
+			//_RPT2(0, "lp %d= %f\n", i,flp);
+			bandstop[n][i]->setFrequency(fbs);
+
 			sprintf(tmpCh, GAIN_SETTING_FORMAT, n, i);
 			gain[n][i]->setGain(
 				settings.value(tmpCh, 1.0).toFloat());
@@ -456,8 +445,12 @@ Attys_scope::~Attys_scope() {
 				highpass[n][i]->getFrequency());
 
 			sprintf(tmp, LOWPASS_SETTING_FORMAT, n, i);
-			float f = lowpass[n][i]->getFrequency();
-			settings.setValue(tmp,f);
+			float flp = lowpass[n][i]->getFrequency();
+			settings.setValue(tmp,flp);
+
+			sprintf(tmp, BANDSTOP_SETTING_FORMAT, n, i);
+			float fbs = bandstop[n][i]->getFrequency();
+			settings.setValue(tmp, fbs);
 		}
 		for (int i = 0; i < 2; i++) {
 			char tmpSp[256];
@@ -493,12 +486,6 @@ void Attys_scope::enableControls() {
 			channel[n][i]->setEnabled( true );
 		}
 	}
-}
-
-
-void Attys_scope::notchFreqChanged() {
-	QString str = notchTextEdit->toPlainText();
-	attysScopeWindow->setNotchFrequency(str.toFloat());
 }
 
 
