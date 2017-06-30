@@ -294,7 +294,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	tbLayout->addWidget(tbResetPushButton);
 
 	displayCheckbox = new QCheckBox();
-	displayCheckbox->setChecked(TRUE);
+	displayCheckbox->setChecked(1);
 	tbLayout->addWidget(new QLabel("Running:"));
 	tbLayout->addWidget(displayCheckbox);
 
