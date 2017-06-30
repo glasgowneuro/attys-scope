@@ -409,12 +409,14 @@ void Attys_scope::readSettings() {
 				nch_enabled++;
 
 			sprintf(tmpCh, HIGHPASS_SETTING_FORMAT, n, i);
-			highpass[n][i]->setFrequency(
-				settings.value(tmpCh, -1.0).toFloat());
+			float fhp = settings.value(tmpCh, -1.0).toFloat();
+			//_RPT2(0, "hp %d= %f\n", i,fhp);
+			highpass[n][i]->setFrequency(fhp);
 
 			sprintf(tmpCh, LOWPASS_SETTING_FORMAT, n, i);
-			float f = settings.value(tmpCh, 0.0).toFloat();
-			lowpass[n][i]->setFrequency(f);
+			float flp = settings.value(tmpCh, 0.0).toFloat();
+			//_RPT2(0, "lp %d= %f\n", i,flp);
+			lowpass[n][i]->setFrequency(flp);
 
 			sprintf(tmpCh, GAIN_SETTING_FORMAT, n, i);
 			gain[n][i]->setGain(
@@ -454,8 +456,8 @@ Attys_scope::~Attys_scope() {
 				highpass[n][i]->getFrequency());
 
 			sprintf(tmp, LOWPASS_SETTING_FORMAT, n, i);
-			settings.setValue(tmp,
-				lowpass[n][i]->getFrequency());
+			float f = lowpass[n][i]->getFrequency();
+			settings.setValue(tmp,f);
 		}
 		for (int i = 0; i < 2; i++) {
 			char tmpSp[256];

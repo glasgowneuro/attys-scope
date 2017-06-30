@@ -27,6 +27,7 @@ private slots:
 private:
     float frequency;
 	float samplingrate;
+	int dcCtr;
 
 public:
     inline float getFrequency() {return frequency;};
