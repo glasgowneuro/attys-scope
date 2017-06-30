@@ -21,7 +21,7 @@ Current::Current() : QComboBox() {
 
 void Current::currentChanged ( int index ) {
  	current = index;
-	_RPT1(0, "current %d\n",current);
+//	_RPT1(0, "current %d\n",current);
 }
 
 void Current::setCurrent( int c ) {

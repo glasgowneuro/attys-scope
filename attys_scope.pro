@@ -15,8 +15,8 @@ RC_FILE = attysapp.rc
 unix {
 TEMPLATE	= app
 CONFIG		+= qt debug c++11
-HEADERS		= attys_scope.h AttysComm.h scopewindow.h gain.h dc_sub.h hp.h lp.h channel.h base64.h
-SOURCES		= attys_scope.cpp AttysComm.cpp scopewindow.cpp gain.cpp dc_sub.cpp lp.cpp hp.cpp channel.cpp base64.c
+HEADERS		= attys_scope.h AttysComm.h scopewindow.h gain.h highpass.h lowpass.h channel.h base64.h special.h current.h 
+SOURCES		= attys_scope.cpp AttysComm.cpp scopewindow.cpp gain.cpp lowpass.cpp highpass.cpp channel.cpp base64.c special.cpp current.cpp 
 TARGET		= attys_scope
 INSTALLS        += target
 LIBS            += -liir -lbluetooth

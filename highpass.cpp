@@ -43,7 +43,7 @@ void Highpass::setFrequencyIndex ( int index ) {
 		hp->setup(HPORDER,
 			samplingrate,
 			(float)frequency);
-		_RPT1(0, "Highpass cutoff: %f Hz\n", frequency);
+		//_RPT1(0, "Highpass cutoff: %f Hz\n", frequency);
 		hp->reset();
 	}
 }

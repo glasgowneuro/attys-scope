@@ -21,7 +21,7 @@ Special::Special() : QComboBox() {
 
 void Special::specialChanged ( int index ) {
  	special = index;
-	_RPT1(0, "special %d\n",special);
+//	_RPT1(0, "special %d\n",special);
 }
 
 void Special::setSpecial( int c ) {
