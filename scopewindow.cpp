@@ -52,6 +52,7 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp,
 	dev = new SOCKET[maxComediDevs];
 	attysName = new char*[maxComediDevs];
 	attysComm = new AttysComm*[maxComediDevs];
+	assert(attysComm != nullptr);
 	for (int devNo = 0; devNo < maxComediDevs; devNo++) {
 		dev[devNo] = 0;
 		attysComm[devNo] = nullptr;
@@ -140,7 +141,11 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp,
 #elif _WIN32
 
 	WSADATA wsd;
-	WSAStartup(MAKEWORD(2, 2), &wsd);
+	int r = WSAStartup(MAKEWORD(2, 2), &wsd);
+	if (r != 0) {
+		_RPT1(0, " WASStartup failed: %d\n",r);
+		exit(1);
+	}
 
 	WSAQUERYSET wsaq;
 	ZeroMemory(&wsaq, sizeof(wsaq));
@@ -200,6 +205,7 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp,
 				if (status == 0) {
 
 					attysComm[nAttysDevices] = new AttysComm(s);
+					assert(attysComm[nAttysDevices] != nullptr);
 					sprintf(attysName[nAttysDevices], "#%d: %S", nAttysDevices, name);
 					channels_in_use = attysComm[nAttysDevices]->NCHANNELS;
 					nAttysDevices++;
@@ -207,7 +213,6 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp,
 				}
 				else {
 					_RPT0(0,"Connect failed\n");
-					_RPT0(0,"Has the device been paired?\n");
 					shutdown(s, SD_BOTH);
 					closesocket(s);
 				}
@@ -292,34 +297,34 @@ void ScopeWindow::startDAQ() {
 	for (int i = 0; i < nAttysDevices; i++) {
 		if (attysComm[i]) {
 			attysComm[i]->setBiasCurrent(attys_scope->current[i]->getCurrent());
+			int curr_ch1 = 0;
+			int curr_ch2 = 0;
+			switch (attys_scope->special[i][0]->getSpecial()) {
+			case SPECIAL_NORMAL:
+				attysComm[i]->setAdc0_mux_index(attysComm[i]->ADC_MUX_NORMAL);
+				break;
+			case SPECIAL_ECG:
+				attysComm[i]->setAdc0_mux_index(attysComm[i]->ADC_MUX_ECG_EINTHOVEN);
+				break;
+			case SPECIAL_I:
+				attysComm[i]->setAdc0_mux_index(attysComm[i]->ADC_MUX_NORMAL);
+				curr_ch1 = 1;
+				break;
+			}
+			switch (attys_scope->special[i][1]->getSpecial()) {
+			case SPECIAL_NORMAL:
+				attysComm[i]->setAdc1_mux_index(attysComm[i]->ADC_MUX_NORMAL);
+				break;
+			case SPECIAL_ECG:
+				attysComm[i]->setAdc1_mux_index(attysComm[i]->ADC_MUX_ECG_EINTHOVEN);
+				break;
+			case SPECIAL_I:
+				attysComm[i]->setAdc1_mux_index(attysComm[i]->ADC_MUX_NORMAL);
+				curr_ch2 = 1;
+				break;
+			}
+			attysComm[i]->enableCurrents(curr_ch1, 0, curr_ch2);
 		}
-		int curr_ch1 = 0;
-		int curr_ch2 = 0;
-		switch (attys_scope->special[i][0]->getSpecial()) {
-		case SPECIAL_NORMAL:
-			attysComm[i]->setAdc0_mux_index(attysComm[i]->ADC_MUX_NORMAL);
-			break;
-		case SPECIAL_ECG:
-			attysComm[i]->setAdc0_mux_index(attysComm[i]->ADC_MUX_ECG_EINTHOVEN);
-			break;
-		case SPECIAL_I:
-			attysComm[i]->setAdc0_mux_index(attysComm[i]->ADC_MUX_NORMAL);
-			curr_ch1 = 1;
-			break;
-		}
-		switch (attys_scope->special[i][1]->getSpecial()) {
-		case SPECIAL_NORMAL:
-			attysComm[i]->setAdc1_mux_index(attysComm[i]->ADC_MUX_NORMAL);
-			break;
-		case SPECIAL_ECG:
-			attysComm[i]->setAdc1_mux_index(attysComm[i]->ADC_MUX_ECG_EINTHOVEN);
-			break;
-		case SPECIAL_I:
-			attysComm[i]->setAdc1_mux_index(attysComm[i]->ADC_MUX_NORMAL);
-			curr_ch2 = 1;
-			break;
-		}
-		attysComm[i]->enableCurrents(curr_ch1,0,curr_ch2);
 	}
 
 	// ready steady go!

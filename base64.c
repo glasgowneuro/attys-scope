@@ -84,11 +84,11 @@ static const unsigned char pr2six[256] =
     64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64
 };
 
-int Base64decode_len(const char *bufcoded)
+__int64 Base64decode_len(const char *bufcoded)
 {
-    int nbytesdecoded;
+    __int64 nbytesdecoded;
     register const unsigned char *bufin;
-    register int nprbytes;
+    register __int64 nprbytes;
 
     bufin = (const unsigned char *) bufcoded;
     while (pr2six[*(bufin++)] <= 63);
@@ -99,12 +99,12 @@ int Base64decode_len(const char *bufcoded)
     return nbytesdecoded + 1;
 }
 
-int Base64decode(char *bufplain, const char *bufcoded)
+__int64 Base64decode(char *bufplain, const char *bufcoded)
 {
-    int nbytesdecoded;
+    __int64 nbytesdecoded;
     register const unsigned char *bufin;
     register unsigned char *bufout;
-    register int nprbytes;
+    register __int64 nprbytes;
 
     bufin = (const unsigned char *) bufcoded;
     while (pr2six[*(bufin++)] <= 63);
@@ -152,7 +152,7 @@ int Base64encode_len(int len)
     return ((len + 2) / 3 * 4) + 1;
 }
 
-int Base64encode(char *encoded, const char *string, int len)
+__int64 Base64encode(char *encoded, const char *string, int len)
 {
     int i;
     char *p;

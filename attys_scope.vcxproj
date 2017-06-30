@@ -51,6 +51,10 @@
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</IgnoreImportLibrary>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>.;iir1;C:\Qt\Qt5.7.0\5.7\msvc2015_64\include;C:\Qt\Qt5.7.0\5.7\msvc2015_64\include\QtWidgets;C:\Qt\Qt5.7.0\5.7\msvc2015_64\include\QtGui;C:\Qt\Qt5.7.0\5.7\msvc2015_64\include\QtANGLE;C:\Qt\Qt5.7.0\5.7\msvc2015_64\include\QtCore;debug;C:\Qt\Qt5.7.0\5.7\msvc2015_64\mkspecs\win32-msvc2015;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -107,6 +111,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <WarningLevel>Level3</WarningLevel>
+      <EnablePREfast>false</EnablePREfast>
     </ClCompile>
     <Link>
       <AdditionalDependencies>C:\Qt\Qt5.7.0\5.7\msvc2015_64\lib\qtmain.lib;shell32.lib;C:\Qt\Qt5.7.0\5.7\msvc2015_64\lib\Qt5Widgets.lib;C:\Qt\Qt5.7.0\5.7\msvc2015_64\lib\Qt5Gui.lib;C:\Qt\Qt5.7.0\5.7\msvc2015_64\lib\Qt5Core.lib;%(AdditionalDependencies)</AdditionalDependencies>

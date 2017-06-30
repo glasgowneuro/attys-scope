@@ -89,7 +89,7 @@ void AttysComm::sendSyncCommand(const char *message, int waitForOK) {
 			if (ret > 1) {
 				linebuffer[ret] = 0;
 				if (strstr(linebuffer, "OK")) {
-					_RPT1(0, " -- OK received: %s \n",linebuffer);
+					_RPT0(0, " -- OK received\n");
 					return;
 				}
 			}
