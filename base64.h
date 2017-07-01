@@ -61,6 +61,11 @@
 #ifndef _BASE64_H_
 #define _BASE64_H_
 
+#ifdef __linux__
+#include<inttypes.h>
+#define __int64 int64_t
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
