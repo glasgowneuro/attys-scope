@@ -25,6 +25,14 @@ class Attys_scope;
 #include "lowpass.h"
 #include "bandstop.h"
 
+
+// version number
+#define VERSION "1.2.0"
+
+#define ATTYS_STRING "ATTYS"
+#define PROGRAM_NAME "attys_scope"
+
+
 class Attys_scope : public QWidget
 {
 
@@ -130,6 +138,17 @@ public:
      **/
 	QPointer<QPushButton> filePushButton;
 
+	/**
+	* port for UDP
+	**/
+	QPointer<QTextEdit> udpTextEdit;
+
+	/**
+	* switches on UDP broadcast
+	**/
+	QPointer<QCheckBox> udpCheckBox;
+
+
  private:
     /**
      * Button: Increase the time between samples
@@ -182,6 +201,11 @@ private slots:
      **/
     void recstartstop(int);
 
+	/**
+	* Called when the UDP transmission is on/off
+	**/
+	void udpTransmit();
+
 private:
 /**
  * Called if a change in the time-base has occurred
@@ -213,6 +237,8 @@ private:
 
 	QPointer<QLabel> statusLabel;
 
+	char status[256];
+
 	QPointer<QGroupBox> controlBox;
 
 	QPointer<QVBoxLayout> controlLayout;
@@ -240,6 +266,9 @@ private:
 	QPointer<QGroupBox> recGroupBox;
 	QPointer<QHBoxLayout> recLayout;
 
+	QPointer<QGroupBox> udpGroupBox;
+	QPointer<QHBoxLayout> udpLayout;
+
 	QPointer<QLabel> recLabel;
 
 	QFont* voltageFont;
@@ -247,6 +276,10 @@ private:
 
 	private:
 		void readSettings();
+
+	public:
+		void setInfo(const char* txt);
+
 };
 
 

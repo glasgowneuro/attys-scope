@@ -157,10 +157,14 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp,
 	if (0 != iRet) {
 		if (WSAGetLastError() != WSASERVICE_NOT_FOUND) {
 			_RPT0(0,"WSALookupServiceBegin failed\n");
+			attys_scope->splash->showMessage("Internal windows bluetooth driver problem:\nWSALookupServiceBegin failed\n");
+			Sleep(1000);
 			exit(1);
 		}
 		else {
 			_RPT0(0,"No bluetooth devices found\n");
+			attys_scope->splash->showMessage("No bluetooth devices found.\n\nHave you paired the Attys?");
+			Sleep(5000);
 			exit(1);
 		}
 	}
@@ -362,7 +366,6 @@ void ScopeWindow::startDAQ() {
 
 }
 
-
 ScopeWindow::~ScopeWindow() {
 	if (rec_file) {
 		fclose(rec_file);
@@ -405,6 +408,17 @@ void ScopeWindow::updateTime() {
 			attys_scope->voltageTextEdit[n][i]->setText(tmp);
 		}
 	}
+
+	if (udpSocket) {
+		if (udpStatus < 0) {
+			attys_scope->setInfo(" UDP broadcast error");
+		} else {
+			attys_scope->setInfo(" Broadcasting UDP");
+		}
+	} else {
+		attys_scope->setInfo("");
+	}
+
 }
 
 
@@ -437,6 +451,48 @@ void ScopeWindow::writeFile() {
 		}
 	}
 	fprintf(rec_file, "\n");
+}
+
+
+void ScopeWindow::startUDP(int port)
+{
+	udpSocket = new QUdpSocket(this);
+	udpPort = port;
+	_RPT1(0, "UDP transmit on port %d\n",port);
+}
+
+void ScopeWindow::stopUDP()
+{
+	delete udpSocket;
+	udpSocket = NULL;
+}
+
+
+void ScopeWindow::writeUDP() {
+	if (!udpSocket) return;
+	char tmp[256];
+	sprintf(tmp, "%f", ((float)nsamples) / ((float)attysComm[0]->getSamplingRateInHz()));
+	for (int n = 0; n < nAttysDevices; n++) {
+		int nFiltered = 0;
+		for (int i = 0; i < channels_in_use; i++) {
+			if (attys_scope->channel[n][i]->isActive()) {
+				nFiltered++;
+			}
+			float phy = unfiltDAQData[n][i];
+			sprintf(tmp+strlen(tmp), ",%f", phy);
+		}
+		for (int i = 0; i < nFiltered; i++) {
+			float phy = filtDAQData[n][i];
+			sprintf(tmp+strlen(tmp), ",%f", phy);
+		}
+	}
+	sprintf(tmp+strlen(tmp), "\n");
+	if (udpSocket) {
+		if (udpStatus > -1) {
+			udpStatus = udpSocket->writeDatagram(tmp, strlen(tmp), QHostAddress::Broadcast, udpPort);
+			//_RPT1(0, "%s", tmp);
+		}
+	}
 }
 
 void ScopeWindow::startRec() {
@@ -600,6 +656,8 @@ void ScopeWindow::paintEvent(QPaintEvent *) {
 		if (attys_scope->recPushButton->checkState() == Qt::Checked) {
 			writeFile();
 		}
+
+		writeUDP();
 
 		nsamples++;
 		tb_counter--;

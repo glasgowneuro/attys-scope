@@ -24,11 +24,6 @@
 #include "scopewindow.h"
 #include "attys_scope.h"
 
-// version number
-#define VERSION "1.1.0"
-
-#define ATTYS_STRING "ATTYS"
-#define PROGRAM_NAME "attys_scope"
 
 class QCommentTextEdit : public QTextEdit {
 protected:
@@ -62,6 +57,10 @@ Attys_scope::Attys_scope(QWidget *parent,
 	// fonts
 	voltageFont = new QFont("Courier",10);
 	QFontMetrics voltageMetrics(*voltageFont);
+
+	tbFont = new QFont("Courier", 12);
+	tbFont->setBold(true);
+	QFontMetrics tbMetrics(*tbFont);
 
 	// this the main layout which contains two sub-windows:
 	// the control window and the oscilloscope window
@@ -229,7 +228,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	filePushButton->setSizePolicy ( QSizePolicy(QSizePolicy::Fixed,
 						    QSizePolicy::Fixed ));
 	filePushButton->setStyleSheet(
-		"background-color: white;border-style:outset;border-width: 2px;border-color: black;font: bold 14px; padding: 0px;");
+		"background-color: white;border-style:outset;border-width: 2px;border-color: black;font: bold 14px; padding: 3px;");
 	connect(filePushButton, SIGNAL( clicked() ),
 		this, SLOT( enterFileName() ) );
 	recLayout->addWidget(filePushButton);
@@ -244,13 +243,37 @@ Attys_scope::Attys_scope(QWidget *parent,
 	restLayout->addWidget(recGroupBox);
 
 
+	// group for the UDP stuff
+	udpGroupBox = new QGroupBox();
+	udpGroupBox->setAttribute(Qt::WA_DeleteOnClose, false);
+	udpLayout = new QHBoxLayout();
+
+	udpLayout->addWidget(new QLabel("UDP broadcast on port "));
+
+	udpTextEdit = new QTextEdit("65000");
+	udpTextEdit->setFont(*tbFont);
+	udpTextEdit->setMaximumHeight(tbMetrics.height() * 1.5);
+	udpTextEdit->setMaximumWidth(tbMetrics.width('X') * 14);
+	udpTextEdit->setReadOnly(true);
+	udpTextEdit->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	udpLayout->addWidget(udpTextEdit);
+
+	udpCheckBox = new QCheckBox("&Broadcast");
+	udpCheckBox->setSizePolicy(QSizePolicy(QSizePolicy::Fixed,
+		QSizePolicy::Fixed));
+//	udpCheckBox->setStyleSheet(
+//		"background-color: white;border-style:outset;border-width: 2px;border-color: black;font: bold 14px; padding: 0px;");
+	connect(udpCheckBox, SIGNAL(clicked()),
+		this, SLOT(udpTransmit()));
+	udpLayout->addWidget(udpCheckBox);
+
+	udpGroupBox->setLayout(udpLayout);
+	restLayout->addWidget(udpGroupBox);
+
 	// group for the time base
 	tbgrp = new QGroupBox();
 	tbgrp->setAttribute(Qt::WA_DeleteOnClose, false);
 	tbLayout = new QHBoxLayout;
-	tbFont = new QFont("Courier",12);
-	tbFont->setBold(true);
-	QFontMetrics tbMetrics(*tbFont);
 
 	QLabel tbLabel("Timebase:");
 	tbLayout->addWidget(&tbLabel);
@@ -305,7 +328,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	statusgrp->setAttribute(Qt::WA_DeleteOnClose, false);
 	statusLayout = new QHBoxLayout;
 
-	char status[256];
+	status[256];
 	sprintf(status,"# of Attys devs: %d, Sampling rate: %d Hz.",
 		attysScopeWindow->getNattysDevices(),
 		attysScopeWindow->getActualSamplingRate());
@@ -416,6 +439,13 @@ void Attys_scope::readSettings() {
 	// at least one should be active not to make the user nervous.
 	if (nch_enabled == 0)
 		channel[0][0]->setChannel(0);
+}
+
+void Attys_scope::setInfo(const char * txt)
+{
+	QString t = txt;
+	QString s = status;
+	statusLabel->setText(status+t);
 }
 
 
@@ -569,6 +599,19 @@ void Attys_scope::changeTB() {
 
 void Attys_scope::resetTbEvent() {
 	    attysScopeWindow->clearScreen();
+};
+
+
+void Attys_scope::udpTransmit() {
+	if (udpCheckBox->isChecked()) {
+		udpTextEdit->setEnabled(0);
+		int port = udpTextEdit->toPlainText().toInt();
+		attysScopeWindow->startUDP(port);
+	}
+	else {
+		attysScopeWindow->stopUDP();
+		udpTextEdit->setEnabled(1);
+	}
 };
 
 

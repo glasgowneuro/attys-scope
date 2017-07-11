@@ -7,6 +7,7 @@ SOURCES		= attys_scope.cpp AttysComm.cpp special.cpp current.cpp scopewindow.cpp
 TARGET		= attys_scope
 INSTALLS        += target
 QT             += widgets
+QT += network
 INCLUDEPATH     += iir1
 RESOURCES     = application.qrc
 RC_FILE = attysapp.rc
@@ -21,6 +22,7 @@ TARGET		= attys_scope
 INSTALLS        += target
 LIBS            += -liir -lbluetooth
 QT             += widgets
+QT += network
 target.path     = /usr/local/bin
 RESOURCES     = application.qrc
 }

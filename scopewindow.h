@@ -47,6 +47,8 @@ class ScopeWindow;
 
 #include "AttysComm.h"
 
+#include "udp_tx.h"
+
 #define MAX_DISP_X 4096 // max screen width
 
 #define VOLT_FORMAT_STRING "%+.3f"
@@ -284,6 +286,16 @@ public:
 	private:
 		float **minV;
 		float **maxV;
+
+	private:
+		void writeUDP();
+		QPointer<QUdpSocket> udpSocket = NULL;
+		int udpPort = 65000;
+		int udpStatus = 0;
+
+	public:
+		void startUDP(int port);
+		void stopUDP();
 
 };
 
