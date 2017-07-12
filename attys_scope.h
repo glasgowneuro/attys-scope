@@ -69,7 +69,7 @@ public:
 /**
  * Button which controls recording
  **/
-    QPointer<QCheckBox> recPushButton;
+    QPointer<QCheckBox> recCheckBox;
 
 	/**
 	Display on/off

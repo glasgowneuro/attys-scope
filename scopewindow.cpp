@@ -653,7 +653,7 @@ void ScopeWindow::paintEvent(QPaintEvent *) {
 		}
 
 		// save data
-		if (attys_scope->recPushButton->checkState() == Qt::Checked) {
+		if (attys_scope->recCheckBox->checkState() == Qt::Checked) {
 			writeFile();
 		}
 

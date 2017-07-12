@@ -232,12 +232,14 @@ Attys_scope::Attys_scope(QWidget *parent,
 	connect(filePushButton, SIGNAL( clicked() ),
 		this, SLOT( enterFileName() ) );
 	recLayout->addWidget(filePushButton);
+	recLayout->addWidget(new QLabel("    "));
 
-	recPushButton = new QCheckBox( "&REC" );
-	recPushButton->connect(recPushButton, SIGNAL( stateChanged(int) ),
+	recCheckBox = new QCheckBox( "REC" );
+	recCheckBox->connect(recCheckBox, SIGNAL( stateChanged(int) ),
 			       this, SLOT( recstartstop(int) ) );
-	recPushButton->setEnabled( false );
-	recLayout->addWidget(recPushButton);
+	recCheckBox->setEnabled( false );
+	recLayout->addWidget(recCheckBox);
+	recCheckBox->setStyleSheet("font: bold 24px; padding: 3px;");
 
 	recGroupBox->setLayout(recLayout);
 	restLayout->addWidget(recGroupBox);
@@ -254,15 +256,12 @@ Attys_scope::Attys_scope(QWidget *parent,
 	udpTextEdit->setFont(*tbFont);
 	udpTextEdit->setMaximumHeight(tbMetrics.height() * 1.5);
 	udpTextEdit->setMaximumWidth(tbMetrics.width('X') * 14);
-	udpTextEdit->setReadOnly(true);
 	udpTextEdit->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	udpLayout->addWidget(udpTextEdit);
 
 	udpCheckBox = new QCheckBox("&Broadcast");
 	udpCheckBox->setSizePolicy(QSizePolicy(QSizePolicy::Fixed,
 		QSizePolicy::Fixed));
-//	udpCheckBox->setStyleSheet(
-//		"background-color: white;border-style:outset;border-width: 2px;border-color: black;font: bold 14px; padding: 0px;");
 	connect(udpCheckBox, SIGNAL(clicked()),
 		this, SLOT(udpTransmit()));
 	udpLayout->addWidget(udpCheckBox);
@@ -524,7 +523,7 @@ void Attys_scope::setFilename(QString fn,int tsv) {
 	QString tmp;
 	tmp="attys_scope - datafile: "+fn;
 	setWindowTitle( tmp );
-	recPushButton->setEnabled( true );
+	recCheckBox->setEnabled( true );
 }
 
 
@@ -554,7 +553,7 @@ void Attys_scope::enterFileName() {
 // callback
 void Attys_scope::recstartstop(int) 
 {
-  if (recPushButton->checkState()==Qt::Checked) 
+  if (recCheckBox->checkState()==Qt::Checked) 
     {
       attysScopeWindow->startRec();
     } 
@@ -562,7 +561,7 @@ void Attys_scope::recstartstop(int)
     {
       attysScopeWindow->stopRec();
       // to force the user to enter a new filename
-      recPushButton->setEnabled( false );
+      recCheckBox->setEnabled( false );
     }
 }
 
