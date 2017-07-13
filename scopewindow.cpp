@@ -96,40 +96,45 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp)
 	// let's probe how many we have
 	nAttysDevices = 0;
 	for (i = 0; i < num_rsp; i++) {
-		ba2str(&(ii+i)->bdaddr, addr);
-		memset(name, 0, sizeof(name));
-		if (hci_read_remote_name(sock, &(ii+i)->bdaddr, sizeof(name), 
-					 name, 0) < 0)
-			strcpy(name, "[unknown]");
-		printf("%s  %s", addr, name);
-		if (strstr(name,"GN-ATTYS")!=0) {
-			printf("! Found one.\n");
-			// allocate a socket
-			fprintf(stderr,"Connecting...\n");
-			int s = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
-			memset(&saddr,0,sizeof(struct sockaddr_rc));
-			// set the connection parameters (who to connect to)
-			saddr.rc_family = AF_BLUETOOTH;
-			saddr.rc_channel = (uint8_t) 1;
-			str2ba( addr, &saddr.rc_bdaddr );
+		for(int j = 0;j<3;j++) {
+			ba2str(&(ii+i)->bdaddr, addr);
+			memset(name, 0, sizeof(name));
+			if (hci_read_remote_name(sock, &(ii+i)->bdaddr, sizeof(name), 
+						 name, 0) < 0)
+				strcpy(name, "[unknown]");
+			printf("%s  %s", addr, name);
+			if (strstr(name,"GN-ATTYS")!=0) {
+				printf("! Found one.\n");
+				// allocate a socket
+				fprintf(stderr,"Connecting...\n");
+				int s = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
+				memset(&saddr,0,sizeof(struct sockaddr_rc));
+				// set the connection parameters (who to connect to)
+				saddr.rc_family = AF_BLUETOOTH;
+				saddr.rc_channel = (uint8_t) 1;
+				str2ba( addr, &saddr.rc_bdaddr );
 				
-			// connect to server
-			int status = ::connect(s,
-					       (struct sockaddr *)&saddr,
-					       sizeof(saddr));
-			
-			if (status == 0) {
-				attysComm[nAttysDevices] = new AttysComm(s);
-				sprintf(attysName[nAttysDevices], "%d:%s", nAttysDevices, name);
-				channels_in_use = attysComm[nAttysDevices]->NCHANNELS;
-				nAttysDevices++;
+				// connect to server
+				int status = ::connect(s,
+						       (struct sockaddr *)&saddr,
+						       sizeof(saddr));
+				
+				if (status == 0) {
+					attysComm[nAttysDevices] = new AttysComm(s);
+					sprintf(attysName[nAttysDevices], "%d:%s", nAttysDevices, name);
+					channels_in_use = attysComm[nAttysDevices]->NCHANNELS;
+					nAttysDevices++;
 					break;
+				} else {
+					fprintf(stderr,"Connect failed. Error code = %d\n",status);
+					if (status == -1) {
+						fprintf(stderr,"Permission denied. Please pair the Attys with your bluetooth adapter.\n");
+					}
+					::close(s);
+				}
 			} else {
-				printf("Connect failed. Error code = %d\n",status);
-				::close(s);
+				printf("\n");
 			}
-		} else {
-			printf("\n");
 		}
 	}
 
