@@ -21,9 +21,7 @@ DEFINE_GUID(g_guidServiceClass, 0xb62c4e8d, 0x62cc, 0x404b, 0xbb, 0xbf, 0xbf, 0x
 #endif
 
 
-ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp,
-	float f
-)
+ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp)
 	: QWidget(attys_scope_tmp) {
 
 	int maxComediDevs = 3;
@@ -105,16 +103,16 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp,
 			strcpy(name, "[unknown]");
 		printf("%s  %s", addr, name);
 		if (strstr(name,"GN-ATTYS")!=0) {
-			printf("!\n");
+			printf("! Found one.\n");
 			// allocate a socket
+			fprintf(stderr,"Connecting...\n");
 			int s = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
-
 			memset(&saddr,0,sizeof(struct sockaddr_rc));
 			// set the connection parameters (who to connect to)
 			saddr.rc_family = AF_BLUETOOTH;
 			saddr.rc_channel = (uint8_t) 1;
 			str2ba( addr, &saddr.rc_bdaddr );
-
+				
 			// connect to server
 			int status = ::connect(s,
 					       (struct sockaddr *)&saddr,
@@ -125,10 +123,10 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp,
 				sprintf(attysName[nAttysDevices], "%d:%s", nAttysDevices, name);
 				channels_in_use = attysComm[nAttysDevices]->NCHANNELS;
 				nAttysDevices++;
-				break;
+					break;
 			} else {
-				printf("Connect failed: %d\n",status);
-				printf("Has the device been paired?\n");
+				printf("Connect failed. Error code = %d\n",status);
+				::close(s);
 			}
 		} else {
 			printf("\n");

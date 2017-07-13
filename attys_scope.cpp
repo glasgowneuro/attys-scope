@@ -25,29 +25,14 @@
 #include "attys_scope.h"
 
 
-class QCommentTextEdit : public QTextEdit {
-protected:
-	void keyPressEvent(QKeyEvent *event) {
-		if ((event->key() != Qt::Key_Return)&&
-		    (event->key() != Qt::Key_Enter)&&
-		    (event->key() != Qt::Key_Tab)	)	{
-			QTextEdit::keyPressEvent(event);
-		}
-	}
-};
-
-
-
 Attys_scope::Attys_scope(QWidget *parent,
-	    QSplashScreen *_splash,
-		int ignoreSettings,
-		int num_of_devices
-	)
-    : QWidget( parent ) {
-
+			 QSplashScreen *_splash,
+			 int ignoreSettings
+	) : QWidget( parent ) {
+	
 	splash = _splash;
-
-    attysScopeWindow=new ScopeWindow(this);
+	
+	attysScopeWindow=new ScopeWindow(this);
 
 	int n_devs = attysScopeWindow->getNattysDevices();
 	int channels = attysScopeWindow->getNchannels();
@@ -327,7 +312,6 @@ Attys_scope::Attys_scope(QWidget *parent,
 	statusgrp->setAttribute(Qt::WA_DeleteOnClose, false);
 	statusLayout = new QHBoxLayout;
 
-	status[256];
 	sprintf(status,"# of Attys devs: %d, Sampling rate: %d Hz.",
 		attysScopeWindow->getNattysDevices(),
 		attysScopeWindow->getActualSamplingRate());
@@ -617,7 +601,6 @@ void Attys_scope::udpTransmit() {
 int main( int argc, char **argv )
 {
 	// default values
-	int num_of_devices = 16;
 	int ignoreSettings = 0;
 
 	QSettings settings(QSettings::IniFormat, 
@@ -638,9 +621,8 @@ int main( int argc, char **argv )
 	}
 
 	Attys_scope attys_scope(0,
-		      &splash,
-			  ignoreSettings,
-			  num_of_devices
+				&splash,
+				ignoreSettings
 	);
 
 	// show widget

@@ -21,8 +21,8 @@ SOURCES		= attys_scope.cpp AttysComm.cpp scopewindow.cpp gain.cpp lowpass.cpp hi
 TARGET		= attys_scope
 INSTALLS        += target
 LIBS            += -liir -lbluetooth
-QT             += widgets
-QT += network
+QT             	+= widgets
+QT 		+= network
 target.path     = /usr/local/bin
 RESOURCES     = application.qrc
 }

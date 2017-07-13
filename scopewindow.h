@@ -14,6 +14,7 @@ class ScopeWindow;
 #include <QLayout> 
 #include <QPaintEvent>
 #include <QTimerEvent>
+#include <QUdpSocket>
 
 #ifdef __linux__ 
 #include<sys/ioctl.h>
@@ -47,8 +48,6 @@ class ScopeWindow;
 
 #include "AttysComm.h"
 
-#include "udp_tx.h"
-
 #define MAX_DISP_X 4096 // max screen width
 
 #define VOLT_FORMAT_STRING "%+.3f"
@@ -60,9 +59,7 @@ public:
 /**
  * Constructor:
  **/
-    ScopeWindow( Attys_scope* attys_scope_tmp,
-		 float notchF = 50
-	);
+    ScopeWindow( Attys_scope* attys_scope_tmp );
 /**
  * Destructor: close the file if necessary
  **/

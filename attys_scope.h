@@ -35,16 +35,15 @@ class Attys_scope;
 
 class Attys_scope : public QWidget
 {
-
-    Q_OBJECT
+	
+	Q_OBJECT
 public:
 /**
  * Constructor
  **/
 	Attys_scope( QWidget *parent,
-		      QSplashScreen *_splash,
-		      int ignoreSettings = 0,
-		      int num_of_devices = 1
+		     QSplashScreen *_splash,
+		     int ignoreSettings = 0
 		);
 	
 	/**
@@ -57,7 +56,7 @@ public:
  * Sets the filename for the data-file
  **/
 	void setFilename(QString fn,int csv);
-
+	
 public:
 	void enableControls();
 	void disableControls();
