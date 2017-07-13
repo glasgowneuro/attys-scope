@@ -13,7 +13,7 @@ https://github.com/glasgowneuro/attys_scope
 * Change the gain, highpass, lowpass, 50/60Hz bandstop and rectifier for amplitude plots
 * Compiles under Windows and Linux (QT5)
 
-![alt tag](screenshot.jpg)
+![alt tag](screenshot.png)
 
 ## Requires
 * QT5
