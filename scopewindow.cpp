@@ -72,11 +72,17 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp)
 	struct sockaddr_rc saddr;
 	memset(&saddr,0,sizeof(struct sockaddr_rc));
 
+	fprintf(stderr,"Searching for Attys devices:\n");
+
 	dev_id = hci_get_route(NULL);
+	if (dev_id < 0) {
+		fprintf(stderr,"No bluetooth device available.\n");
+		exit(EXIT_FAILURE);
+	}
 	sock = hci_open_dev( dev_id );
-	if (dev_id < 0 || sock < 0) {
+	if (sock < 0) {
 		perror("opening socket");
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 	
 	len  = 8;
@@ -90,7 +96,7 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp)
 	num_rsp = hci_inquiry(dev_id, len, max_rsp, NULL, &ii, flags);
 	if( num_rsp < 0 ) {
 		perror("hci_inquiry");
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 		
 	// let's probe how many we have
@@ -102,11 +108,10 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp)
 			if (hci_read_remote_name(sock, &(ii+i)->bdaddr, sizeof(name), 
 						 name, 0) < 0)
 				strcpy(name, "[unknown]");
-			printf("%s  %s", addr, name);
+			fprintf(stderr,"%s  %s", addr, name);
 			if (strstr(name,"GN-ATTYS")!=0) {
-				printf("! Found one.\n");
+				fprintf(stderr,"! Found one. Connecting. ");
 				// allocate a socket
-				fprintf(stderr,"Connecting...\n");
 				int s = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
 				memset(&saddr,0,sizeof(struct sockaddr_rc));
 				// set the connection parameters (who to connect to)
@@ -123,17 +128,19 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp)
 					attysComm[nAttysDevices] = new AttysComm(s);
 					sprintf(attysName[nAttysDevices], "%d:%s", nAttysDevices, name);
 					channels_in_use = attysComm[nAttysDevices]->NCHANNELS;
+					fprintf(stderr,"Success.\n");
 					nAttysDevices++;
 					break;
 				} else {
-					fprintf(stderr,"Connect failed. Error code = %d\n",status);
+					fprintf(stderr,"Connect failed. Error code = %d. ",status);
 					if (status == -1) {
 						fprintf(stderr,"Permission denied. Please pair the Attys with your bluetooth adapter.\n");
 					}
 					::close(s);
+					fprintf(stderr,"\n");
 				}
 			} else {
-				printf("\n");
+				fprintf(stderr,"\n");
 			}
 		}
 	}
@@ -147,7 +154,7 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp)
 	int r = WSAStartup(MAKEWORD(2, 2), &wsd);
 	if (r != 0) {
 		_RPT1(0, " WASStartup failed: %d\n",r);
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 
 	WSAQUERYSET wsaq;
@@ -236,15 +243,12 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp)
 
 #endif
 
-	printf("%d rfcomm devices detected\n",nAttysDevices);
-	printf("%d channels in use\n",channels_in_use);
-	
 	// none detected
 	if (nAttysDevices<1) {
-		_RPT0(0,"No rfcomm devices detected!\n");
+		printf("No Attys present or not paired.\n");
 		attys_scope->splash->showMessage("Cound not connect and/or no devices paired.");
-		Sleep(1000);
-		exit(1);
+		Sleep(5000);
+		exit(EXIT_FAILURE);
 	}
 
 	assert(channels_in_use > 0);

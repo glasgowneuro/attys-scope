@@ -27,7 +27,7 @@ class Attys_scope;
 
 
 // version number
-#define VERSION "1.2.0"
+#define VERSION "1.2.1"
 
 #define ATTYS_STRING "ATTYS"
 #define PROGRAM_NAME "attys_scope"

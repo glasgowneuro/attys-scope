@@ -29,8 +29,8 @@ https://github.com/glasgowneuro/attys_scope
 * Build solution
 
 ## Compile under Linux
-* Make sure the QT5 development packages and bluetooth packages are installed
-* Install the IIR filter library https://github.com/berndporr/iir1
+* apt-get install iir1-dev, qt5-qmake, g++, qtbase5-dev-tools, qtdeclarative5-dev-tools, libbluetooth-dev, qtbase5-dev, qt5-default
+* Install the IIR filter library https://github.com/berndporr/iir1 or install it via ppa: sudo add-apt-repository ppa:berndporr/usbdux
 * cd attys_scope
 * qmake
 * make
