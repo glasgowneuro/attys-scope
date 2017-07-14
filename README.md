@@ -17,7 +17,7 @@ https://github.com/glasgowneuro/attys_scope
 
 ## Requires
 * QT5
-* IIR1 libaray
+* IIR1 libaray (http://www.berndporr.me.uk/iir/)
 
 ## Compile under Windows
 * Install: Visual Studio 2017 community edition
@@ -29,8 +29,10 @@ https://github.com/glasgowneuro/attys_scope
 * Build solution
 
 ## Compile under Linux
-* apt-get install iir1-dev, qt5-qmake, g++, qtbase5-dev-tools, qtdeclarative5-dev-tools, libbluetooth-dev, qtbase5-dev, qt5-default
-* Install the IIR filter library https://github.com/berndporr/iir1 or install it via ppa: sudo add-apt-repository ppa:berndporr/usbdux
+* Install the IIR filter library https://github.com/berndporr/iir1 or install it via ppa: "ppa:berndporr/usbdux" and then do "apt-get install iir1-dev".
+* Install the other packages: "apt-get install qt5-qmake, g++, qtbase5-dev-tools, qtdeclarative5-dev-tools, libbluetooth-dev, qtbase5-dev, qt5-default"
 * cd attys_scope
 * qmake
 * make
+* make install
+* Start wtih attysscope
