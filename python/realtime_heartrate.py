@@ -14,6 +14,7 @@ import ecg_analysis
 # read from channel 9
 channel = 9
 
+# sampling rate
 fs = 250
 
 heartrate_detector = ecg_analysis.heartrate_detector(fs)
@@ -74,9 +75,9 @@ def update(data):
         if rate>0:
             plotbuffer=np.append(plotbuffer,rate)
         
-    # only keep the 500 newest ones and discard the old ones
+    # only keep the 60 newest ones and discard the old ones
     plotbuffer=plotbuffer[-60:]
-    # set the new 500 points of channel 9
+    # set the new 60 points
     line.set_ydata(plotbuffer)
     return line,
 
