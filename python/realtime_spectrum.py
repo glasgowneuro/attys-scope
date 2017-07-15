@@ -16,7 +16,7 @@ import threading
 # read from channel 9
 channel = 9
 
-ringbuffersize = 512
+ringbuffersize = 1024
 
 # socket connection to attys_scope
 s = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
@@ -56,10 +56,13 @@ plotbuffer = np.zeros(ringbuffersize)
 spectrum = np.fft.rfft(plotbuffer)
 spectrum = np.absolute(spectrum)
 # plots an empty line
-line, = ax.plot(np.linspace(0,125,len(spectrum)),spectrum)
+line, = ax.semilogx(np.linspace(0,125,len(spectrum)),spectrum)
 # axis
+ax.set_xlim(0,125)
 ax.set_ylim(0, 1)
-
+ax.set_xlabel('Frequency/Hz')
+ax.set_ylabel('Amplitude/V')
+ax.set_title('Frequency spectrum')
 
 # receives the data from the generator below
 def update(data):
