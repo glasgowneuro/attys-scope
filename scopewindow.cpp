@@ -496,7 +496,13 @@ void ScopeWindow::writeUDP() {
 	sprintf(tmp+strlen(tmp), "\n");
 	if (udpSocket) {
 		if (udpStatus > -1) {
+#ifdef __linux__
+			// thre seems to be a bug either in QT or deeper down that broadcast packets
+			// won't work under Linux so we send them just to the localhost. That works!
+			udpStatus = udpSocket->writeDatagram(tmp, strlen(tmp), QHostAddress("127.0.0.1"), udpPort);
+#else
 			udpStatus = udpSocket->writeDatagram(tmp, strlen(tmp), QHostAddress::Broadcast, udpPort);
+#endif
 			//_RPT1(0, "%s", tmp);
 		}
 	}
