@@ -23,15 +23,15 @@ which then plots a bar graph in realtime.
 
 ## Compile under Windows
 * Install: Visual Studio 2017 community edition
-* For windows download the open source version of QT5, 64 bits for visual C++ 2015/2017 from 
+* Download the open source version of QT5, 64 bits for visual C++ 2015/2017 from www.qt.io:
   https://download.qt.io/official_releases/qt/5.7/5.7.0/qt-opensource-windows-x86-msvc2015_64-5.7.0.exe
 * cd attys_scope, Clone iir1 as a subproject: https://github.com/berndporr/iir1
-* optional: qmake -tp vc
+* optional: "qmake -tp vc"
 * Open the .sln file
 * Build solution
 
 ## Compile under Linux
-* Install the IIR filter library https://github.com/berndporr/iir1 or install it via ppa: "ppa:berndporr/usbdux" and then do "apt-get install iir1-dev".
+* Install the IIR filter library https://github.com/berndporr/iir1 or install it via ppa: "ppa:berndporr/usbdux" and  "apt-get install iir1-dev".
 * Install the other packages: "apt-get install qt5-qmake, g++, qtbase5-dev-tools, qtdeclarative5-dev-tools, libbluetooth-dev, qtbase5-dev, qt5-default"
 * cd attys_scope
 * qmake
