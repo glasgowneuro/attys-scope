@@ -9,9 +9,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import threading
+import ecg_analysis
 
 # read from channel 9
 channel = 9
+
+fs = 250
+
+heartrate_detector = ecg_analysis.heartrate_detector(fs)
 
 # socket connection to attys_scope
 s = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
@@ -46,20 +51,31 @@ t.start()
 # now let's plot the data
 fig, ax = plt.subplots()
 # that's our plotbuffer
-plotbuffer = np.zeros(500)
+plotbuffer = np.zeros(60)
 # plots an empty line
 line, = ax.plot(plotbuffer)
 # axis
-ax.set_ylim(-2, 2)
-
+ax.set_ylim(0, 200)
+ax.set_xlabel('Heartbeat #')
+ax.set_ylabel('Beats per minute')
+ax.set_title('Heartrate')
 
 # receives the data from the generator below
 def update(data):
+    global heartrate_detector
     global plotbuffer
-    # add new data to the buffer
-    plotbuffer=np.append(plotbuffer,data)
+    
+    for d in data:
+        heartrate_detector.detect(d)
+        rate = heartrate_detector.bpm
+        heartrate_detector.bpm = 0
+        
+        # add new data to the buffer
+        if rate>0:
+            plotbuffer=np.append(plotbuffer,rate)
+        
     # only keep the 500 newest ones and discard the old ones
-    plotbuffer=plotbuffer[-500:]
+    plotbuffer=plotbuffer[-60:]
     # set the new 500 points of channel 9
     line.set_ydata(plotbuffer)
     return line,
