@@ -32,6 +32,11 @@ Attys_scope::Attys_scope(QWidget *parent,
 	
 	splash = _splash;
 	
+	// to the get the stuff a bit closer together
+	char styleSheet[] = "padding:0px;margin:0px;border:0px;";
+
+	char styleSheetGroupBox[] = "padding:1px;margin:1px;";
+
 	attysScopeWindow=new ScopeWindow(this);
 
 	int n_devs = attysScopeWindow->getNattysDevices();
@@ -61,6 +66,9 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	// now we create another layout which contains all the controls
 	controlLayout = new QVBoxLayout(controlBox);
+	controlLayout->setSpacing(0);
+	controlLayout->setMargin(0);
+
 	// this is the vertical layout for all the controls
 	scopeLayout = new QVBoxLayout(0);
 	// the corresponding box which contains all the controls
@@ -99,9 +107,6 @@ Attys_scope::Attys_scope(QWidget *parent,
 	current = new QPointer<Current>[n_devs];
 	specialLayout = new QPointer<QHBoxLayout>[n_devs];
 	
-	// to the get the stuff a bit closer together
-	char styleSheet[] = "padding:0px;margin:0px;border:0px;";
-
 	AttysComm attysCommTmp(0);
 	for(int n=0;n<n_devs;n++) {
 		channelLabel[n]=new QPointer<QLabel>[channels];
@@ -199,10 +204,12 @@ Attys_scope::Attys_scope(QWidget *parent,
 	restLayout = new QVBoxLayout;
 	// the corresponding box which contains all the controls
 	restGroup = new QGroupBox;
+	restGroup->setStyleSheet(styleSheetGroupBox);
 	restGroup->setAttribute(Qt::WA_DeleteOnClose, false);
 
 	// group for the record stuff
 	recGroupBox = new QGroupBox();
+	recGroupBox->setStyleSheet(styleSheetGroupBox);
 	recGroupBox->setAttribute(Qt::WA_DeleteOnClose, false);
 	recLayout = new QHBoxLayout();
 
@@ -232,6 +239,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	// group for the UDP stuff
 	udpGroupBox = new QGroupBox();
+	udpGroupBox->setStyleSheet(styleSheetGroupBox);
 	udpGroupBox->setAttribute(Qt::WA_DeleteOnClose, false);
 	udpLayout = new QHBoxLayout();
 
@@ -256,6 +264,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	// group for the time base
 	tbgrp = new QGroupBox();
+	udpGroupBox->setStyleSheet(styleSheetGroupBox);
 	tbgrp->setAttribute(Qt::WA_DeleteOnClose, false);
 	tbLayout = new QHBoxLayout;
 
@@ -309,6 +318,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	restLayout->addWidget(tbgrp);
 
 	statusgrp = new QGroupBox;
+	statusgrp->setStyleSheet(styleSheetGroupBox);
 	statusgrp->setAttribute(Qt::WA_DeleteOnClose, false);
 	statusLayout = new QHBoxLayout;
 
