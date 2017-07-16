@@ -9,8 +9,14 @@ Special::Special() : QComboBox() {
 	setMinimumWidth ( fontMetrics().width("x50XXg") );
 
 	addItem(tr("normal"),SPECIAL_NORMAL);
-	addItem(tr("ECG"),SPECIAL_ECG);
+	addItem(tr("ECG/Einth"),SPECIAL_ECG);
 	addItem(tr("I const"), SPECIAL_I);
+	addItem(tr("PGA:x6"), SPECIALADC_GAIN_6);
+	addItem(tr("PGA:x2"), SPECIALADC_GAIN_2);
+	addItem(tr("PGA:x3"), SPECIALADC_GAIN_3);
+	addItem(tr("PGA:x4"), SPECIALADC_GAIN_4);
+	addItem(tr("PGA:x8"), SPECIALADC_GAIN_8);
+	addItem(tr("PGA:x12"), SPECIALADC_GAIN_12);
 
 	connect(this,
 		SIGNAL( activated(int) ),
@@ -21,6 +27,7 @@ Special::Special() : QComboBox() {
 
 void Special::specialChanged ( int index ) {
  	special = index;
+	emit signalRestart();
 //	_RPT1(0, "special %d\n",special);
 }
 
@@ -29,3 +36,7 @@ void Special::setSpecial( int c ) {
 		setCurrentIndex(c);
 }
 
+int Special::getGainIndex() {
+	if ((special < 0) || (special > SPECIALADC_GAIN_12)) return AttysComm::ADC_GAIN_1;
+	return gainMapping[special];
+}

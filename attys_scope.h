@@ -27,7 +27,7 @@ class Attys_scope;
 
 
 // version number
-#define VERSION "1.2.1"
+#define VERSION "1.2.3"
 
 #define ATTYS_STRING "ATTYS"
 #define PROGRAM_NAME "attys_scope"
@@ -205,6 +205,8 @@ private slots:
 	**/
 	void udpTransmit();
 
+	void specialChanged();
+
 private:
 /**
  * Called if a change in the time-base has occurred
@@ -278,6 +280,11 @@ private:
 
 	public:
 		void setInfo(const char* txt);
+
+	private:
+		int restartInfo = 1;
+
+
 
 };
 

@@ -310,6 +310,7 @@ void ScopeWindow::startDAQ() {
 			attysComm[i]->setBiasCurrent(attys_scope->current[i]->getCurrent());
 			int curr_ch1 = 0;
 			int curr_ch2 = 0;
+
 			switch (attys_scope->special[i][0]->getSpecial()) {
 			case SPECIAL_NORMAL:
 				attysComm[i]->setAdc0_mux_index(attysComm[i]->ADC_MUX_NORMAL);
@@ -321,7 +322,11 @@ void ScopeWindow::startDAQ() {
 				attysComm[i]->setAdc0_mux_index(attysComm[i]->ADC_MUX_NORMAL);
 				curr_ch1 = 1;
 				break;
+			default:
+				attysComm[i]->setAdc0_mux_index(attysComm[i]->ADC_MUX_NORMAL);
 			}
+			attysComm[i]->setAdc0_gain_index(attys_scope->special[i][0]->getGainIndex());
+
 			switch (attys_scope->special[i][1]->getSpecial()) {
 			case SPECIAL_NORMAL:
 				attysComm[i]->setAdc1_mux_index(attysComm[i]->ADC_MUX_NORMAL);
@@ -333,7 +338,11 @@ void ScopeWindow::startDAQ() {
 				attysComm[i]->setAdc1_mux_index(attysComm[i]->ADC_MUX_NORMAL);
 				curr_ch2 = 1;
 				break;
+			default:
+				attysComm[i]->setAdc1_mux_index(attysComm[i]->ADC_MUX_NORMAL);
 			}
+			attysComm[i]->setAdc1_gain_index(attys_scope->special[i][1]->getGainIndex());
+
 			attysComm[i]->enableCurrents(curr_ch1, 0, curr_ch2);
 		}
 	}

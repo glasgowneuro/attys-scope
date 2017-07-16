@@ -21,6 +21,7 @@ Current::Current() : QComboBox() {
 
 void Current::currentChanged ( int index ) {
  	current = index;
+	emit signalRestart();
 //	_RPT1(0, "current %d\n",current);
 }
 
