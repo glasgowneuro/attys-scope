@@ -153,11 +153,11 @@ public:
 		return 0;
 	}
 
-	void setAdc1_gain_index(int idx) {
+	void setAdc0_gain_index(int idx) {
 		adc0_gain_index = idx;
 	}
 
-	void setAdc2_gain_index(int idx) {
+	void setAdc1_gain_index(int idx) {
 		adc1_gain_index = idx;
 	}
 
