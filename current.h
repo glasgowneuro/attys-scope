@@ -15,6 +15,9 @@ public:
 
 private slots:
 	void currentChanged(int i);
+
+signals:
+	void signalRestart();
 	
 private:
 	int current;

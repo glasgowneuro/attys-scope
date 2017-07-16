@@ -9,6 +9,7 @@
 #include <QSizePolicy>
 #include <QSettings>
 #include <QScrollArea>
+#include <QMessageBox>
 #include <qsplashscreen.h>
 
 #include <stdio.h>
@@ -130,11 +131,17 @@ Attys_scope::Attys_scope(QWidget *parent,
 		specialLayout[n]->addWidget(new QLabel("    "));
 		specialLayout[n]->addWidget(new QLabel("CH1:"));
 		specialLayout[n]->addWidget(special[n][0]);
+		connect(special[n][0], SIGNAL(signalRestart()),
+				this, SLOT(specialChanged()));
 		specialLayout[n]->addWidget(new QLabel("    "));
 		specialLayout[n]->addWidget(new QLabel("CH2:"));
 		specialLayout[n]->addWidget(special[n][1]);
+		connect(special[n][1], SIGNAL(signalRestart()),
+			this, SLOT(specialChanged()));
 		specialLayout[n]->addWidget(new QLabel(" "));
 		specialLayout[n]->addWidget(current[n]);
+		connect(current[n],SIGNAL(signalRestart()),
+			this, SLOT(specialChanged()));
 		specialLayout[n]->addWidget(new QLabel(" "));
 		allChLayout->addLayout(specialLayout[n], row, 1);
 		row++;
@@ -220,7 +227,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	filePushButton->setSizePolicy ( QSizePolicy(QSizePolicy::Fixed,
 						    QSizePolicy::Fixed ));
 	filePushButton->setStyleSheet(
-		"background-color: white;border-style:outset;border-width: 2px;border-color: black;font: bold 14px; padding: 3px;");
+		"background-color: white;border-style:outset;border-width: 1px;border-color: grey;font: bold 12px; padding: 3px;");
 	connect(filePushButton, SIGNAL( clicked() ),
 		this, SLOT( enterFileName() ) );
 	recLayout->addWidget(filePushButton);
@@ -231,7 +238,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 			       this, SLOT( recstartstop(int) ) );
 	recCheckBox->setEnabled( false );
 	recLayout->addWidget(recCheckBox);
-	recCheckBox->setStyleSheet("font: bold 24px; padding: 3px;");
+	recCheckBox->setStyleSheet("font: bold 18px; padding: 3px;");
 
 	recGroupBox->setLayout(recLayout);
 	restLayout->addWidget(recGroupBox);
@@ -273,10 +280,8 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	tbIncPushButton = new QPushButton( "slower" );
 
-	char tbStyle[]="background-color: white;border-style:outset;border-width: 1px;border-color: black;font: bold 10px;padding: 6px;";
+	char tbStyle[]="background-color: white;border-style:outset;border-width: 1px;border-color: black;font: bold 12px;padding: 3px;";
 	tbIncPushButton->setStyleSheet(tbStyle);
-	tbIncPushButton->setMaximumSize ( tbMetrics.width(" slower ") ,  
-					  tbMetrics.height()*5/4 );
 	tbIncPushButton->setFont(*tbFont);
 	tbgrp->connect(tbIncPushButton, SIGNAL( clicked() ),
 		this, SLOT( incTbEvent() ) );
@@ -284,8 +289,6 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	tbDecPushButton = new QPushButton( "faster" );
 	tbDecPushButton->setStyleSheet(tbStyle);
-	tbDecPushButton->setMaximumSize ( tbMetrics.width(" faster ") ,  
-					  tbMetrics.height()*5/4 );
 	tbDecPushButton->setFont(*tbFont);	
 	tbgrp->connect(tbDecPushButton, SIGNAL( clicked() ),
 		       this, SLOT( decTbEvent() ) );
@@ -301,9 +304,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	tbLayout->addWidget(tbInfoTextEdit);
 
 	tbResetPushButton = new QPushButton( "clear" );
-	tbResetPushButton->setStyleSheet("background-color: white;border-style:outset;border-width: 1px;border-color: black;font: bold 10px;padding: 6px;");
-	tbResetPushButton->setMaximumSize ( tbMetrics.width("clear ") *10/9,  
-					  tbMetrics.height() *11/9);
+	tbResetPushButton->setStyleSheet(tbStyle);
 	tbResetPushButton->setFont(*tbFont);	
 	tbgrp->connect(tbResetPushButton, SIGNAL( clicked() ),
 		       this, SLOT( resetTbEvent() ) );
@@ -606,6 +607,17 @@ void Attys_scope::udpTransmit() {
 		udpTextEdit->setEnabled(1);
 	}
 };
+
+
+void Attys_scope::specialChanged() {
+	if (restartInfo) {
+		QMessageBox msgBox;
+		msgBox.setText("You need to restart Attys Scope that these changes take effect.");
+		msgBox.exec();
+		restartInfo = 0;
+	}
+};
+
 
 
 int main( int argc, char **argv )

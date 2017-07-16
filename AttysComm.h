@@ -128,13 +128,13 @@ public:
 	// scheme. Index=0 is really a gain factor of 6
 	// On the ATttys we refer to channel 1 and 2 which are 0 and 1 here for
 	// indexing.
-	const int ADC_GAIN_6 = 0;
-	const int ADC_GAIN_1 = 1;
-	const int ADC_GAIN_2 = 2;
-	const int ADC_GAIN_3 = 3;
-	const int ADC_GAIN_4 = 4;
-	const int ADC_GAIN_8 = 5;
-	const int ADC_GAIN_12 = 6;
+	static const int ADC_GAIN_6 = 0;
+	static const int ADC_GAIN_1 = 1;
+	static const int ADC_GAIN_2 = 2;
+	static const int ADC_GAIN_3 = 3;
+	static const int ADC_GAIN_4 = 4;
+	static const int ADC_GAIN_8 = 5;
+	static const int ADC_GAIN_12 = 6;
 	// mapping between index and actual gain
 	const int ADC_GAIN_FACTOR[7] = { 6, 1, 2, 3, 4, 8, 12 };
 	// the voltage reference of the ADC in volts
@@ -153,11 +153,11 @@ public:
 		return 0;
 	}
 
-	void setAdc1_gain_index(int idx) {
+	void setAdc0_gain_index(int idx) {
 		adc0_gain_index = idx;
 	}
 
-	void setAdc2_gain_index(int idx) {
+	void setAdc1_gain_index(int idx) {
 		adc1_gain_index = idx;
 	}
 
