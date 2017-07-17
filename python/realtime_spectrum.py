@@ -96,7 +96,7 @@ def data_gen():
             yield result
 
 # start the animation
-ani = animation.FuncAnimation(fig, update, data_gen, interval=100)
+ani = animation.FuncAnimation(fig, update, data_gen, interval=500)
 
 # show it
 plt.show()
