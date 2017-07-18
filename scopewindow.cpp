@@ -486,7 +486,7 @@ void ScopeWindow::stopUDP()
 
 void ScopeWindow::writeUDP() {
 	if (!udpSocket) return;
-	char tmp[256];
+	char tmp[1024];
 	sprintf(tmp, "%f", ((float)nsamples) / ((float)attysComm[0]->getSamplingRateInHz()));
 	for (int n = 0; n < nAttysDevices; n++) {
 		int nFiltered = 0;
@@ -500,6 +500,10 @@ void ScopeWindow::writeUDP() {
 		for (int i = 0; i < nFiltered; i++) {
 			float phy = filtDAQData[n][i];
 			sprintf(tmp+strlen(tmp), ",%f", phy);
+		}
+		for (int i = 0; i < (channels_in_use - nFiltered); i++) {
+			float phy = 0;
+			sprintf(tmp + strlen(tmp), ",%f", phy);
 		}
 	}
 	sprintf(tmp+strlen(tmp), "\n");
