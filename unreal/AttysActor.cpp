@@ -46,44 +46,65 @@ void AAttysActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void AAttysActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	uint32 PendingData = 0;
-
 	if (ListenSocket == nullptr) return;
 
+	uint32 PendingData = 0;
 	ListenSocket->HasPendingData(PendingData);
 
 	if (PendingData > 0)
 	{
-		uint8 *attysdata = new uint8[PendingData];
-		int32 BytesRead;
-		ListenSocket->Recv(attysdata, PendingData, BytesRead);
-
-		// AttysScope transmits first the raw data and then the filtered data
-		// MAKE SURE THAT ALL 8 CHANNELS ARE ON AT ATTYS SCOPE SO THAT IT SENDS 8 FILTERED CHANNELS
-		float t, accx, accy, accz, magx, magy, magz, adc0, adc1, filt0, filt1, filt2, filt3, filt4, filt5, filt6, filt7;
-
-		// Scan it all in
-		sscanf_s((char*)attysdata, "%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n", &t, &accx, &accy, &accz, &magx, &magy, &magz, &adc0, &adc1,
-			&filt0, &filt1, &filt2, &filt3, &filt4, &filt5, &filt6, &filt7);
-
-		delete attysdata;
 
 		FAttysData data;
+		uint8 attysdata[0x10000];
+		int32 BytesRead;
+		float t, accx, accy, accz, magx, magy, magz, adc0, adc1, filt0, filt1, filt2, filt3, filt4, filt5, filt6, filt7;
 
-		data.filtered0 = filt0;
-		data.filtered1 = filt1;
-		data.filtered2 = filt2;
-		data.filtered3 = filt3;
-		data.filtered4 = filt4;
-		data.filtered5 = filt5;
-		data.filtered6 = filt6;
-		data.filtered7 = filt7;
+		// We save just the filtered ones
+		data.filtered0 = 0;
+		data.filtered1 = 0;
+		data.filtered2 = 0;
+		data.filtered3 = 0;
+		data.filtered4 = 0;
+		data.filtered5 = 0;
+		data.filtered6 = 0;
+		data.filtered7 = 0;
+
+		int nSamples = 0;
+
+		do {
+			ListenSocket->Recv(attysdata, PendingData, BytesRead);
+			nSamples++;
+
+			// Scan it all in
+			sscanf_s((char*)attysdata, "%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n", &t, &accx, &accy, &accz, &magx, &magy, &magz, &adc0, &adc1,
+				&filt0, &filt1, &filt2, &filt3, &filt4, &filt5, &filt6, &filt7);
+
+			// We save just the filtered ones
+			data.filtered0 += filt0;
+			data.filtered1 += filt1;
+			data.filtered2 += filt2;
+			data.filtered3 += filt3;
+			data.filtered4 += filt4;
+			data.filtered5 += filt5;
+			data.filtered6 += filt6;
+			data.filtered7 += filt7;
+
+			ListenSocket->HasPendingData(PendingData);
+
+		} while (PendingData > 0);
+
+		data.filtered0 /= nSamples;
+		data.filtered1 /= nSamples;
+		data.filtered2 /= nSamples;
+		data.filtered3 /= nSamples;
+		data.filtered4 /= nSamples;
+		data.filtered5 /= nSamples;
+		data.filtered6 /= nSamples;
+		data.filtered7 /= nSamples;
 
 		//BP Event
 		BPEvent_AttysDataReceived(data);
 	}
-
 }
 
 
