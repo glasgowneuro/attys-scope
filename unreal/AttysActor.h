@@ -8,7 +8,7 @@
 
 #include "Networking.h"
 
-#include "MyAttysActor.generated.h"
+#include "AttysActor.generated.h"
 
 
 
@@ -18,7 +18,7 @@
 
 USTRUCT(BlueprintType)
 
-struct FAttysCustomData
+struct FAttysData
 
 {
 
@@ -74,7 +74,7 @@ struct FAttysCustomData
 
 
 
-	FAttysCustomData()
+	FAttysData()
 
 	{}
 
@@ -86,7 +86,7 @@ struct FAttysCustomData
 
 UCLASS()
 
-class SCROLLER_API AMyAttysActor : public AActor
+class SCROLLER_API AAttysActor : public AActor
 
 {
 
@@ -98,7 +98,7 @@ public:
 
 	// Sets default values for this actor's properties
 
-	AMyAttysActor();
+	AAttysActor();
 
 
 
@@ -128,6 +128,6 @@ public:
 	void StartUDPReceiver();
 
 	UFUNCTION(BlueprintImplementableEvent)
-		void BPEvent_DataReceived(const FAttysCustomData& ReceivedData);
+		void BPEvent_AttysDataReceived(const FAttysData& ReceivedData);
 
 };

@@ -1,13 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "MyAttysActor.h"
+#include "AttysActor.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 // Sets default values
-AMyAttysActor::AMyAttysActor()
+AAttysActor::AAttysActor()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -18,7 +18,7 @@ AMyAttysActor::AMyAttysActor()
 
 
 // Called when the game starts or when spawned
-void AMyAttysActor::BeginPlay()
+void AAttysActor::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -27,7 +27,7 @@ void AMyAttysActor::BeginPlay()
 }
 
 
-void AMyAttysActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
+void AAttysActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
 
@@ -43,7 +43,7 @@ void AMyAttysActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 
 // Called every frame
-void AMyAttysActor::Tick(float DeltaTime)
+void AAttysActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
@@ -69,7 +69,7 @@ void AMyAttysActor::Tick(float DeltaTime)
 
 		delete attysdata;
 
-		FAttysCustomData data;
+		FAttysData data;
 
 		data.filtered0 = filt0;
 		data.filtered1 = filt1;
@@ -81,13 +81,13 @@ void AMyAttysActor::Tick(float DeltaTime)
 		data.filtered7 = filt7;
 
 		//BP Event
-		BPEvent_DataReceived(data);
+		BPEvent_AttysDataReceived(data);
 	}
 
 }
 
 
-void AMyAttysActor::StartUDPReceiver() {
+void AAttysActor::StartUDPReceiver() {
 
 	ListenSocket = FUdpSocketBuilder(TEXT("AttysSocket"))
 		.BoundToPort(65000)
