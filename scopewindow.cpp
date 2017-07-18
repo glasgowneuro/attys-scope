@@ -668,9 +668,9 @@ void ScopeWindow::paintEvent(QPaintEvent *) {
 					float value = values[attys_scope->channel[n][i]->getChannel()];
 //					if (i == 6)
 //					_RPT1(0, "%f\n",value);
+					value = attys_scope->bandstop[n][i]->filter(value);
 					value = attys_scope->highpass[n][i]->filter(value);
 					value = attys_scope->lowpass[n][i]->filter(value);
-					value = attys_scope->bandstop[n][i]->filter(value);
 					filtDAQData[n][nFiltered++] = value;
 					// average response if TB is slower than sampling rate
 					adAvgBuffer[n][i] = adAvgBuffer[n][i] + value;

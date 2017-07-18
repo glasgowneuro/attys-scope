@@ -5,7 +5,7 @@
 
 #include <Iir.h>
 
-#define HPORDER 4
+#define HPORDER 2
 
 // defines how quickly the DC detector follows the signal
 // the larger the value the slower
