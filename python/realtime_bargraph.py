@@ -49,7 +49,7 @@ xpos = np.arange(len(objects))
 rects = plt.bar(xpos,amplitudes)
 plt.xticks(xpos, objects)
 plt.ylabel('Amplitudes/V')
-plt.ylim((0,2))
+plt.ylim((0,0.0001))
 
 # receives the data from the generator below
 def update(data):

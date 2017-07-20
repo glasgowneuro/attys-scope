@@ -59,7 +59,7 @@ spectrum = np.absolute(spectrum)
 line, = ax.semilogx(np.linspace(0,125,len(spectrum)),spectrum)
 # axis
 ax.set_xlim(0,125)
-ax.set_ylim(0, 1)
+ax.set_ylim(0, 0.00001)
 ax.set_xlabel('Frequency/Hz')
 ax.set_ylabel('Amplitude/V')
 ax.set_title('Frequency spectrum')
@@ -79,7 +79,7 @@ def update(data):
     # set new data
     line.set_ydata(spectrum)
     # set new max
-    ax.set_ylim(0,spectrum.max())
+    # ax.set_ylim(0,spectrum.max())
     # return the line
     return line,
 
