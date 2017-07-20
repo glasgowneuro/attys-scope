@@ -398,7 +398,7 @@ void ScopeWindow::updateTime() {
 	QString s;
 	if (!rec_file) {
 		if (rec_filename == NULL) {
-			s.sprintf(EXECUTABLE_NAME);
+			s.sprintf(EXECUTABLE_NAME " " VERSION);
 		} else {
 			if (recorded) {
 				s=(*rec_filename)+" --- file saved";

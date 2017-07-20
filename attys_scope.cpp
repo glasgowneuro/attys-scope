@@ -18,7 +18,6 @@
 #include <qtextedit.h>
 #include <qfont.h>
 #include <errno.h>
-#include  <io.h>  
 
 #include <iostream>
 #include <fstream>
