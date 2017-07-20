@@ -3,6 +3,7 @@
 #include <QApplication>
 #include <QTimerEvent>
 #include <QPaintEvent>
+#include <QMessageBox>
 
 extern "C" {
 #include<stdio.h>
@@ -38,7 +39,7 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp)
 	rec_file = NULL;
 
 	// filename
-	rec_filename = new QString();
+	rec_filename = NULL;
 
 	// flag if data has been recorded and we need a new filename
 	recorded = 0;
@@ -396,8 +397,8 @@ ScopeWindow::~ScopeWindow() {
 void ScopeWindow::updateTime() {
 	QString s;
 	if (!rec_file) {
-		if (rec_filename->isEmpty()) {
-			s.sprintf("attys_scope");
+		if (rec_filename == NULL) {
+			s.sprintf(EXECUTABLE_NAME);
 		} else {
 			if (recorded) {
 				s=(*rec_filename)+" --- file saved";
@@ -406,8 +407,10 @@ void ScopeWindow::updateTime() {
 			}
 		}
 	} else {
-		s = (*rec_filename) + 
-			QString().sprintf("--- rec: %ldsec", nsamples/ attysComm[0]->getSamplingRateInHz());
+		if (rec_filename) {
+			s = (*rec_filename) +
+				QString().sprintf("--- rec: %ldsec", nsamples / attysComm[0]->getSamplingRateInHz());
+		}
 	}
 	attys_scope->setWindowTitle( s );
 
@@ -439,7 +442,8 @@ void ScopeWindow::updateTime() {
 
 
 void ScopeWindow::setFilename(QString name,int tsv) {
-	(*rec_filename)=name;
+	if (rec_filename) delete rec_filename;
+	rec_filename = new QString(name);
 	recorded=0;
 	if (tsv) {
 		separator='\t';
@@ -523,24 +527,29 @@ void ScopeWindow::writeUDP() {
 
 void ScopeWindow::startRec() {
 	if (recorded) return;
-	if (rec_filename->isEmpty()) return;
+	if (rec_filename == NULL) return;
 	attys_scope->disableControls();
 	// counter for samples
-	nsamples=0;
-	// ASCII
-	rec_file=NULL;
-	// do we have a valid filename?
-	if (rec_filename)
-		rec_file=fopen(rec_filename->toLocal8Bit().constData(),
-			       "wt");
+	nsamples = 0;
+	rec_file = fopen(rec_filename->toLocal8Bit().constData(),
+		"wt");
 	// could we open it?
 	if (!rec_file) {
 		// could not open
 		delete rec_filename;
+		rec_filename = NULL;
 		// print error msg
 		fprintf(stderr,
 			"Writing failed.\n");
+		QMessageBox msgBox;
+		msgBox.setText("File could not be saved: " + QString(strerror(errno)));
+		msgBox.exec();
+		attys_scope->recCheckBox->setChecked(0);
+		attys_scope->recCheckBox->setEnabled(0);
+		recorded = 0;
 		attys_scope->enableControls();
+		if (rec_filename) delete rec_filename;
+		rec_filename = NULL;
 	}
 }
 
@@ -555,7 +564,7 @@ void ScopeWindow::stopRec() {
 	attys_scope->enableControls();
 	// we should have a filename, get rid of it and create an empty one
 	if (rec_filename) delete rec_filename;
-	rec_filename = new QString();
+	rec_filename = NULL;
 }
 
 

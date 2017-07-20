@@ -32,6 +32,13 @@ class Attys_scope;
 #define ATTYS_STRING "ATTYS"
 #define PROGRAM_NAME "attys_scope"
 
+#ifdef __linux__
+#define EXECUTABLE_NAME "attysscope"
+#else
+#define EXECUTABLE_NAME "attys_scope"
+#endif
+
+
 
 class Attys_scope : public QWidget
 {
