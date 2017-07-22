@@ -68,9 +68,7 @@ public:
 	void enableControls();
 	void disableControls();
 
-public:
-
-	QPointer<QSplashScreen> splash;
+	QSplashScreen* splash;
 
 /**
  * Button which controls recording

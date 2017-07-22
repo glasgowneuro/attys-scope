@@ -74,15 +74,22 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp)
 	memset(&saddr,0,sizeof(struct sockaddr_rc));
 
 	fprintf(stderr,"Searching for Attys devices:\n");
-
+	attys_scope->splash->showMessage("Searching for Attys devices");
+	
 	dev_id = hci_get_route(NULL);
 	if (dev_id < 0) {
 		fprintf(stderr,"No bluetooth device available.\n");
+		attys_scope->splash->showMessage("No bluetooth devices available");
+		attys_scope->splash->finish(attys_scope);
+		sleep(1);
 		exit(EXIT_FAILURE);
 	}
 	sock = hci_open_dev( dev_id );
 	if (sock < 0) {
 		perror("opening socket");
+		attys_scope->splash->showMessage("Error opening socket");
+		attys_scope->splash->finish(attys_scope);
+		sleep(1);
 		exit(EXIT_FAILURE);
 	}
 	
