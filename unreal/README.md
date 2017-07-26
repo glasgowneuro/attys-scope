@@ -3,6 +3,8 @@
 
 ![alt tag](unreal_editor_screenshot.png)
 
+![alt-tag](driving_control.png)
+
 With the help of this C++ class you can
 create an Attys outlet which provides you
 with all filtered / visible channels
