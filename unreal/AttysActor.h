@@ -28,19 +28,19 @@ struct FAttysData
 
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Joy Color")
 
-		float filtered0 = 1.f;
+		float filtered0 = 0.f;
 
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Joy Color")
 
-		float filtered1 = 2.f;
+		float filtered1 = 0.f;
 
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Joy Color")
 
-		float filtered2 = 3.f;
+		float filtered2 = 0.f;
 
 
 
