@@ -3,11 +3,9 @@
 
 ![alt tag](unreal_editor_screenshot.png)
 
-<<<<<<< HEAD
 ![alt-tag](driving_control.png)
 =======
 [Video of the screen capture](https://www.youtube.com/watch?v=50HHXOzv6MY)
->>>>>>> 163364f1a80bf8a78e1a840ca5c1c80398d155de
 
 With the help of this C++ class you can
 create an Attys outlet which provides you
