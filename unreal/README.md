@@ -1,15 +1,14 @@
 # attys_scope
 ## UDP receiver for UNREAL
 
+### Jump and run example
 ![alt tag](unreal_editor_screenshot.png)
 [Video of the jump/run game](https://www.youtube.com/watch?v=50HHXOzv6MY)
 
-This is the blueprint of the driving scenario
+### Driving demo
 ![alt-tag](unreal_driving.png)
 ![alt-tag](driving_control.png)
 [Video of the driving game](https://www.youtube.com/watch?v=Bg3GVRUUBRI&feature=youtu.be)
-
-=======
 
 With the help of this C++ class you can
 create an Attys outlet which provides you
