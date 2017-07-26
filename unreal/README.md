@@ -3,6 +3,8 @@
 
 ![alt tag](unreal_editor_screenshot.png)
 
+[Video of the screen capture](https://www.youtube.com/watch?v=50HHXOzv6MY)
+
 With the help of this C++ class you can
 create an Attys outlet which provides you
 with all filtered / visible channels
