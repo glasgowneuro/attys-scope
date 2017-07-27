@@ -120,7 +120,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 		special[n] = new QPointer<Special>[2];
 		current[n] = new Current();
 
-		allChLayout->addWidget(new QLabel(attysName[n]), row, 1);
+		allChLayout->addWidget(new QLabel(QString(attysName[n])+"\n"), row, 1);
 		row++;
 		specialLayout[n] = new QHBoxLayout;
 		for (int i = 0; i < 2; i++) {
@@ -221,7 +221,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	recLabel = new QLabel("Write to file:");
 	recLayout->addWidget(recLabel);
 
-	filePushButton = new QPushButton( "&filename" );
+	filePushButton = new QPushButton( "filename" );
 	filePushButton->setSizePolicy ( QSizePolicy(QSizePolicy::Fixed,
 						    QSizePolicy::Fixed ));
 	filePushButton->setStyleSheet(

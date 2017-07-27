@@ -363,9 +363,9 @@ void ScopeWindow::stopRec() {
 
 void ScopeWindow::paintData(float** buffer) {
 	QPainter paint( this );
-	QPen penData[3]={QPen(Qt::blue,1),
-			 QPen(Qt::green,1),
-			 QPen(Qt::red,1)};
+	QPen penData[3]={QPen(QColor(0,0,128),1),
+			 QPen(QColor(0,128,0),1),
+			 QPen(QColor(128,0,0),1)};
 	QPen penWhite(Qt::white,2);
 	int w = width();
 	int h = height();

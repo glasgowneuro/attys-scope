@@ -70,6 +70,12 @@ protected:
  * Overloads the empty paint-function: draws the functions and saves the data
  **/
     void	paintEvent( QPaintEvent * );
+    
+    
+    void resizeEvent(QResizeEvent *event) {
+	    QWidget::resizeEvent(event);
+	    eraseFlag = 1;
+    }
 
 public:
 /**

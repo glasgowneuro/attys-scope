@@ -4,7 +4,7 @@
 #include<stdio.h>
 
 
-Channel::Channel(int nChannels, std::string* _channelLabels) : QComboBox() {
+Channel::Channel(const int nChannels, const std::string* _channelLabels) : QComboBox() {
 
 	numberOfChannels = nChannels;
 	channelLabels = _channelLabels;

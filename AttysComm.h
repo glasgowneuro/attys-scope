@@ -122,17 +122,17 @@ public:
 	static const int NCHANNELS = 8;
 
 	// index numbers of the channels returned in the data array
-	const int INDEX_Acceleration_X = 0;
-	const int INDEX_Acceleration_Y = 1;
-	const int INDEX_Acceleration_Z = 2;
-	const int INDEX_Magnetic_field_X = 3;
-	const int INDEX_Magnetic_field_Y = 4;
-	const int INDEX_Magnetic_field_Z = 5;
-	const int INDEX_Analogue_channel_1 = 6;
-	const int INDEX_Analogue_channel_2 = 7;
+	static const int INDEX_Acceleration_X = 0;
+	static const int INDEX_Acceleration_Y = 1;
+	static const int INDEX_Acceleration_Z = 2;
+	static const int INDEX_Magnetic_field_X = 3;
+	static const int INDEX_Magnetic_field_Y = 4;
+	static const int INDEX_Magnetic_field_Z = 5;
+	static const int INDEX_Analogue_channel_1 = 6;
+	static const int INDEX_Analogue_channel_2 = 7;
 
 	// descriptions the channels in text form
-	std::string CHANNEL_DESCRIPTION[NCHANNELS] = {
+	const std::string CHANNEL_DESCRIPTION[NCHANNELS] = {
 		"Acceleration X",
 		"Acceleration Y",
 		"Acceleration Z",
@@ -144,7 +144,7 @@ public:
 	};
 
 	// descriptions of the channels in text form
-	std::string CHANNEL_SHORT_DESCRIPTION[NCHANNELS] = {
+	const std::string CHANNEL_SHORT_DESCRIPTION[NCHANNELS] = {
 		"Acc X",
 		"Acc Y",
 		"Acc Z",
