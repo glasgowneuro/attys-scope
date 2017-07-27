@@ -46,27 +46,17 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp)
 	
 	setAttribute(Qt::WA_OpaquePaintEvent);
 
-	attysScan(attys_scope->splash);
-
-	// none detected
-	if (nAttysDevices<1) {
-		printf("No Attys present or not paired.\n");
-		attys_scope->splash->showMessage("Cound not connect and/or no devices paired.");
-		Sleep(5000);
-		exit(EXIT_FAILURE);
-	}
-
 	// initialise the graphics stuff
 	ypos = new int**[nAttysDevices];
 	assert(ypos != NULL);
 	minV = new float*[nAttysDevices];
 	maxV = new float*[nAttysDevices];
 	for(int devNo=0;devNo<nAttysDevices;devNo++) {
-		ypos[devNo]=new int*[channels_in_use];
-		minV[devNo] = new float[channels_in_use];
-		maxV[devNo] = new float[channels_in_use];
+		ypos[devNo]=new int*[AttysComm::NCHANNELS];
+		minV[devNo] = new float[AttysComm::NCHANNELS];
+		maxV[devNo] = new float[AttysComm::NCHANNELS];
 		assert(ypos[devNo] != NULL);
-		for(int i=0;i<channels_in_use;i++) {
+		for(int i=0;i<AttysComm::NCHANNELS;i++) {
 			minV[devNo][i] = -10;
 			maxV[devNo][i] = 10;
 			ypos[devNo][i] = new int[MAX_DISP_X];
@@ -88,17 +78,17 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp)
 	assert(filtDAQData != NULL);
 	for(int devNo=0;devNo<nAttysDevices;devNo++) {
 		// floating point buffer for plotting
-		adAvgBuffer[devNo]=new float[channels_in_use];
+		adAvgBuffer[devNo]=new float[AttysComm::NCHANNELS];
 		assert( adAvgBuffer[devNo] != NULL );
-		for(int i=0;i<channels_in_use;i++) {
+		for(int i=0;i<AttysComm::NCHANNELS;i++) {
 			adAvgBuffer[devNo][i]=0;
 		}
 		// raw data buffer for saving the data
-		unfiltDAQData[devNo] = new float[channels_in_use];
-		filtDAQData[devNo] = new float[channels_in_use];
+		unfiltDAQData[devNo] = new float[AttysComm::NCHANNELS];
+		filtDAQData[devNo] = new float[AttysComm::NCHANNELS];
 		assert( unfiltDAQData[devNo] != NULL );
 		assert(filtDAQData[devNo] != NULL);
-		for(int i=0;i<channels_in_use;i++) {
+		for(int i=0;i<AttysComm::NCHANNELS;i++) {
 			unfiltDAQData[devNo][i]=0;
 			filtDAQData[devNo][i] = 0;
 		}
@@ -218,7 +208,7 @@ void ScopeWindow::updateTime() {
 
 	char tmp[256];
 	for(int n=0;n<nAttysDevices;n++) {
-		for(int i=0;i<channels_in_use;i++) {
+		for(int i=0;i<AttysComm::NCHANNELS;i++) {
 			if (attys_scope->channel[n][i]->isActive()) {
 				float phys = unfiltDAQData[n][attys_scope->channel[n][i]->getChannel()];
 				sprintf(tmp, VOLT_FORMAT_STRING, phys);
@@ -260,7 +250,7 @@ void ScopeWindow::writeFile() {
 	fprintf(rec_file, "%f", ((float)nsamples) / ((float)attysComm[0]->getSamplingRateInHz()));
 	for (int n = 0; n < nAttysDevices; n++) {
 		int nFiltered = 0;
-		for (int i = 0; i < channels_in_use; i++) {
+		for (int i = 0; i < AttysComm::NCHANNELS; i++) {
 			if (attys_scope->channel[n][i]->isActive()) {
 				nFiltered++;
 			}
@@ -296,7 +286,7 @@ void ScopeWindow::writeUDP() {
 	sprintf(tmp, "%f", ((float)nsamples) / ((float)attysComm[0]->getSamplingRateInHz()));
 	for (int n = 0; n < nAttysDevices; n++) {
 		int nFiltered = 0;
-		for (int i = 0; i < channels_in_use; i++) {
+		for (int i = 0; i < AttysComm::NCHANNELS; i++) {
 			if (attys_scope->channel[n][i]->isActive()) {
 				nFiltered++;
 			}
@@ -307,7 +297,7 @@ void ScopeWindow::writeUDP() {
 			float phy = filtDAQData[n][i];
 			sprintf(tmp+strlen(tmp), ",%f", phy);
 		}
-		for (int i = 0; i < (channels_in_use - nFiltered); i++) {
+		for (int i = 0; i < (AttysComm::NCHANNELS - nFiltered); i++) {
 			float phy = 0;
 			sprintf(tmp + strlen(tmp), ",%f", phy);
 		}
@@ -387,7 +377,7 @@ void ScopeWindow::paintData(float** buffer) {
 	num_channels=0;
 	
 	for(int n=0;n<nAttysDevices;n++) {
-		for(int i=0;i<channels_in_use;i++) {
+		for(int i=0;i<AttysComm::NCHANNELS;i++) {
 			if (attys_scope->channel[n][i]->isActive()) {
 				num_channels++;	
 			}
@@ -417,7 +407,7 @@ void ScopeWindow::paintData(float** buffer) {
 		       xer,h);
 	int act=1;
 	for (int n = 0; n < nAttysDevices; n++) {
-		for (int i = 0; i < channels_in_use; i++) {
+		for (int i = 0; i < AttysComm::NCHANNELS; i++) {
 			if (attys_scope->
 				channel[n][i]->
 				isActive()) {
@@ -472,7 +462,7 @@ void ScopeWindow::paintEvent(QPaintEvent *) {
 		for (int n = 0; n < nAttysDevices; n++) {
 			float* values = attysComm[n]->getSampleFromBuffer();
 			int nFiltered = 0;
-			for (int i = 0; i < channels_in_use; i++) {
+			for (int i = 0; i < AttysComm::NCHANNELS; i++) {
 				unfiltDAQData[n][i] = values[i];
 				if (attys_scope->channel[n][i]->isActive()) {
 					// filtering
@@ -502,7 +492,7 @@ void ScopeWindow::paintEvent(QPaintEvent *) {
 		// enough averaged?
 		if (tb_counter <= 0) {
 			for (int n = 0; n < nAttysDevices; n++) {
-				for (int i = 0; i < channels_in_use; i++) {
+				for (int i = 0; i < AttysComm::NCHANNELS; i++) {
 					adAvgBuffer[n][i] = adAvgBuffer[n][i] / tb_init;
 				}
 			}
@@ -513,7 +503,7 @@ void ScopeWindow::paintEvent(QPaintEvent *) {
 			// clear buffer
 			tb_counter = tb_init;
 			for (int n = 0; n < nAttysDevices; n++) {
-				for (int i = 0; i < channels_in_use; i++) {
+				for (int i = 0; i < AttysComm::NCHANNELS; i++) {
 					adAvgBuffer[n][i] = 0;
 				}
 			}
@@ -526,7 +516,7 @@ void ScopeWindow::setTB(int us) {
 	tb_init=us/(1000000/ attysComm[0]->getSamplingRateInHz());
 	tb_counter=tb_init;
 	for(int n=0;n<nAttysDevices;n++) {
-		for(int i=0;i<channels_in_use;i++) {
+		for(int i=0;i<AttysComm::NCHANNELS;i++) {
 			adAvgBuffer[n][i]=0;
 		}
 	}

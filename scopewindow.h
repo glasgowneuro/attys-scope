@@ -191,15 +191,6 @@ public:
 
 private:
     /**
-     * the number of channels actually used per comedi device
-     **/
-    int channels_in_use = 0;
-
-public:
-    int getNchannels() {return channels_in_use;};
-
-private:
-    /**
      * Frequency for the notch filter in Hz
      **/
     float notchFrequency = 50;
@@ -216,11 +207,6 @@ private:
     char separator;
 
 /**
- * Number of detected comedi devices
- **/
-    int nAttysDevices;
-
-/**
  * Timer for printing the voltages in the textfields
  **/
     QTimer* counter;
@@ -235,22 +221,11 @@ private:
 	**/
 	float** filtDAQData;
 
-	public:
-	char* getAttysName(int i) { return attysName[i]; }
-
-
 public:
 /**
  * Start the DAQ board(s)
  **/
     void startDAQ();
-
-public:
-/**
- * Gets the number of comedi devices actually used here
- **/
-    int getNattysDevices() {return nAttysDevices;};
-
 
 	public:
 	int getActualSamplingRate() { return attysComm[0]->getSamplingRateInHz(); }
