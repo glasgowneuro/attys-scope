@@ -27,11 +27,8 @@
 
 
 Attys_scope::Attys_scope(QWidget *parent,
-			 QSplashScreen *_splash,
 			 int ignoreSettings
 	) : QWidget( parent ) {
-	
-	splash = _splash;
 	
 	// to the get the stuff a bit closer together
 	char styleSheet[] = "padding:0px;margin:0px;border:0px;";
@@ -628,18 +625,31 @@ int main( int argc, char **argv )
 	QApplication a( argc, argv );		// create application object
 
 	QPixmap pixmap(":/attys.png");
-	QSplashScreen splash(pixmap);
-	splash.show();
-	splash.showMessage("Scanning for paired devices");
-
-	attysScan(&splash);
+	QSplashScreen* splash = new QSplashScreen(pixmap);
+	splash->setFont( QFont("Helvetica", 12, QFont::Bold) );
+	splash->show();
+	a.processEvents();
+	splash->showMessage("Scanning for paired devices");
+	a.processEvents();
+	
+	int ret = attysScan(splash);
+	if (ret) {
+		a.processEvents();
+		Sleep(1000);
+		delete splash;
+		return ret;
+	}
+	
+	a.processEvents();
 	
 	// none detected
 	if (nAttysDevices<1) {
 		printf("No Attys present or not paired.\n");
-		splash.showMessage("Cound not connect and/or no devices paired.");
+		splash->showMessage("Cound not connect\nand/or no devices paired.");
+		a.processEvents();
 		Sleep(5000);
-		exit(EXIT_FAILURE);
+		delete splash;
+		return -1;
 	}
 
 	for(int i = 0;i<argc;i++) {
@@ -648,13 +658,13 @@ int main( int argc, char **argv )
 	}
 
 	Attys_scope attys_scope(0,
-				&splash,
 				ignoreSettings
 	);
 
 	// show widget
 	attys_scope.show();
-	splash.finish(&attys_scope);
+	splash->finish(&attys_scope);
+	delete splash;
 	// run event loop
 	return a.exec();
 }

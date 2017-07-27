@@ -8,7 +8,7 @@ class AttysComm;
  * AttysComm contains all the neccessary comms to talk to
  * the Attys on both Linux and Windows.
  *
- * 1) Call the global function attysScan(splash) which
+ * 1) Call the global function attysScan() which
  *    finds all paired Attys and creates separate AttysComm classes
  * 2) These classes are thin in the global array attysComm and
  *    the number of them in nAttysDevices.
@@ -54,9 +54,9 @@ class AttysComm;
 #else
 #endif
 
-#include <qsplashscreen.h>
 #include <stdio.h>
 #include <QThread>
+#include <qsplashscreen.h>
 #include "base64.h"
 
 #pragma once
@@ -94,8 +94,9 @@ extern AttysComm** attysComm;
 /**
  * Scans for all attys devices and fills the global
  * variables above
+ * returns 0 on success
  **/
-void attysScan(QSplashScreen *splash);
+int attysScan(QSplashScreen* splash = NULL, int maxAttys = MAX_ATTYS_DEVS);
 
 
 

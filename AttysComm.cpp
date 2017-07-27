@@ -34,13 +34,14 @@ AttysComm** attysComm = NULL;
  * Scans for Attys Devices
  * Fills up the global arrays above
  * Parameter splash is an optional splash screen
+ * Returns zero on success
  **/
-void attysScan(QSplashScreen *splash) {
-	dev = new SOCKET[MAX_ATTYS_DEVS];
-	attysName = new char*[MAX_ATTYS_DEVS];
-	attysComm = new AttysComm*[MAX_ATTYS_DEVS];
+int attysScan(QSplashScreen* splash, int maxAttysDevs) {
+	dev = new SOCKET[maxAttysDevs];
+	attysName = new char*[maxAttysDevs];
+	attysComm = new AttysComm*[maxAttysDevs];
 	assert(attysComm != nullptr);
-	for (int devNo = 0; devNo < MAX_ATTYS_DEVS; devNo++) {
+	for (int devNo = 0; devNo < maxAttysDevs; devNo++) {
 		dev[devNo] = 0;
 		attysComm[devNo] = nullptr;
 		attysName[devNo] = new char[256];
@@ -62,17 +63,16 @@ void attysScan(QSplashScreen *splash) {
 
 	fprintf(stderr,"Searching for Attys devices.\n");
 	if (splash) {
-		splash->showMessage("Searching for Attys devices");
+		splash->showMessage("Searching for\nAttys devices");
 	}
 	
 	dev_id = hci_get_route(NULL);
 	if (dev_id < 0) {
 		fprintf(stderr,"No bluetooth device available.\n");
 		if (splash) {
-			splash->showMessage("No bluetooth devices available");
+			splash->showMessage("No bluetooth\ndevices available");
 		}
-		sleep(1);
-		exit(EXIT_FAILURE);
+		return dev_id;
 	}
 	sock = hci_open_dev( dev_id );
 	if (sock < 0) {
@@ -80,8 +80,7 @@ void attysScan(QSplashScreen *splash) {
 		if (splash) {
 			splash->showMessage("Error opening socket");
 		}
-		sleep(1);
-		exit(EXIT_FAILURE);
+		return sock;
 	}
 	
 	len  = 8;
@@ -95,12 +94,12 @@ void attysScan(QSplashScreen *splash) {
 	num_rsp = hci_inquiry(dev_id, len, max_rsp, NULL, &ii, flags);
 	if( num_rsp < 0 ) {
 		perror("hci_inquiry");
-		exit(EXIT_FAILURE);
+		return num_rsp;
 	}
 		
 	// let's probe how many we have
 	nAttysDevices = 0;
-	for (i = 0; i < num_rsp; i++) {
+	for (i = 0; (i < num_rsp) && (i < maxAttysDevs); i++) {
 		for(int j = 0;j<3;j++) {
 			ba2str(&(ii+i)->bdaddr, addr);
 			memset(name, 0, sizeof(name));
@@ -152,7 +151,7 @@ void attysScan(QSplashScreen *splash) {
 	int r = WSAStartup(MAKEWORD(2, 2), &wsd);
 	if (r != 0) {
 		_RPT1(0, " WASStartup failed: %d\n",r);
-		exit(EXIT_FAILURE);
+		return r;
 	}
 
 	WSAQUERYSET wsaq;
@@ -166,18 +165,16 @@ void attysScan(QSplashScreen *splash) {
 		if (WSAGetLastError() != WSASERVICE_NOT_FOUND) {
 			_RPT0(0,"WSALookupServiceBegin failed\n");
 			if (splash) {
-				splash->showMessage("Internal windows bluetooth driver problem:\nWSALookupServiceBegin failed\n");
+				splash->showMessage("Internal windows\nbluetooth driver problem:\nWSALookupServiceBegin failed\n");
 			}
-			Sleep(1000);
-			exit(1);
+			return iRet;
 		}
 		else {
 			_RPT0(0,"No bluetooth devices found\n");
 			if (splash) {
 				splash->showMessage("No bluetooth devices found.\n\nHave you paired the Attys?");
 			}
-			Sleep(5000);
-			exit(1);
+			return -1;
 		}
 	}
 
@@ -189,7 +186,8 @@ void attysScan(QSplashScreen *splash) {
 	pwsaResults->lpBlob = NULL;
 
 	DWORD dwSize = sizeof(buf);
-	while (WSALookupServiceNext(hLookup, LUP_RETURN_NAME | LUP_RETURN_ADDR, &dwSize, pwsaResults) == 0) {
+	while ((WSALookupServiceNext(hLookup, LUP_RETURN_NAME | LUP_RETURN_ADDR, &dwSize, pwsaResults) == 0) &&
+	       (nAttysDevices < maxAttysDevs ) ){
 		LPWSTR name = pwsaResults->lpszServiceInstanceName;
 		if (wcsstr(name,L"GN-ATTYS1") != 0) {
 			_RPT0(0,"Found an Attys!\n");
@@ -207,7 +205,7 @@ void attysScan(QSplashScreen *splash) {
 
 				if (INVALID_SOCKET == s) {
 					_RPT0(0,"=CRITICAL= | socket() call failed.\n");
-					exit(1);
+					return -1;
 				}
 
 				PSOCKADDR_BTH btAddr = (SOCKADDR_BTH *)(pwsaResults->lpcsaBuffer->RemoteAddr.lpSockaddr);
@@ -245,6 +243,8 @@ void attysScan(QSplashScreen *splash) {
 #else
 
 #endif
+
+	return 0;
 }
 
 

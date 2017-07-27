@@ -49,7 +49,6 @@ public:
  * Constructor
  **/
 	Attys_scope( QWidget *parent,
-		     QSplashScreen *_splash,
 		     int ignoreSettings = 0
 		);
 	
@@ -67,8 +66,6 @@ public:
 public:
 	void enableControls();
 	void disableControls();
-
-	QSplashScreen* splash;
 
 /**
  * Button which controls recording
