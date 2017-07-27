@@ -629,21 +629,20 @@ int main( int argc, char **argv )
 	QPixmap pixmap(":/attys.png");
 	QSplashScreen* splash = new QSplashScreen(pixmap);
 	splash->setFont( QFont("Helvetica", 12, QFont::Bold) );
-	a.processEvents();
 	splash->show();
-	a.processEvents();
 	splash->showMessage("Scanning for paired devices");
 	a.processEvents();
-	
+
+	// see if we have any Attys!
 	int ret = attysScan(splash);
+
+	// zero on success and non zero on failure
 	if (ret) {
 		a.processEvents();
 		Sleep(1000);
 		delete splash;
 		return ret;
 	}
-	
-	a.processEvents();
 	
 	// none detected
 	if (nAttysDevices<1) {
@@ -660,9 +659,7 @@ int main( int argc, char **argv )
 		if (strstr(argv[i],"-i")) ignoreSettings = 1;
 	}
 
-	Attys_scope attys_scope(0,
-				ignoreSettings
-	);
+	Attys_scope attys_scope(0,ignoreSettings);
 
 	// show widget
 	attys_scope.show();
