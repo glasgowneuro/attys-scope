@@ -1,5 +1,255 @@
 #include "AttysComm.h"
 
+#include <assert.h>
+
+
+/**
+ * These global variables are filled by attysScan() below
+ **/
+
+
+/**
+ * Actual number of Attys Devices
+ **/
+int nAttysDevices = 0;
+
+/**
+ * file descriptor for bt devices
+ **/
+SOCKET *dev = NULL;
+
+/**
+ * name of the Attys
+ **/
+char** attysName = NULL;
+
+/**
+ * Pointer to AttysComm
+ **/
+AttysComm** attysComm = NULL;
+
+
+
+/**
+ * Scans for Attys Devices
+ * Fills up the global arrays above
+ * Parameter splash is an optional splash screen
+ **/
+void attysScan(QSplashScreen *splash) {
+	dev = new SOCKET[MAX_ATTYS_DEVS];
+	attysName = new char*[MAX_ATTYS_DEVS];
+	attysComm = new AttysComm*[MAX_ATTYS_DEVS];
+	assert(attysComm != nullptr);
+	for (int devNo = 0; devNo < MAX_ATTYS_DEVS; devNo++) {
+		dev[devNo] = 0;
+		attysComm[devNo] = nullptr;
+		attysName[devNo] = new char[256];
+		attysName[devNo][0] = 0;
+	}
+
+	nAttysDevices = 0;
+
+#ifdef __linux__
+
+	inquiry_info *ii = NULL;
+	int max_rsp, num_rsp;
+	int dev_id, sock, len, flags;
+	int i;
+	char addr[19] = { 0 };
+	char name[248] = { 0 };
+	struct sockaddr_rc saddr;
+	memset(&saddr,0,sizeof(struct sockaddr_rc));
+
+	fprintf(stderr,"Searching for Attys devices.\n");
+	if (splash) {
+		splash->showMessage("Searching for Attys devices");
+	}
+	
+	dev_id = hci_get_route(NULL);
+	if (dev_id < 0) {
+		fprintf(stderr,"No bluetooth device available.\n");
+		if (splash) {
+			splash->showMessage("No bluetooth devices available");
+		}
+		sleep(1);
+		exit(EXIT_FAILURE);
+	}
+	sock = hci_open_dev( dev_id );
+	if (sock < 0) {
+		perror("opening socket");
+		if (splash) {
+			splash->showMessage("Error opening socket");
+		}
+		sleep(1);
+		exit(EXIT_FAILURE);
+	}
+	
+	len  = 8;
+	max_rsp = 255;
+	flags = IREQ_CACHE_FLUSH;
+	ii = new inquiry_info[max_rsp];
+	for(int i = 0;i<max_rsp;i++) {
+		memset(ii+i,0,sizeof(inquiry_info));
+	}
+    
+	num_rsp = hci_inquiry(dev_id, len, max_rsp, NULL, &ii, flags);
+	if( num_rsp < 0 ) {
+		perror("hci_inquiry");
+		exit(EXIT_FAILURE);
+	}
+		
+	// let's probe how many we have
+	nAttysDevices = 0;
+	for (i = 0; i < num_rsp; i++) {
+		for(int j = 0;j<3;j++) {
+			ba2str(&(ii+i)->bdaddr, addr);
+			memset(name, 0, sizeof(name));
+			if (hci_read_remote_name(sock, &(ii+i)->bdaddr, sizeof(name), 
+						 name, 0) < 0)
+				strcpy(name, "[unknown]");
+			fprintf(stderr,"%s  %s", addr, name);
+			if (strstr(name,"GN-ATTYS")!=0) {
+				fprintf(stderr,"! Found one. Connecting. ");
+				// allocate a socket
+				int s = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
+				memset(&saddr,0,sizeof(struct sockaddr_rc));
+				// set the connection parameters (who to connect to)
+				saddr.rc_family = AF_BLUETOOTH;
+				saddr.rc_channel = (uint8_t) 1;
+				str2ba( addr, &saddr.rc_bdaddr );
+				
+				// connect to server
+				int status = ::connect(s,
+						       (struct sockaddr *)&saddr,
+						       sizeof(saddr));
+				
+				if (status == 0) {
+					attysComm[nAttysDevices] = new AttysComm(s);
+					sprintf(attysName[nAttysDevices], "%d:%s", nAttysDevices, name);
+					fprintf(stderr,"Success.\n");
+					nAttysDevices++;
+					break;
+				} else {
+					fprintf(stderr,"Connect failed. Error code = %d. ",status);
+					if (status == -1) {
+						fprintf(stderr,"Permission denied. Please pair the Attys with your bluetooth adapter.\n");
+					}
+					::close(s);
+					fprintf(stderr,"\n");
+				}
+			} else {
+				fprintf(stderr,"\n");
+			}
+		}
+	}
+
+	delete[] ii;
+	
+	
+#elif _WIN32
+
+	WSADATA wsd;
+	int r = WSAStartup(MAKEWORD(2, 2), &wsd);
+	if (r != 0) {
+		_RPT1(0, " WASStartup failed: %d\n",r);
+		exit(EXIT_FAILURE);
+	}
+
+	WSAQUERYSET wsaq;
+	ZeroMemory(&wsaq, sizeof(wsaq));
+	wsaq.dwSize = sizeof(wsaq);
+	wsaq.dwNameSpace = NS_BTH;
+	wsaq.lpcsaBuffer = NULL;
+	HANDLE hLookup = nullptr;
+	int iRet = WSALookupServiceBegin(&wsaq, LUP_CONTAINERS, &hLookup);
+	if (0 != iRet) {
+		if (WSAGetLastError() != WSASERVICE_NOT_FOUND) {
+			_RPT0(0,"WSALookupServiceBegin failed\n");
+			if (splash) {
+				splash->showMessage("Internal windows bluetooth driver problem:\nWSALookupServiceBegin failed\n");
+			}
+			Sleep(1000);
+			exit(1);
+		}
+		else {
+			_RPT0(0,"No bluetooth devices found\n");
+			if (splash) {
+				splash->showMessage("No bluetooth devices found.\n\nHave you paired the Attys?");
+			}
+			Sleep(5000);
+			exit(1);
+		}
+	}
+
+	CHAR buf[4096];
+	LPWSAQUERYSET pwsaResults = (LPWSAQUERYSET)buf;
+	ZeroMemory(pwsaResults, sizeof(WSAQUERYSET));
+	pwsaResults->dwSize = sizeof(WSAQUERYSET);
+	pwsaResults->dwNameSpace = NS_BTH;
+	pwsaResults->lpBlob = NULL;
+
+	DWORD dwSize = sizeof(buf);
+	while (WSALookupServiceNext(hLookup, LUP_RETURN_NAME | LUP_RETURN_ADDR, &dwSize, pwsaResults) == 0) {
+		LPWSTR name = pwsaResults->lpszServiceInstanceName;
+		if (wcsstr(name,L"GN-ATTYS1") != 0) {
+			_RPT0(0,"Found an Attys!\n");
+
+			char tmp[256];
+			sprintf(tmp, "Connecting to Attys #%d: %S", nAttysDevices,name);
+			if (splash) {
+				splash->showMessage(tmp);
+			}
+
+			for (int i = 0; i < 5; i++) {
+
+				// allocate a socket
+				SOCKET s = ::socket(AF_BTH, SOCK_STREAM, BTHPROTO_RFCOMM);
+
+				if (INVALID_SOCKET == s) {
+					_RPT0(0,"=CRITICAL= | socket() call failed.\n");
+					exit(1);
+				}
+
+				PSOCKADDR_BTH btAddr = (SOCKADDR_BTH *)(pwsaResults->lpcsaBuffer->RemoteAddr.lpSockaddr);
+				btAddr->addressFamily = AF_BTH;
+				btAddr->serviceClassId = RFCOMM_PROTOCOL_UUID;
+				btAddr->port = BT_PORT_ANY;
+
+				int btAddrLen = pwsaResults->lpcsaBuffer->RemoteAddr.iSockaddrLength;
+
+				// connect to server
+				int status = ::connect(s, (struct sockaddr *)btAddr, btAddrLen);
+
+				if (status == 0) {
+
+					attysComm[nAttysDevices] = new AttysComm(s);
+					assert(attysComm[nAttysDevices] != nullptr);
+					sprintf(attysName[nAttysDevices], "#%d: %S", nAttysDevices, name);
+					nAttysDevices++;
+					break;
+				}
+				else {
+					_RPT0(0,"Connect failed\n");
+					shutdown(s, SD_BOTH);
+					closesocket(s);
+				}
+			}
+		} else {
+			_RPT0(0,"\n");
+		}
+	}
+
+	WSALookupServiceEnd(hLookup);
+
+
+#else
+
+#endif
+}
+
+
+
+
 
 AttysComm::AttysComm(SOCKET _btsocket)
 {
@@ -31,6 +281,7 @@ AttysComm::AttysComm(SOCKET _btsocket)
 	doRun = 0;
 	inPtr = 0;
 	outPtr = 0;
+	unregisterCallback();
 	adc_rate_index = ADC_DEFAULT_RATE;
 	timestamp = 0;
 	adc0_gain_index = ADC_GAIN_1;
@@ -266,7 +517,13 @@ void AttysComm::run() {
 					for (int k = 0; k < NCHANNELS; k++) {
 						ringBuffer[inPtr][k] = sample[k];
 					}
+					if (hasSampleCallback) {
+						hasSampleCallback(timestamp,sample);
+					}
 					timestamp = timestamp + 1.0 / getSamplingRateInHz();
+					if (hasSampleCallback) {
+						hasSampleCallback(timestamp,sample);
+					}
 					sampleNumber++;
 					inPtr++;
 					if (inPtr == nMem) {

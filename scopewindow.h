@@ -23,10 +23,6 @@ class ScopeWindow;
 #include<unistd.h>
 #include<stdlib.h>
 #include<termios.h>
-#include <bluetooth/bluetooth.h>
-#include <bluetooth/hci.h>
-#include <bluetooth/hci_lib.h>
-#include <bluetooth/rfcomm.h>
 #include <sys/socket.h>
 #elif _WIN32
 #include <winsock2.h>
@@ -105,19 +101,7 @@ private:
  * Saves data which has arrived from the AD-converter
  **/
     void        writeFile();
-
-private:
-    /**
-     * file descriptor for bt devices
-     **/
-    SOCKET *dev;
-
- private:
-    unsigned int** chanlist;
     
- private:
-    int subdevice;
-
     /**
      * y-positions of the data
      **/
@@ -137,8 +121,6 @@ private:
 	* flag if data is displayed
 	**/
 	int display_data;
-
-	AttysComm** attysComm;
 
 public:
     /**
@@ -253,14 +235,8 @@ private:
 	**/
 	float** filtDAQData;
 
-	/**
-	name of the Attys
-	**/
-	char** attysName;
-
 	public:
-
-		char* getAttysName(int i) { return attysName[i]; }
+	char* getAttysName(int i) { return attysName[i]; }
 
 
 public:

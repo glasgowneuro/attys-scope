@@ -1,4 +1,30 @@
+class AttysComm;
+
+#ifndef __ATTYS_COMM_H
+#define __ATTYS_COMM_H
+
+
+/**
+ * AttysComm contains all the neccessary comms to talk to
+ * the Attys on both Linux and Windows.
+ *
+ * 1) Call the global function attysScan(splash) which
+ *    finds all paired Attys and creates separate AttysComm classes
+ * 2) These classes are thin in the global array attysComm and
+ *    the number of them in nAttysDevices.
+ * 3) All attysComm are QThreads so just start the data acquisition
+ *    with start(), for example attysComm[0]->start() for the 1st Attys
+ * 4) Get the data either via the RingBuffer functions or register a
+ *    callback to get the data as it arrives.
+ **/
+
+
 #ifdef __linux__ 
+#include <bluetooth/bluetooth.h>
+#include <bluetooth/hci.h>
+#include <bluetooth/hci_lib.h>
+#include <bluetooth/rfcomm.h>
+#include <sys/socket.h>
 #include<sys/ioctl.h>
 #include<stdio.h>
 #include<fcntl.h>
@@ -28,14 +54,57 @@
 #else
 #endif
 
-
-
+#include <qsplashscreen.h>
 #include <stdio.h>
 #include <QThread>
-
 #include "base64.h"
 
 #pragma once
+
+
+/////////////////////////////////////////////////////////////
+
+/**
+ * Max number of Attys Devices
+ **/
+#define MAX_ATTYS_DEVS 4
+
+// These global variables are filled by attysScan() below
+
+/**
+ * Actual number of Attys Devices
+ **/
+extern int nAttysDevices;
+
+/**
+ * file descriptor for bt devices
+ **/
+extern SOCKET *dev;
+
+/**
+ * name of the Attys
+ **/
+extern char** attysName;
+
+/**
+ * Pointer to AttysComm
+ **/
+extern AttysComm** attysComm;
+
+/**
+ * Scans for all attys devices and fills the global
+ * variables above
+ **/
+void attysScan(QSplashScreen *splash);
+
+
+
+///////////////////////////////////////////////////////////////////
+// AttysComm takes a socket as an argument (Linux or Windows)
+// and then connects to the Attys
+
+
+
 class AttysComm : public QThread
 {
 public:
@@ -43,9 +112,10 @@ public:
 	// Constructor: takes the bluetooth device as an argument
 	// it then tries to connect to the Attys
 	AttysComm(SOCKET _btsocket);
-
+	
 	~AttysComm();
-
+	
+	
 public:
 
 	static const int NCHANNELS = 8;
@@ -309,7 +379,29 @@ public:
 		return (inPtr != outPtr);
 	}
 
-	private:
+public:
+	////////////////////////////////////////////////
+	// Realtime callback function which is called
+	// whenever a sample has arrived.
+
+	// callback when a sample has arrived (optional)
+	typedef void (*HasSampleCallback)(float,float *);
+
+	// Register a callback
+	void registerCallback(HasSampleCallback f) {
+		hasSampleCallback = f;
+	}
+
+	// Unregister the callback
+	void unregisterCallback() {
+		hasSampleCallback = NULL;
+	}
+
+private:
+	HasSampleCallback hasSampleCallback = NULL;
+
+	
+private:
 	///////////////////////////////////////////////////////
 	// from here it's private
 	SOCKET btsocket;
@@ -365,3 +457,6 @@ public:
 		doRun = false;
 	}
 };
+
+
+#endif
