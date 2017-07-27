@@ -23,7 +23,7 @@
 #include <fstream>
 
 #include "scopewindow.h"
-#include "attys_scope.h"
+#include "attysscope.h"
 
 
 Attys_scope::Attys_scope(QWidget *parent,
@@ -33,7 +33,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	// to the get the stuff a bit closer together
 	char styleSheet[] = "padding:0px;margin:0px;border:0px;";
 
-	char styleSheetGroupBox[] = "padding:1px;margin:1px;";
+	char styleSheetGroupBox[] = "padding:1px;margin:0px;border:0px";
 
 	attysScopeWindow=new ScopeWindow(this);
 
@@ -57,6 +57,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	// the corresponding box which contains all the controls
 	controlBox = new QGroupBox ();
+	controlBox->setStyleSheet(styleSheetGroupBox);
 	controlBox->setSizePolicy ( QSizePolicy(QSizePolicy::Fixed,
 						QSizePolicy::Minimum ) );
 	controlBox->setAttribute(Qt::WA_DeleteOnClose, false);
@@ -83,6 +84,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	allChLayout = new QGridLayout;
 	allChGroup = new QGroupBox;
+	allChGroup->setStyleSheet(styleSheetGroupBox);
 	allChGroup->setAttribute(Qt::WA_DeleteOnClose, false);
 	allChLayout->setSpacing(0);
 	allChGroup->setLayout(allChLayout);
@@ -627,6 +629,7 @@ int main( int argc, char **argv )
 	QPixmap pixmap(":/attys.png");
 	QSplashScreen* splash = new QSplashScreen(pixmap);
 	splash->setFont( QFont("Helvetica", 12, QFont::Bold) );
+	a.processEvents();
 	splash->show();
 	a.processEvents();
 	splash->showMessage("Scanning for paired devices");

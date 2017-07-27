@@ -40,7 +40,7 @@ class ScopeWindow;
 
 #include <string>
 
-#include "attys_scope.h"
+#include "attysscope.h"
 
 #include "AttysComm.h"
 
