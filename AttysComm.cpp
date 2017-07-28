@@ -172,7 +172,7 @@ int attysScan(QSplashScreen* splash, int maxAttysDevs) {
 		else {
 			_RPT0(0,"No bluetooth devices found\n");
 			if (splash) {
-				splash->showMessage("No bluetooth devices found.\n\nHave you paired the Attys?");
+				splash->showMessage("No bluetooth devices found.\nHave you paired the Attys?\nIs bluetooth switched on?");
 			}
 			return -1;
 		}
@@ -193,7 +193,7 @@ int attysScan(QSplashScreen* splash, int maxAttysDevs) {
 			_RPT0(0,"Found an Attys!\n");
 
 			char tmp[256];
-			sprintf(tmp, "Connecting to Attys #%d: %S", nAttysDevices,name);
+			sprintf(tmp, "Connecting to\nAttys #%d:\n%S", nAttysDevices,name);
 			if (splash) {
 				splash->showMessage(tmp);
 			}

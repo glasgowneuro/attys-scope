@@ -35,6 +35,8 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	char styleSheetGroupBox[] = "padding:1px;margin:0px;border:0px";
 
+	char styleSheetButton[] = "background-color: rgb(224, 224, 224); border-style:outset; border-width: 0px; font: 12px; padding: 5px;";
+
 	attysScopeWindow=new ScopeWindow(this);
 
 	int channels = AttysComm::NCHANNELS;
@@ -224,8 +226,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	filePushButton = new QPushButton( "filename" );
 	filePushButton->setSizePolicy ( QSizePolicy(QSizePolicy::Fixed,
 						    QSizePolicy::Fixed ));
-	filePushButton->setStyleSheet(
-		"background-color: white;border-style:outset;border-width: 1px;border-color: grey;font: bold 12px; padding: 3px;");
+	filePushButton->setStyleSheet(styleSheetButton);
 	connect(filePushButton, SIGNAL( clicked() ),
 		this, SLOT( enterFileName() ) );
 	recLayout->addWidget(filePushButton);
@@ -278,15 +279,14 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	tbIncPushButton = new QPushButton( "slower" );
 
-	char tbStyle[]="background-color: white;border-style:outset;border-width: 1px;border-color: black;font: bold 12px;padding: 3px;";
-	tbIncPushButton->setStyleSheet(tbStyle);
+	tbIncPushButton->setStyleSheet(styleSheetButton);
 	tbIncPushButton->setFont(*tbFont);
 	tbgrp->connect(tbIncPushButton, SIGNAL( clicked() ),
 		this, SLOT( incTbEvent() ) );
 	tbLayout->addWidget(tbIncPushButton);
 
 	tbDecPushButton = new QPushButton( "faster" );
-	tbDecPushButton->setStyleSheet(tbStyle);
+	tbDecPushButton->setStyleSheet(styleSheetButton);
 	tbDecPushButton->setFont(*tbFont);	
 	tbgrp->connect(tbDecPushButton, SIGNAL( clicked() ),
 		       this, SLOT( decTbEvent() ) );
@@ -302,7 +302,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	tbLayout->addWidget(tbInfoTextEdit);
 
 	tbResetPushButton = new QPushButton( "clear" );
-	tbResetPushButton->setStyleSheet(tbStyle);
+	tbResetPushButton->setStyleSheet(styleSheetButton);
 	tbResetPushButton->setFont(*tbFont);	
 	tbgrp->connect(tbResetPushButton, SIGNAL( clicked() ),
 		       this, SLOT( resetTbEvent() ) );
@@ -628,7 +628,7 @@ int main( int argc, char **argv )
 
 	QPixmap pixmap(":/attys.png");
 	QSplashScreen* splash = new QSplashScreen(pixmap);
-	splash->setFont( QFont("Helvetica", 12, QFont::Bold) );
+	splash->setFont( QFont("Helvetica", 10) );
 	splash->show();
 	splash->showMessage("Scanning for paired devices");
 	a.processEvents();
@@ -639,7 +639,7 @@ int main( int argc, char **argv )
 	// zero on success and non zero on failure
 	if (ret) {
 		a.processEvents();
-		Sleep(1000);
+		Sleep(5000);
 		delete splash;
 		return ret;
 	}
