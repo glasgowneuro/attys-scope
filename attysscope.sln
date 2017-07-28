@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.26430.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "attys_scope", "attys_scope.vcxproj", "{AB63B829-E35D-338F-BE74-18F237B5B07D}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "attys_scope_setup", "..\Setup2\Setup2.vdproj", "{58F72C13-1B1E-4280-8CB5-30E3475F888D}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "attys_scope_setup", "installer\Setup.vdproj", "{C8369784-9F35-496A-B459-500E351D3A02}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,8 +18,10 @@ Global
 		{AB63B829-E35D-338F-BE74-18F237B5B07D}.Release|x64.ActiveCfg = Release|x64
 		{AB63B829-E35D-338F-BE74-18F237B5B07D}.Release|x64.Build.0 = Release|x64
 		{AB63B829-E35D-338F-BE74-18F237B5B07D}.Release|x64.Deploy.0 = Release|x64
-		{58F72C13-1B1E-4280-8CB5-30E3475F888D}.Debug|x64.ActiveCfg = Debug
-		{58F72C13-1B1E-4280-8CB5-30E3475F888D}.Release|x64.ActiveCfg = Release
+		{C8369784-9F35-496A-B459-500E351D3A02}.Debug|x64.ActiveCfg = Debug
+		{C8369784-9F35-496A-B459-500E351D3A02}.Debug|x64.Build.0 = Debug
+		{C8369784-9F35-496A-B459-500E351D3A02}.Release|x64.ActiveCfg = Release
+		{C8369784-9F35-496A-B459-500E351D3A02}.Release|x64.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
