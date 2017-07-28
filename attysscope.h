@@ -35,7 +35,7 @@ class Attys_scope;
 #ifdef __linux__
 #define EXECUTABLE_NAME "attysscope"
 #else
-#define EXECUTABLE_NAME "attys_scope"
+#define EXECUTABLE_NAME "Attys_Scope"
 #endif
 
 
