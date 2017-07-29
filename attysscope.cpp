@@ -35,7 +35,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	char styleSheetGroupBox[] = "padding:1px;margin:0px;border:0px";
 
-	char styleSheetButton[] = "background-color: rgb(224, 224, 224); border-style:outset; border-width: 0px; font: 12px; padding: 5px;";
+	char styleSheetButton[] = "background-color: rgb(224, 224, 224); border: none; outline: none; border-width: 0px; font: 16px; padding: 5px;";
 
 	attysScopeWindow=new ScopeWindow(this);
 
