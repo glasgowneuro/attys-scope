@@ -61,7 +61,6 @@ class AttysComm;
 
 #pragma once
 
-
 /////////////////////////////////////////////////////////////
 
 /**
@@ -384,22 +383,24 @@ public:
 	////////////////////////////////////////////////
 	// Realtime callback function which is called
 	// whenever a sample has arrived.
-
-	// callback when a sample has arrived (optional)
-	typedef void (*HasSampleCallback)(float,float *);
+        // Implemented as an interface
+	
+	struct CallbackInterface {
+		virtual void hasSample(float,float *) = 0;
+	};
 
 	// Register a callback
-	void registerCallback(HasSampleCallback f) {
-		hasSampleCallback = f;
+	void registerCallback(CallbackInterface* f) {
+		callbackInterface = f;
 	}
 
 	// Unregister the callback
 	void unregisterCallback() {
-		hasSampleCallback = NULL;
+		callbackInterface = NULL;
 	}
 
 private:
-	HasSampleCallback hasSampleCallback = NULL;
+	CallbackInterface* callbackInterface = NULL;
 
 	
 private:

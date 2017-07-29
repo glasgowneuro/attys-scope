@@ -517,13 +517,10 @@ void AttysComm::run() {
 					for (int k = 0; k < NCHANNELS; k++) {
 						ringBuffer[inPtr][k] = sample[k];
 					}
-					if (hasSampleCallback) {
-						hasSampleCallback(timestamp,sample);
+					if (callbackInterface) {
+						callbackInterface->hasSample(timestamp,sample);
 					}
 					timestamp = timestamp + 1.0 / getSamplingRateInHz();
-					if (hasSampleCallback) {
-						hasSampleCallback(timestamp,sample);
-					}
 					sampleNumber++;
 					inPtr++;
 					if (inPtr == nMem) {
