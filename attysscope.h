@@ -24,10 +24,11 @@ class Attys_scope;
 #include "highpass.h"
 #include "lowpass.h"
 #include "bandstop.h"
-
+#include "AttysComm.h"
+#include "AttysScan.h"
 
 // version number
-#define VERSION "1.2.5"
+#define VERSION "1.3.0"
 
 #define ATTYS_STRING "ATTYS"
 #define PROGRAM_NAME "attys_scope"

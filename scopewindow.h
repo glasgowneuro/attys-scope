@@ -43,6 +43,7 @@ class ScopeWindow;
 #include "attysscope.h"
 
 #include "AttysComm.h"
+#include "AttysScan.h"
 
 #define MAX_DISP_X 4096 // max screen width
 
@@ -234,7 +235,7 @@ public:
     void startDAQ();
 
 	public:
-	int getActualSamplingRate() { return attysComm[0]->getSamplingRateInHz(); }
+	int getActualSamplingRate() { return attysScan.attysComm[0]->getSamplingRateInHz(); }
 
 
 	private:

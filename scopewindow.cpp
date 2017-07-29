@@ -47,11 +47,11 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp)
 	setAttribute(Qt::WA_OpaquePaintEvent);
 
 	// initialise the graphics stuff
-	ypos = new int**[nAttysDevices];
+	ypos = new int**[attysScan.nAttysDevices];
 	assert(ypos != NULL);
-	minV = new float*[nAttysDevices];
-	maxV = new float*[nAttysDevices];
-	for(int devNo=0;devNo<nAttysDevices;devNo++) {
+	minV = new float*[attysScan.nAttysDevices];
+	maxV = new float*[attysScan.nAttysDevices];
+	for(int devNo=0;devNo<attysScan.nAttysDevices;devNo++) {
 		ypos[devNo]=new int*[AttysComm::NCHANNELS];
 		minV[devNo] = new float[AttysComm::NCHANNELS];
 		maxV[devNo] = new float[AttysComm::NCHANNELS];
@@ -70,13 +70,13 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp)
 	xpos=0;
 	nsamples=0;
 
-	adAvgBuffer = new float*[nAttysDevices];
+	adAvgBuffer = new float*[attysScan.nAttysDevices];
 	assert( adAvgBuffer != NULL );
-	unfiltDAQData = new float*[nAttysDevices];
-	filtDAQData = new float*[nAttysDevices];
+	unfiltDAQData = new float*[attysScan.nAttysDevices];
+	filtDAQData = new float*[attysScan.nAttysDevices];
 	assert( unfiltDAQData != NULL );
 	assert(filtDAQData != NULL);
-	for(int devNo=0;devNo<nAttysDevices;devNo++) {
+	for(int devNo=0;devNo<attysScan.nAttysDevices;devNo++) {
 		// floating point buffer for plotting
 		adAvgBuffer[devNo]=new float[AttysComm::NCHANNELS];
 		assert( adAvgBuffer[devNo] != NULL );
@@ -98,45 +98,45 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp)
 
 void ScopeWindow::startDAQ() {
 
-	for (int i = 0; i < nAttysDevices; i++) {
-		if (attysComm[i]) {
-			attysComm[i]->setBiasCurrent(attys_scope->current[i]->getCurrent());
+	for (int i = 0; i < attysScan.nAttysDevices; i++) {
+		if (attysScan.attysComm[i]) {
+			attysScan.attysComm[i]->setBiasCurrent(attys_scope->current[i]->getCurrent());
 			int curr_ch1 = 0;
 			int curr_ch2 = 0;
 
 			switch (attys_scope->special[i][0]->getSpecial()) {
 			case SPECIAL_NORMAL:
-				attysComm[i]->setAdc0_mux_index(attysComm[i]->ADC_MUX_NORMAL);
+				attysScan.attysComm[i]->setAdc0_mux_index(attysScan.attysComm[i]->ADC_MUX_NORMAL);
 				break;
 			case SPECIAL_ECG:
-				attysComm[i]->setAdc0_mux_index(attysComm[i]->ADC_MUX_ECG_EINTHOVEN);
+				attysScan.attysComm[i]->setAdc0_mux_index(attysScan.attysComm[i]->ADC_MUX_ECG_EINTHOVEN);
 				break;
 			case SPECIAL_I:
-				attysComm[i]->setAdc0_mux_index(attysComm[i]->ADC_MUX_NORMAL);
+				attysScan.attysComm[i]->setAdc0_mux_index(attysScan.attysComm[i]->ADC_MUX_NORMAL);
 				curr_ch1 = 1;
 				break;
 			default:
-				attysComm[i]->setAdc0_mux_index(attysComm[i]->ADC_MUX_NORMAL);
+				attysScan.attysComm[i]->setAdc0_mux_index(attysScan.attysComm[i]->ADC_MUX_NORMAL);
 			}
-			attysComm[i]->setAdc0_gain_index(attys_scope->special[i][0]->getGainIndex());
+			attysScan.attysComm[i]->setAdc0_gain_index(attys_scope->special[i][0]->getGainIndex());
 
 			switch (attys_scope->special[i][1]->getSpecial()) {
 			case SPECIAL_NORMAL:
-				attysComm[i]->setAdc1_mux_index(attysComm[i]->ADC_MUX_NORMAL);
+				attysScan.attysComm[i]->setAdc1_mux_index(attysScan.attysComm[i]->ADC_MUX_NORMAL);
 				break;
 			case SPECIAL_ECG:
-				attysComm[i]->setAdc1_mux_index(attysComm[i]->ADC_MUX_ECG_EINTHOVEN);
+				attysScan.attysComm[i]->setAdc1_mux_index(attysScan.attysComm[i]->ADC_MUX_ECG_EINTHOVEN);
 				break;
 			case SPECIAL_I:
-				attysComm[i]->setAdc1_mux_index(attysComm[i]->ADC_MUX_NORMAL);
+				attysScan.attysComm[i]->setAdc1_mux_index(attysScan.attysComm[i]->ADC_MUX_NORMAL);
 				curr_ch2 = 1;
 				break;
 			default:
-				attysComm[i]->setAdc1_mux_index(attysComm[i]->ADC_MUX_NORMAL);
+				attysScan.attysComm[i]->setAdc1_mux_index(attysScan.attysComm[i]->ADC_MUX_NORMAL);
 			}
-			attysComm[i]->setAdc1_gain_index(attys_scope->special[i][1]->getGainIndex());
+			attysScan.attysComm[i]->setAdc1_gain_index(attys_scope->special[i][1]->getGainIndex());
 
-			attysComm[i]->enableCurrents(curr_ch1, 0, curr_ch2);
+			attysScan.attysComm[i]->enableCurrents(curr_ch1, 0, curr_ch2);
 		}
 	}
 
@@ -150,27 +150,27 @@ void ScopeWindow::startDAQ() {
 
 	startTimer(50);		// run continuous timer
 	counter->start(500);
-	for (int i = 0; i < nAttysDevices; i++) {
-		if (attysComm[i])
-			attysComm[i]->start();
+	for (int i = 0; i < attysScan.nAttysDevices; i++) {
+		if (attysScan.attysComm[i])
+			attysScan.attysComm[i]->start();
 	}
 
-	for (int n = 0; n < nAttysDevices; n++) {
+	for (int n = 0; n < attysScan.nAttysDevices; n++) {
 
-		for (int i = attysComm[n]->INDEX_Acceleration_X; i <= attysComm[n]->INDEX_Acceleration_Z; i++) {
-			minV[n][i] = -attysComm[n]->getAccelFullScaleRange();
-			maxV[n][i] = attysComm[n]->getAccelFullScaleRange();
+		for (int i = attysScan.attysComm[n]->INDEX_Acceleration_X; i <= attysScan.attysComm[n]->INDEX_Acceleration_Z; i++) {
+			minV[n][i] = -attysScan.attysComm[n]->getAccelFullScaleRange();
+			maxV[n][i] = attysScan.attysComm[n]->getAccelFullScaleRange();
 		}
-		for (int i = attysComm[n]->INDEX_Magnetic_field_X; i <= attysComm[n]->INDEX_Magnetic_field_Z; i++) {
-			minV[n][i] = -attysComm[n]->getMagFullScaleRange();
-			maxV[n][i] = attysComm[n]->getMagFullScaleRange();
+		for (int i = attysScan.attysComm[n]->INDEX_Magnetic_field_X; i <= attysScan.attysComm[n]->INDEX_Magnetic_field_Z; i++) {
+			minV[n][i] = -attysScan.attysComm[n]->getMagFullScaleRange();
+			maxV[n][i] = attysScan.attysComm[n]->getMagFullScaleRange();
 		}
-		minV[n][attysComm[n]->INDEX_Analogue_channel_1] = - attysComm[n]->getADCFullScaleRange(0);
-		maxV[n][attysComm[n]->INDEX_Analogue_channel_1] = attysComm[n]->getADCFullScaleRange(0);
-		_RPT1(0, "ADC1 max = %f\n", attysComm[n]->getADCFullScaleRange(0));
-		minV[n][attysComm[n]->INDEX_Analogue_channel_2] = - attysComm[n]->getADCFullScaleRange(1);
-		maxV[n][attysComm[n]->INDEX_Analogue_channel_2] = attysComm[n]->getADCFullScaleRange(1);
-		_RPT1(0, "ADC2 max = %f\n", attysComm[n]->getADCFullScaleRange(1));
+		minV[n][attysScan.attysComm[n]->INDEX_Analogue_channel_1] = - attysScan.attysComm[n]->getADCFullScaleRange(0);
+		maxV[n][attysScan.attysComm[n]->INDEX_Analogue_channel_1] = attysScan.attysComm[n]->getADCFullScaleRange(0);
+		_RPT1(0, "ADC1 max = %f\n", attysScan.attysComm[n]->getADCFullScaleRange(0));
+		minV[n][attysScan.attysComm[n]->INDEX_Analogue_channel_2] = - attysScan.attysComm[n]->getADCFullScaleRange(1);
+		maxV[n][attysScan.attysComm[n]->INDEX_Analogue_channel_2] = attysScan.attysComm[n]->getADCFullScaleRange(1);
+		_RPT1(0, "ADC2 max = %f\n", attysScan.attysComm[n]->getADCFullScaleRange(1));
 	}
 
 }
@@ -179,9 +179,9 @@ ScopeWindow::~ScopeWindow() {
 	if (rec_file) {
 		fclose(rec_file);
 	}
-	for(int i=0; i<nAttysDevices;i++) {
-		if (attysComm[i]) {
-			attysComm[i]->quit();
+	for(int i=0; i<attysScan.nAttysDevices;i++) {
+		if (attysScan.attysComm[i]) {
+			attysScan.attysComm[i]->quit();
 		}
 	}
 }
@@ -201,13 +201,13 @@ void ScopeWindow::updateTime() {
 	} else {
 		if (rec_filename) {
 			s = (*rec_filename) +
-				QString().sprintf("--- rec: %ldsec", nsamples / attysComm[0]->getSamplingRateInHz());
+				QString().sprintf("--- rec: %ldsec", nsamples / attysScan.attysComm[0]->getSamplingRateInHz());
 		}
 	}
 	attys_scope->setWindowTitle( s );
 
 	char tmp[256];
-	for(int n=0;n<nAttysDevices;n++) {
+	for(int n=0;n<attysScan.nAttysDevices;n++) {
 		for(int i=0;i<AttysComm::NCHANNELS;i++) {
 			if (attys_scope->channel[n][i]->isActive()) {
 				float phys = unfiltDAQData[n][attys_scope->channel[n][i]->getChannel()];
@@ -247,8 +247,8 @@ void ScopeWindow::setFilename(QString name,int tsv) {
 
 void ScopeWindow::writeFile() {
 	if (!rec_file) return;
-	fprintf(rec_file, "%f", ((float)nsamples) / ((float)attysComm[0]->getSamplingRateInHz()));
-	for (int n = 0; n < nAttysDevices; n++) {
+	fprintf(rec_file, "%f", ((float)nsamples) / ((float)attysScan.attysComm[0]->getSamplingRateInHz()));
+	for (int n = 0; n < attysScan.nAttysDevices; n++) {
 		int nFiltered = 0;
 		for (int i = 0; i < AttysComm::NCHANNELS; i++) {
 			if (attys_scope->channel[n][i]->isActive()) {
@@ -283,8 +283,8 @@ void ScopeWindow::stopUDP()
 void ScopeWindow::writeUDP() {
 	if (!udpSocket) return;
 	char tmp[1024];
-	sprintf(tmp, "%f", ((float)nsamples) / ((float)attysComm[0]->getSamplingRateInHz()));
-	for (int n = 0; n < nAttysDevices; n++) {
+	sprintf(tmp, "%f", ((float)nsamples) / ((float)attysScan.attysComm[0]->getSamplingRateInHz()));
+	for (int n = 0; n < attysScan.nAttysDevices; n++) {
 		int nFiltered = 0;
 		for (int i = 0; i < AttysComm::NCHANNELS; i++) {
 			if (attys_scope->channel[n][i]->isActive()) {
@@ -376,7 +376,7 @@ void ScopeWindow::paintData(float** buffer) {
 	}
 	num_channels=0;
 	
-	for(int n=0;n<nAttysDevices;n++) {
+	for(int n=0;n<attysScan.nAttysDevices;n++) {
 		for(int i=0;i<AttysComm::NCHANNELS;i++) {
 			if (attys_scope->channel[n][i]->isActive()) {
 				num_channels++;	
@@ -406,7 +406,7 @@ void ScopeWindow::paintData(float** buffer) {
 	paint.drawLine(xer,0,
 		       xer,h);
 	int act=1;
-	for (int n = 0; n < nAttysDevices; n++) {
+	for (int n = 0; n < attysScan.nAttysDevices; n++) {
 		for (int i = 0; i < AttysComm::NCHANNELS; i++) {
 			if (attys_scope->
 				channel[n][i]->
@@ -454,13 +454,13 @@ void ScopeWindow::paintEvent(QPaintEvent *) {
 
 	for (;;) {
 
-		for (int n = 0; n < nAttysDevices; n++) {
-			int hasSample = attysComm[n]->hasSampleAvilabale();
+		for (int n = 0; n < attysScan.nAttysDevices; n++) {
+			int hasSample = attysScan.attysComm[n]->hasSampleAvilabale();
 			if (!hasSample) return;
 		}
 
-		for (int n = 0; n < nAttysDevices; n++) {
-			float* values = attysComm[n]->getSampleFromBuffer();
+		for (int n = 0; n < attysScan.nAttysDevices; n++) {
+			float* values = attysScan.attysComm[n]->getSampleFromBuffer();
 			int nFiltered = 0;
 			for (int i = 0; i < AttysComm::NCHANNELS; i++) {
 				unfiltDAQData[n][i] = values[i];
@@ -491,7 +491,7 @@ void ScopeWindow::paintEvent(QPaintEvent *) {
 
 		// enough averaged?
 		if (tb_counter <= 0) {
-			for (int n = 0; n < nAttysDevices; n++) {
+			for (int n = 0; n < attysScan.nAttysDevices; n++) {
 				for (int i = 0; i < AttysComm::NCHANNELS; i++) {
 					adAvgBuffer[n][i] = adAvgBuffer[n][i] / tb_init;
 				}
@@ -502,7 +502,7 @@ void ScopeWindow::paintEvent(QPaintEvent *) {
 
 			// clear buffer
 			tb_counter = tb_init;
-			for (int n = 0; n < nAttysDevices; n++) {
+			for (int n = 0; n < attysScan.nAttysDevices; n++) {
 				for (int i = 0; i < AttysComm::NCHANNELS; i++) {
 					adAvgBuffer[n][i] = 0;
 				}
@@ -513,9 +513,9 @@ void ScopeWindow::paintEvent(QPaintEvent *) {
 
 
 void ScopeWindow::setTB(int us) {
-	tb_init=us/(1000000/ attysComm[0]->getSamplingRateInHz());
+	tb_init=us/(1000000/ attysScan.attysComm[0]->getSamplingRateInHz());
 	tb_counter=tb_init;
-	for(int n=0;n<nAttysDevices;n++) {
+	for(int n=0;n<attysScan.nAttysDevices;n++) {
 		for(int i=0;i<AttysComm::NCHANNELS;i++) {
 			adAvgBuffer[n][i]=0;
 		}

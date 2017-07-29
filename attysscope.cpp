@@ -95,21 +95,21 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	int row = 1;
 
-	channelLabel=new QPointer<QLabel>*[nAttysDevices];
-	channel=new QPointer<Channel>*[nAttysDevices];
-	voltageTextEdit=new QPointer<QTextEdit>*[nAttysDevices];
-	channelgrp=new QPointer<QGroupBox>*[nAttysDevices];
-	hbox=new QPointer<QHBoxLayout>*[nAttysDevices];
-	gain=new QPointer<Gain>*[nAttysDevices];
-	highpass=new QPointer<Highpass>*[nAttysDevices];
-	lowpass=new QPointer<Lowpass>*[nAttysDevices];
-	bandstop = new QPointer<Bandstop>*[nAttysDevices];
-	special = new QPointer<Special>*[nAttysDevices];
-	current = new QPointer<Current>[nAttysDevices];
-	specialLayout = new QPointer<QHBoxLayout>[nAttysDevices];
+	channelLabel=new QPointer<QLabel>*[attysScan.nAttysDevices];
+	channel=new QPointer<Channel>*[attysScan.nAttysDevices];
+	voltageTextEdit=new QPointer<QTextEdit>*[attysScan.nAttysDevices];
+	channelgrp=new QPointer<QGroupBox>*[attysScan.nAttysDevices];
+	hbox=new QPointer<QHBoxLayout>*[attysScan.nAttysDevices];
+	gain=new QPointer<Gain>*[attysScan.nAttysDevices];
+	highpass=new QPointer<Highpass>*[attysScan.nAttysDevices];
+	lowpass=new QPointer<Lowpass>*[attysScan.nAttysDevices];
+	bandstop = new QPointer<Bandstop>*[attysScan.nAttysDevices];
+	special = new QPointer<Special>*[attysScan.nAttysDevices];
+	current = new QPointer<Current>[attysScan.nAttysDevices];
+	specialLayout = new QPointer<QHBoxLayout>[attysScan.nAttysDevices];
 	
 	AttysComm attysCommTmp(0);
-	for(int n=0;n<nAttysDevices;n++) {
+	for(int n=0;n<attysScan.nAttysDevices;n++) {
 		channelLabel[n]=new QPointer<QLabel>[channels];
 		channel[n]=new QPointer<Channel>[channels];
 		voltageTextEdit[n]=new QPointer<QTextEdit>[channels];
@@ -122,7 +122,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 		special[n] = new QPointer<Special>[2];
 		current[n] = new Current();
 
-		allChLayout->addWidget(new QLabel(QString(attysName[n])+"\n"), row, 1);
+		allChLayout->addWidget(new QLabel(QString(attysScan.attysName[n])+"\n"), row, 1);
 		row++;
 		specialLayout[n] = new QHBoxLayout;
 		for (int i = 0; i < 2; i++) {
@@ -322,8 +322,8 @@ Attys_scope::Attys_scope(QWidget *parent,
 	statusLayout = new QHBoxLayout;
 
 	sprintf(status,"# of Attys devs: %d, Sampling rate: %d Hz.",
-		nAttysDevices,
-		attysComm[0]->getSamplingRateInHz());
+		attysScan.nAttysDevices,
+		attysScan.attysComm[0]->getSamplingRateInHz());
 	statusLabel = new QLabel(status);
 	statusLayout->addWidget(statusLabel);
 	statusgrp->setLayout(statusLayout);
@@ -382,7 +382,7 @@ void Attys_scope::readSettings() {
 
 	settings.beginGroup(SETTINGS_CHANNELS);
 
-	for (int n = 0; n < nAttysDevices; n++) {
+	for (int n = 0; n < attysScan.nAttysDevices; n++) {
 		for (int i = 0; i < 2; i++) {
 			char tmpSp[256];
 			sprintf(tmpSp, SETTINGS_SPECIAL, n, i);
@@ -448,7 +448,7 @@ Attys_scope::~Attys_scope() {
 
 	int channels = AttysComm::NCHANNELS;
 	settings.beginGroup(SETTINGS_CHANNELS);
-	for(int n=0;n<nAttysDevices;n++) {
+	for(int n=0;n<attysScan.nAttysDevices;n++) {
 		for(int i=0;i<channels;i++) {
 			char tmp[128];
 
@@ -488,7 +488,7 @@ Attys_scope::~Attys_scope() {
 void Attys_scope::disableControls() {
 	filePushButton->setEnabled( false );
 	int channels = AttysComm::NCHANNELS;
-	for(int n=0;n<nAttysDevices;n++) {
+	for(int n=0;n<attysScan.nAttysDevices;n++) {
 		for(int i=0;i<channels;i++) {
 			channel[n][i]->setEnabled( false );
 		}
@@ -499,7 +499,7 @@ void Attys_scope::disableControls() {
 void Attys_scope::enableControls() {
 	filePushButton->setEnabled( true );
 	int channels = AttysComm::NCHANNELS;
-	for(int n=0;n<nAttysDevices;n++) {
+	for(int n=0;n<attysScan.nAttysDevices;n++) {
 		for(int i=0;i<channels;i++) {
 			channel[n][i]->setEnabled( true );
 		}
@@ -634,7 +634,7 @@ int main( int argc, char **argv )
 	a.processEvents();
 
 	// see if we have any Attys!
-	int ret = attysScan(splash);
+	int ret = attysScan.scan(splash);
 
 	// zero on success and non zero on failure
 	if (ret) {
@@ -645,7 +645,7 @@ int main( int argc, char **argv )
 	}
 	
 	// none detected
-	if (nAttysDevices<1) {
+	if (attysScan.nAttysDevices<1) {
 		printf("No Attys present or not paired.\n");
 		splash->showMessage("Cound not connect\nand/or no devices paired.");
 		a.processEvents();
