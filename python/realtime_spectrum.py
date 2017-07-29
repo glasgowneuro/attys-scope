@@ -79,7 +79,7 @@ def update(data):
     # set new data
     line.set_ydata(spectrum)
     # set new max
-    # ax.set_ylim(0,spectrum.max())
+    ax.set_ylim(0,spectrum.max())
     # return the line
     return line,
 
