@@ -32,9 +32,8 @@ Attys_scope::Attys_scope(QWidget *parent,
 	
 	// to the get the stuff a bit closer together
 	char styleSheet[] = "padding:0px;margin:0px;border:0px;";
-
+	char styleSheetCombo[] = "padding:0px;margin:0px;border:0px;margin-right:2px";
 	char styleSheetGroupBox[] = "padding:1px;margin:0px;border:0px";
-
 	char styleSheetButton[] = "background-color: rgb(224, 224, 224); border: none; outline: none; border-width: 0px; font: 16px; padding: 5px;";
 
 	attysScopeWindow=new ScopeWindow(this);
@@ -163,10 +162,10 @@ Attys_scope::Attys_scope(QWidget *parent,
 			hbox[n][i]->setSpacing(1);
 			channel[n][i] = new Channel(channels,attysCommTmp.CHANNEL_SHORT_DESCRIPTION);
 			channel[n][i] -> setChannel( i );
-			channel[n][i]->setStyleSheet(styleSheet);
+			channel[n][i]->setStyleSheet(styleSheetCombo);
 			hbox[n][i]->addWidget(channel[n][i]);
 			voltageTextEdit[n][i]=new QTextEdit(channelgrp[n][i]);
-			voltageTextEdit[n][i]->setStyleSheet(styleSheet);
+			voltageTextEdit[n][i]->setStyleSheet(styleSheetCombo);
 			hbox[n][i]->addWidget(voltageTextEdit[n][i]);
 			voltageTextEdit[n][i]->setFont(*voltageFont);
 			char tmpVolt[128];
@@ -182,21 +181,21 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 			hbox[n][i]->addWidget(new QLabel("HP:"));
 			highpass[n][i] = new Highpass(attysScopeWindow->getActualSamplingRate(),-1);
-			highpass[n][i] ->setStyleSheet(styleSheet);
+			highpass[n][i] ->setStyleSheet(styleSheetCombo);
 			hbox[n][i]->addWidget(highpass[n][i]);
 
 			hbox[n][i]->addWidget(new QLabel("LP:"));
 			lowpass[n][i] = new Lowpass(attysScopeWindow->getActualSamplingRate(),0);
-			lowpass[n][i] ->setStyleSheet(styleSheet);
+			lowpass[n][i] ->setStyleSheet(styleSheetCombo);
 			hbox[n][i]->addWidget(lowpass[n][i]);
 
 			hbox[n][i]->addWidget(new QLabel("BS:"));
 			bandstop[n][i] = new Bandstop(attysScopeWindow->getActualSamplingRate(), 0);
-			bandstop[n][i]->setStyleSheet(styleSheet);
+			bandstop[n][i]->setStyleSheet(styleSheetCombo);
 			hbox[n][i]->addWidget(bandstop[n][i]);
 
 			gain[n][i] = new Gain();
-			gain[n][i]->setStyleSheet(styleSheet);
+			gain[n][i]->setStyleSheet(styleSheetCombo);
 			hbox[n][i]->addWidget(gain[n][i]);
 
 			allChLayout->addWidget(channelgrp[n][i],row,1);
@@ -296,7 +295,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	tbInfoTextEdit->setFont (*tbFont);
 	QFontMetrics metricsTb(*tbFont);
 	tbInfoTextEdit->setMaximumHeight ( tbMetrics.height() * 1.5 );
-	tbInfoTextEdit->setMaximumWidth ( tbMetrics.width('X') * 14 );
+	tbInfoTextEdit->setMaximumWidth ( tbMetrics.width('X') * 10 );
 	tbInfoTextEdit->setReadOnly(true);
 	tbInfoTextEdit->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
 	tbLayout->addWidget(tbInfoTextEdit);
