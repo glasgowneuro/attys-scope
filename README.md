@@ -20,17 +20,22 @@ which then plots a bar graph in realtime.
 ## Requires
 * QT5
 * IIR1 libaray (http://www.berndporr.me.uk/iir/)
+* AttysComm (https://github.com/glasgowneuro/AttysComm)
 
 ## Compile under Windows
 * Install: Visual Studio 2017 community edition
 * Download the open source version of QT5, 64 bits for visual C++ 2015/2017 from www.qt.io:
   https://download.qt.io/official_releases/qt/5.7/5.7.0/qt-opensource-windows-x86-msvc2015_64-5.7.0.exe
+* git clone https://github.com/glasgowneuro/attys_scope.git 
+* git clone https://github.com/glasgowneuro/AttysComm.git
 * cd attys_scope, Clone iir1 as a subproject: https://github.com/berndporr/iir1
-* optional: "qmake -tp vc"
+* "qmake -tp vc" and then re-target the project (right click on attys_scope in the Solutions Explorer -> Retarget Projects)
 * Open the .sln file
 * Build solution
 
 ## Compile under Linux
+* git clone https://github.com/glasgowneuro/attys_scope.git 
+* git clone https://github.com/glasgowneuro/AttysComm.git
 * Install the IIR filter library https://github.com/berndporr/iir1 or install it via ppa: "ppa:berndporr/usbdux" and  "apt-get install iir1-dev".
 * Install the other packages: "apt-get install qt5-qmake, g++, qtbase5-dev-tools, qtdeclarative5-dev-tools, libbluetooth-dev, qtbase5-dev, qt5-default"
 * cd attys_scope
@@ -41,3 +46,6 @@ which then plots a bar graph in realtime.
 
 ## Post- and realtime processing in Python
 Check out the python subdirectory. This contains scripts for both postprocessing of datafiles and realtime processing.
+
+## UNREAL gaming engine
+The unreal subdirectory contains a class which receives UDP packets from attysscope and also screenshots of the blueprints for both a jumping and driving game
