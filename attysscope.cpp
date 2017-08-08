@@ -231,7 +231,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	recLayout->addWidget(filePushButton);
 	recLayout->addWidget(new QLabel("    "));
 
-	recCheckBox = new QCheckBox( "REC" );
+	recCheckBox = new QCheckBox( "&REC" );
 	recCheckBox->connect(recCheckBox, SIGNAL( stateChanged(int) ),
 			       this, SLOT( recstartstop(int) ) );
 	recCheckBox->setEnabled( false );
@@ -276,7 +276,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	QLabel tbLabel("Timebase:");
 	tbLayout->addWidget(&tbLabel);
 
-	tbIncPushButton = new QPushButton( "slower" );
+	tbIncPushButton = new QPushButton( "&slower" );
 
 	tbIncPushButton->setStyleSheet(styleSheetButton);
 	tbIncPushButton->setFont(*tbFont);
@@ -284,7 +284,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 		this, SLOT( incTbEvent() ) );
 	tbLayout->addWidget(tbIncPushButton);
 
-	tbDecPushButton = new QPushButton( "faster" );
+	tbDecPushButton = new QPushButton( "&faster" );
 	tbDecPushButton->setStyleSheet(styleSheetButton);
 	tbDecPushButton->setFont(*tbFont);	
 	tbgrp->connect(tbDecPushButton, SIGNAL( clicked() ),

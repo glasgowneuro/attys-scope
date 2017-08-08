@@ -42,7 +42,7 @@ which then plots a bar graph in realtime.
 * qmake
 * make
 * make install
-* Start wtih attysscope
+* Start by typing "attysscope"
 
 ## Post- and realtime processing in Python
 Check out the python subdirectory. This contains scripts for both postprocessing of datafiles and realtime processing.
