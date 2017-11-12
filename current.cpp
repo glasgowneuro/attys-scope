@@ -23,6 +23,7 @@ void Current::currentChanged ( int index ) {
  	current = index;
 	emit signalRestart();
 //	_RPT1(0, "current %d\n",current);
+//	fprintf(stderr,"current %d\n",current);
 }
 
 void Current::setCurrent( int c ) {
