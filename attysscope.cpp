@@ -389,7 +389,6 @@ void Attys_scope::readSettings() {
 			_RPT1(0, "settings special %d\n", a);
 			special[n][i]->setSpecial(a);
 		}
-		current[n] = new Current();
 		char tmpCur[256];
 		sprintf(tmpCur, SETTINGS_CURRENT, n);
 		int a = settings.value(tmpCur, 0).toInt();
@@ -478,6 +477,7 @@ Attys_scope::~Attys_scope() {
 		}
 		char tmpCur[256];
 		sprintf(tmpCur, SETTINGS_CURRENT, n);
+//		fprintf(stderr,"curr=%d\n",current[n]->getCurrent());
 		settings.setValue(tmpCur, current[n]->getCurrent());
 	}
 	settings.endGroup();
