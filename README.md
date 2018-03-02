@@ -24,13 +24,14 @@ which then plots a bar graph in realtime.
 
 ## Compile under Windows
 * Install: Visual Studio 2017 community edition
+* clone iir1 in your root directory: https://github.com/berndporr/iir1 and compile it (release version)
 * Download the open source version of QT5, 64 bits for visual C++ 2015/2017 from www.qt.io:
   https://download.qt.io/official_releases/qt/5.7/5.7.0/qt-opensource-windows-x86-msvc2015_64-5.7.0.exe
 * git clone https://github.com/glasgowneuro/attys_scope.git 
 * git clone https://github.com/glasgowneuro/AttysComm.git
-* cd attys_scope, Clone iir1 as a subproject: https://github.com/berndporr/iir1
 * "qmake -tp vc" and then re-target the project (right click on attys_scope in the Solutions Explorer -> Retarget Projects)
 * Open the .sln file
+* You might need to add the iir_static.lib to the project
 * Build solution
 
 ## Compile under Linux
