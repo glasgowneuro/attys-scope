@@ -14,7 +14,7 @@ https://github.com/glasgowneuro/attys_scope
 
 ![alt tag](screenshot.png)
 
-The screenshot above shows attys_scope in action under Windows where it feeds to the data into a Python program
+The screenshot above shows attys_scope in action under Windows where it feeds the data into a Python program
 which then plots a bar graph in realtime.
 
 ## Requires
