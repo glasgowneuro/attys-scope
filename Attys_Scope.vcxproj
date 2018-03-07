@@ -70,8 +70,8 @@
       <WarningLevel>Level3</WarningLevel>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>C:\Qt\Qt5.7.0\5.7\msvc2015_64\lib\qtmain.lib;shell32.lib;C:\Qt\Qt5.7.0\5.7\msvc2015_64\lib\Qt5Widgets.lib;C:\Qt\Qt5.7.0\5.7\msvc2015_64\lib\Qt5Gui.lib;C:\Qt\Qt5.7.0\5.7\msvc2015_64\lib\Qt5Network.lib;C:\Qt\Qt5.7.0\5.7\msvc2015_64\lib\Qt5Core.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Qt\Qt5.7.0\5.7\msvc2015_64\lib;C:\utils\postgresql\pgsql\lib;C:\utils\my_sql\my_sql\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>C:\Qt\Qt5.7.0\5.7\msvc2015_64\lib\qtmain.lib;shell32.lib;\iir1\Release\iir_static.lib;ws2_32.lib;C:\Qt\Qt5.7.0\5.7\msvc2015_64\lib\Qt5Widgets.lib;C:\Qt\Qt5.7.0\5.7\msvc2015_64\lib\Qt5Gui.lib;C:\Qt\Qt5.7.0\5.7\msvc2015_64\lib\Qt5Network.lib;C:\Qt\Qt5.7.0\5.7\msvc2015_64\lib\Qt5Core.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Qt\Qt5.7.0\5.7\msvc2015_64\lib;C:\utils\postgresql\pgsql\lib;C:\utils\my_sql\my_sql\lib;\iir1\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
       <DataExecutionPrevention>true</DataExecutionPrevention>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -110,8 +110,8 @@
       <WarningLevel>Level3</WarningLevel>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>C:\Qt\Qt5.7.0\5.7\msvc2015_64\lib\qtmaind.lib;shell32.lib;C:\Qt\Qt5.7.0\5.7\msvc2015_64\lib\Qt5Widgetsd.lib;C:\Qt\Qt5.7.0\5.7\msvc2015_64\lib\Qt5Guid.lib;C:\Qt\Qt5.7.0\5.7\msvc2015_64\lib\Qt5Networkd.lib;C:\Qt\Qt5.7.0\5.7\msvc2015_64\lib\Qt5Cored.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Qt\Qt5.7.0\5.7\msvc2015_64\lib;C:\utils\postgresql\pgsql\lib;C:\utils\my_sql\my_sql\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>C:\Qt\Qt5.7.0\5.7\msvc2015_64\lib\qtmaind.lib;shell32.lib;\iir1\Release\iir_static.lib;ws2_32.lib;C:\Qt\Qt5.7.0\5.7\msvc2015_64\lib\Qt5Widgetsd.lib;C:\Qt\Qt5.7.0\5.7\msvc2015_64\lib\Qt5Guid.lib;C:\Qt\Qt5.7.0\5.7\msvc2015_64\lib\Qt5Networkd.lib;C:\Qt\Qt5.7.0\5.7\msvc2015_64\lib\Qt5Cored.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Qt\Qt5.7.0\5.7\msvc2015_64\lib;C:\utils\postgresql\pgsql\lib;C:\utils\my_sql\my_sql\lib;\iir1\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
       <DataExecutionPrevention>true</DataExecutionPrevention>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -317,9 +317,6 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="attysapp.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="..\..\..\..\iir1\Release\iir_static.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

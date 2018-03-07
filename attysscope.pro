@@ -9,7 +9,11 @@ INSTALLS        += target
 QT             += widgets
 QT += network
 INCLUDEPATH     += /iir1
-PRE_TARGETDEPS +=  /iir1/Release/iir_static.lib
+LIBS += \
+	-L/iir1/Release \
+    -liir_static \
+	-lws2_32
+
 RESOURCES     = application.qrc
 RC_FILE = attysapp.rc
 INCLUDEPATH += ../AttysComm/c/
