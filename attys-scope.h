@@ -28,17 +28,11 @@ class Attys_scope;
 #include "AttysScan.h"
 
 // version number
-#define VERSION "1.3.2"
+#define VERSION "1.4.0"
 
 #define ATTYS_STRING "ATTYS"
-#define PROGRAM_NAME "attys_scope"
-
-#ifdef __linux__
-#define EXECUTABLE_NAME "attysscope"
-#else
-#define EXECUTABLE_NAME "Attys_Scope"
-#endif
-
+#define PROGRAM_NAME "attys-scope"
+#define EXECUTABLE_NAME "attys-scope"
 
 
 class Attys_scope : public QWidget

@@ -4,9 +4,9 @@
 "ProjectType" = "8:{978C614F-708E-4E1A-B201-565925725DBA}"
 "IsWebType" = "8:FALSE"
 "ProjectName" = "8:attys_scope_setup"
-"LanguageId" = "3:0"
+"LanguageId" = "3:1033"
 "CodePage" = "3:1252"
-"UILanguageId" = "3:0"
+"UILanguageId" = "3:1033"
 "SccProjectName" = "8:"
 "SccLocalPath" = "8:"
 "SccAuxPath" = "8:"
@@ -39,6 +39,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_185E9EBA82314EB7A9D55A3197684124"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_195C02FEA8914D7DBDDCF8DA7A9E7039"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -59,6 +65,12 @@
         {
         "MsmKey" = "8:_2717E46A3D4F435684559B0B949F8178"
         "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_274ACE37747CF27C4D54A4A2DCE52A3E"
+        "OwnerKey" = "8:_185E9EBA82314EB7A9D55A3197684124"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -87,6 +99,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_50649E8355911A073D1DDA23A3BC6EE6"
+        "OwnerKey" = "8:_185E9EBA82314EB7A9D55A3197684124"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_611614DE42B44ACBAC7C1FFCD7E09B65"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -100,12 +118,6 @@
         "Entry"
         {
         "MsmKey" = "8:_63F9FFC800794B84BF10C6690AA99A99"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_7191273EA15A4519A20FC456E565B9F1"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -131,6 +143,12 @@
         {
         "MsmKey" = "8:_8D6E782B7FD44C44AD788253375FF034"
         "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_900D11EF9DEA9E3829719700D9069D88"
+        "OwnerKey" = "8:_185E9EBA82314EB7A9D55A3197684124"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -291,7 +309,7 @@
         "DisplayName" = "8:Debug"
         "IsDebugOnly" = "11:TRUE"
         "IsReleaseOnly" = "11:FALSE"
-        "OutputFilename" = "8:attys_scope_debug.msi"
+        "OutputFilename" = "8:attys_scope_installer.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -510,6 +528,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_274ACE37747CF27C4D54A4A2DCE52A3E"
+            {
+            "SourcePath" = "8:ucrtbased.dll"
+            "TargetName" = "8:ucrtbased.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_989FC54179EC48EDA466EDD4472D3D00"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3FB88384FFB144169D9E3615890CB636"
             {
             "SourcePath" = "8:release\\imageformats\\qtga.dll"
@@ -588,6 +626,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_50649E8355911A073D1DDA23A3BC6EE6"
+            {
+            "SourcePath" = "8:VCRUNTIME140D.dll"
+            "TargetName" = "8:VCRUNTIME140D.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_989FC54179EC48EDA466EDD4472D3D00"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_611614DE42B44ACBAC7C1FFCD7E09B65"
@@ -728,6 +786,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_900D11EF9DEA9E3829719700D9069D88"
+            {
+            "SourcePath" = "8:MSVCP140D.dll"
+            "TargetName" = "8:MSVCP140D.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_989FC54179EC48EDA466EDD4472D3D00"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_908E7BAE369D42F08B3B76611345C2CA"
@@ -1345,26 +1423,26 @@
         }
         "MsiBootstrapper"
         {
-        "LangId" = "3:0"
+        "LangId" = "3:1033"
         "RequiresElevation" = "11:FALSE"
         }
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:Attys_Scope"
-        "ProductCode" = "8:{A841AB17-5A13-4432-9C8A-EFD150C52ED0}"
-        "PackageCode" = "8:{A5B7256A-01F7-4F51-9FB9-4EE3C004F83A}"
+        "ProductName" = "8:attys-scope"
+        "ProductCode" = "8:{4066B02D-6401-474C-AAB7-0D6B948BD78E}"
+        "PackageCode" = "8:{2349EAB3-4AAA-4E3D-8F72-5B6F0F055B20}"
         "UpgradeCode" = "8:{61B338BB-2C5C-411B-9290-DD8EC4E42DD4}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.3.2"
+        "ProductVersion" = "8:1.4.0"
         "Manufacturer" = "8:glasgow_neuro"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
-        "Title" = "8:attys_scope_setup"
+        "Title" = "8:attys-scope-setup"
         "Subject" = "8:"
         "ARPCONTACT" = "8:Bernd Porr"
         "Keywords" = "8:"
@@ -1473,30 +1551,30 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_0B95908F223C45BD9B7B15D405D16910"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_8CDA4B94001546F9BFA017EEC6F6F5C3"
             {
-            "Name" = "8:Attys Scope"
+            "Name" = "8:attys-scope"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_7191273EA15A4519A20FC456E565B9F1"
-            "Folder" = "8:_1BDCC16553B34B9AB23B700EB99B290E"
+            "Target" = "8:_185E9EBA82314EB7A9D55A3197684124"
+            "Folder" = "8:_C2935C6E10FA46D19CFE48E7C006E330"
             "WorkingFolder" = "8:_989FC54179EC48EDA466EDD4472D3D00"
             "Icon" = "8:_3FE9DC2C182341A387071F62CA93E5BA"
             "Feature" = "8:"
             }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_8CDA4B94001546F9BFA017EEC6F6F5C3"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_96A19C7FE14C44DBB464CD81903FE567"
             {
-            "Name" = "8:Attys Scope"
+            "Name" = "8:attys-scope"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_7191273EA15A4519A20FC456E565B9F1"
-            "Folder" = "8:_C2935C6E10FA46D19CFE48E7C006E330"
+            "Target" = "8:_185E9EBA82314EB7A9D55A3197684124"
+            "Folder" = "8:_1BDCC16553B34B9AB23B700EB99B290E"
             "WorkingFolder" = "8:_989FC54179EC48EDA466EDD4472D3D00"
             "Icon" = "8:_3FE9DC2C182341A387071F62CA93E5BA"
             "Feature" = "8:"
@@ -1509,7 +1587,7 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_7191273EA15A4519A20FC456E565B9F1"
+            "Target" = "8:_185E9EBA82314EB7A9D55A3197684124"
             "Folder" = "8:_D606FB38ECAC4E8F8065937D4B720362"
             "WorkingFolder" = "8:_D606FB38ECAC4E8F8065937D4B720362"
             "Icon" = "8:_3FE9DC2C182341A387071F62CA93E5BA"
@@ -1975,9 +2053,9 @@
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_7191273EA15A4519A20FC456E565B9F1"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_185E9EBA82314EB7A9D55A3197684124"
             {
-            "SourcePath" = "8:..\\release\\attys_scope.exe"
+            "SourcePath" = "8:..\\debug\\attys-scope.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_989FC54179EC48EDA466EDD4472D3D00"
@@ -1997,7 +2075,7 @@
             "ProjectOutputGroupRegister" = "3:1"
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:Built"
-            "OutputProjectGuid" = "8:{AB63B829-E35D-338F-BE74-18F237B5B07D}"
+            "OutputProjectGuid" = "8:{926697CF-8C0F-350B-9985-7118811CD303}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {
