@@ -1,8 +1,6 @@
-# AttysScope (Windows/Linux)
+# attys-scope (Windows/Linux)
 
 Plotting program for the Attys for Windows/Linux
-
-https://github.com/glasgowneuro/attys_scope
 
 ## Features
 
@@ -14,7 +12,7 @@ https://github.com/glasgowneuro/attys_scope
 
 ![alt tag](screenshot.png)
 
-The screenshot above shows attys_scope in action under Windows where it feeds the data into a Python program
+The screenshot above shows attys-scope in action under Windows where it feeds the data into a Python program
 which then plots a bar graph in realtime.
 
 ## Requires
@@ -27,7 +25,7 @@ which then plots a bar graph in realtime.
 * clone iir1 in your root directory: https://github.com/berndporr/iir1 and compile it (release version)
 * Download the open source version of QT5, 64 bits for visual C++ 2015/2017 from www.qt.io:
   https://download.qt.io/official_releases/qt/5.7/5.7.0/qt-opensource-windows-x86-msvc2015_64-5.7.0.exe
-* git clone https://github.com/glasgowneuro/attys_scope.git 
+* git clone https://github.com/glasgowneuro/attys-scope.git 
 * git clone https://github.com/glasgowneuro/AttysComm.git
 * "qmake -tp vc" and then re-target the project (right click on attys_scope in the Solutions Explorer -> Retarget Projects)
 * Open the .sln file
@@ -35,15 +33,15 @@ which then plots a bar graph in realtime.
 * Build solution
 
 ## Compile under Linux
-* git clone https://github.com/glasgowneuro/attys_scope.git 
+* git clone https://github.com/glasgowneuro/attys-scope.git 
 * git clone https://github.com/glasgowneuro/AttysComm.git
 * Install the IIR filter library https://github.com/berndporr/iir1 or install it via ppa: "ppa:berndporr/usbdux" and  "apt-get install iir1-dev".
 * Install the other packages: "apt-get install qt5-qmake, g++, qtbase5-dev-tools, qtdeclarative5-dev-tools, libbluetooth-dev, qtbase5-dev, qt5-default"
-* cd attys_scope
+* cd attys-scope
 * qmake
 * make
 * make install
-* Start by typing "attysscope"
+* Start by typing "attys-scope"
 
 ## Post- and realtime processing in Python
 Check out the python subdirectory. This contains scripts for both postprocessing of datafiles and realtime processing.
