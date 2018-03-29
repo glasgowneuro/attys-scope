@@ -23,7 +23,7 @@
 #include <fstream>
 
 #include "scopewindow.h"
-#include "attysscope.h"
+#include "attys-scope.h"
 
 
 Attys_scope::Attys_scope(QWidget *parent,
