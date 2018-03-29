@@ -1581,7 +1581,7 @@
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_B7FDBB4B95D04677AB0667E55C2E2BF9"
             {
-            "Name" = "8:Attys Scope"
+            "Name" = "8:attys-scope"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
