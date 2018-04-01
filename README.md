@@ -34,7 +34,7 @@ which then plots a bar graph in realtime.
 
 ## Compile under Linux
 * git clone https://github.com/glasgowneuro/attys-scope.git 
-* git clone https://github.com/glasgowneuro/AttysComm.git
+* git clone https://github.com/glasgowneuro/AttysComm.git and compile/install it.
 * Install the IIR filter library https://github.com/berndporr/iir1 or install it via ppa: "ppa:berndporr/usbdux" and  "apt-get install iir1-dev".
 * Install the other packages: "apt-get install qt5-qmake, g++, qtbase5-dev-tools, qtdeclarative5-dev-tools, libbluetooth-dev, qtbase5-dev, qt5-default"
 * cd attys-scope

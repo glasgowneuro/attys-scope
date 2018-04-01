@@ -51,7 +51,7 @@ public:
 	 * Destructor
 	 **/
 	~Attys_scope();
-	
+
 public:
 /**
  * Sets the filename for the data-file

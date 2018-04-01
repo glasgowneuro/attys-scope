@@ -633,7 +633,7 @@ int main( int argc, char **argv )
 	a.processEvents();
 
 	// see if we have any Attys!
-	int ret = attysScan.scan(splash);
+	int ret = attysScan.scan();
 
 	// zero on success and non zero on failure
 	if (ret) {
