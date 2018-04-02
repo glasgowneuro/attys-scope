@@ -30,7 +30,7 @@ public:
 		AttysComm::ADC_GAIN_1, // for NORMAL
 		AttysComm::ADC_GAIN_6, // for ECG
 		AttysComm::ADC_GAIN_1, // for I
-		AttysComm::ADC_GAIN_1, // for TEMPERATURE
+		AttysComm::ADC_GAIN_6, // for TEMPERATURE
 		AttysComm::ADC_GAIN_6, // for PGA=6
 		AttysComm::ADC_GAIN_2, // for PGA=2
 		AttysComm::ADC_GAIN_3, // for PGA=3

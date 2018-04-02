@@ -11,6 +11,7 @@ Special::Special() : QComboBox() {
 	addItem(tr("normal"),SPECIAL_NORMAL);
 	addItem(tr("ECG/Einth"),SPECIAL_ECG);
 	addItem(tr("I const"), SPECIAL_I);
+	addItem(tr("Temperature"), SPECIAL_TEMPERATURE);
 	addItem(tr("PGA:x6"), SPECIALADC_GAIN_6);
 	addItem(tr("PGA:x2"), SPECIALADC_GAIN_2);
 	addItem(tr("PGA:x3"), SPECIALADC_GAIN_3);
