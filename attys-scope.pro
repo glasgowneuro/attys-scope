@@ -2,8 +2,8 @@
 win32 {
 TEMPLATE	= app
 CONFIG		+= qt release
-HEADERS		= attys-scope.h special.h current.h scopewindow.h gain.h highpass.h lowpass.h bandstop.h channel.h ../AttysComm/c/base64.h 
-SOURCES		= attys-scope.cpp special.cpp current.cpp scopewindow.cpp gain.cpp lowpass.cpp bandstop.cpp highpass.cpp channel.cpp ../AttysComm/c/base64.c 
+HEADERS		= attys-scope.h special.h current.h scopewindow.h gain.h highpass.h lowpass.h bandstop.h channel.h
+SOURCES		= attys-scope.cpp special.cpp current.cpp scopewindow.cpp gain.cpp lowpass.cpp bandstop.cpp highpass.cpp channel.cpp
 TARGET		= attys-scope
 INSTALLS        += target
 QT             += widgets
@@ -12,11 +12,13 @@ INCLUDEPATH     += /iir1
 LIBS += \
 	-L/iir1/Debug \
     -liir_static \
-	-lws2_32
+	-lws2_32 \
+	-L../AttysComm/cpp/Debug \
+	-lattyscomm_static
 
 RESOURCES     = application.qrc
 RC_FILE = attysapp.rc
-INCLUDEPATH += ../AttysComm/c/
+INCLUDEPATH += ../AttysComm/cpp
 }
 
 unix {
