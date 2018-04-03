@@ -36,7 +36,9 @@ def readSocket():
         # check if data is available
         data = f.readline()
         allch = np.array(data.split(','),dtype=np.float32)
-        thermocouple = 0# allch[8] / 39E-6
+        offset = 0.000827
+        print(allch[8])
+        thermocouple = (allch[8]-offset) / 39E-6
         # get the temperature from the internal sensor
         temperature = allch[7]
         # add it all together to get the absolute temperature
