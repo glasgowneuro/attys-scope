@@ -2,6 +2,10 @@
 """
 @author: Bernd Porr, mail@berndporr.me.uk
 
+Reads from a thermocouple on channel 2 of the
+Attys. Uses channel one's internal temperature
+sensor for the cold junction temperature.
+
 """
 
 import socket
@@ -10,8 +14,11 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import threading
 
-# read from channel 9
-channel = 9
+# set this to the zero value reading of the attys from
+# channel 2 by short circuting the ch2 and then noting
+# the voltage
+offset = 0.000827
+
 
 # socket connection to attys_scope
 s = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
@@ -36,8 +43,8 @@ def readSocket():
         # check if data is available
         data = f.readline()
         allch = np.array(data.split(','),dtype=np.float32)
-        offset = 0.000827
-        print(allch[8])
+        #uncomment to see the offset voltage to set the offset
+        #print(allch[8])
         thermocouple = (allch[8]-offset) / 39E-6
         # get the temperature from the internal sensor
         temperature = allch[7]
