@@ -1,7 +1,8 @@
 ## Modify these variables:
 win32 {
 TEMPLATE	= app
-CONFIG		+= qt release
+Release:CONFIG		+= qt release
+Debug:CONFIG		+= qt debug
 HEADERS		= attys-scope.h special.h current.h scopewindow.h gain.h highpass.h lowpass.h bandstop.h channel.h
 SOURCES		= attys-scope.cpp special.cpp current.cpp scopewindow.cpp gain.cpp lowpass.cpp bandstop.cpp highpass.cpp channel.cpp
 TARGET		= attys-scope
@@ -9,16 +10,25 @@ INSTALLS        += target
 QT             += widgets
 QT += network
 INCLUDEPATH     += /iir1
-LIBS += \
+Debug:LIBS += \
 	-L/iir1/Debug \
     -liir_static \
 	-lws2_32 \
 	-L../AttysComm/cpp/Debug \
 	-lattyscomm_static
 
+Release:LIBS += \
+	-L/iir1/Release \
+    -liir_static \
+	-lws2_32 \
+	-L../AttysComm/cpp/Release \
+	-lattyscomm_static
+
 RESOURCES     = application.qrc
 RC_FILE = attysapp.rc
 INCLUDEPATH += ../AttysComm/cpp
+MOC_DIR = moc
+OBJECTS_DIR = obj
 }
 
 unix {
