@@ -273,12 +273,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_DC27D6CCF3A6404CAB876ACC45B60119"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_DD769A7899564493A8535B7963F2C25E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1238,26 +1232,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DC27D6CCF3A6404CAB876ACC45B60119"
-            {
-            "SourcePath" = "8:..\\release\\qwt.dll"
-            "TargetName" = "8:qwt.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_989FC54179EC48EDA466EDD4472D3D00"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DD769A7899564493A8535B7963F2C25E"
             {
             "SourcePath" = "8:..\\release\\imageformats\\qdds.dll"
@@ -1571,15 +1545,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:attys-scope"
-        "ProductCode" = "8:{AE48880D-6F56-4A85-AC6C-9239889BF78E}"
-        "PackageCode" = "8:{6418CDBD-02A3-4F66-AA1F-78E2C24905CA}"
+        "ProductCode" = "8:{F92FDB18-3CD2-4B49-B473-C6DDF8E5169E}"
+        "PackageCode" = "8:{C17D251C-66E3-43BD-AE29-C04307D4EFE4}"
         "UpgradeCode" = "8:{61B338BB-2C5C-411B-9290-DD8EC4E42DD4}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.5.1"
+        "ProductVersion" = "8:1.5.2"
         "Manufacturer" = "8:glasgow_neuro"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
