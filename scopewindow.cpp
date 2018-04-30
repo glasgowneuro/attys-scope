@@ -241,8 +241,6 @@ void ScopeWindow::updateTime() {
 	if (udpSocket) {
 		if (udpStatus < 0) {
 			attys_scope->setInfo(" UDP broadcast error");
-		} else {
-			attys_scope->setInfo(" Broadcasting UDP");
 		}
 	} else {
 		attys_scope->setInfo("");
@@ -286,6 +284,7 @@ void ScopeWindow::writeFile() {
 
 void ScopeWindow::startUDP(int port)
 {
+	stopUDP();
 	udpSocket = new QUdpSocket(this);
 	udpPort = port;
 	_RPT1(0, "UDP transmit on port %d\n",port);
@@ -293,7 +292,9 @@ void ScopeWindow::startUDP(int port)
 
 void ScopeWindow::stopUDP()
 {
-	delete udpSocket;
+	if (udpSocket != NULL) {
+		delete udpSocket;
+	}
 	udpSocket = NULL;
 }
 

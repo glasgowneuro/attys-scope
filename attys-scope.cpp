@@ -320,7 +320,21 @@ Attys_scope::Attys_scope(QWidget *parent,
 	statusgrp->setAttribute(Qt::WA_DeleteOnClose, false);
 	statusLayout = new QHBoxLayout;
 
-	sprintf(status,"# of Attys devs: %d, Sampling rate: %d Hz.",
+	statusLayout->addWidget(new QLabel("Config:"));
+	savePushButton = new QPushButton("save");
+	savePushButton->setStyleSheet(styleSheetButton);
+	savePushButton->setFont(*tbFont);
+	connect(savePushButton, SIGNAL(clicked()),
+		this, SLOT(slotSaveSettings()));
+	statusLayout->addWidget(savePushButton);
+	loadPushButton = new QPushButton("load");
+	loadPushButton->setStyleSheet(styleSheetButton);
+	loadPushButton->setFont(*tbFont);
+	connect(loadPushButton, SIGNAL(clicked()),
+		this, SLOT(slotLoadSettings()));
+	statusLayout->addWidget(loadPushButton);
+
+	sprintf(status,"%d Attys, fs=%d Hz.",
 		attysScan.nAttysDevices,
 		attysScan.attysComm[0]->getSamplingRateInHz());
 	statusLabel = new QLabel(status);
@@ -435,6 +449,7 @@ void Attys_scope::readSettings(QSettings &settings) {
 	// at least one should be active not to make the user nervous.
 	if (nch_enabled == 0)
 		channel[0][0]->setChannel(0);
+	udpTransmit();
 }
 
 void Attys_scope::writeSettings(QSettings & settings)
@@ -483,6 +498,47 @@ void Attys_scope::writeSettings(QSettings & settings)
 	}
 	settings.endGroup();
 }
+
+
+void Attys_scope::slotSaveSettings() {
+	QFileDialog::Options options;
+	QString filters(tr("configuration files (*.ini)"));
+
+	QFileDialog dialog(this);
+	dialog.setFileMode(QFileDialog::AnyFile);
+	dialog.setNameFilter(filters);
+	dialog.setViewMode(QFileDialog::Detail);
+	dialog.setAcceptMode(QFileDialog::AcceptMode::AcceptSave);
+
+	if (dialog.exec()) {
+		QString fileName = dialog.selectedFiles()[0];
+		QString extension = dialog.selectedNameFilter();
+		extension = extension.mid(extension.indexOf("."), 4);
+		if (fileName.indexOf(extension) == -1) {
+			fileName = fileName + extension;
+		}
+		QSettings settings(fileName, QSettings::IniFormat);
+		writeSettings(settings);
+	}
+};
+
+void Attys_scope::slotLoadSettings() {
+	QFileDialog::Options options;
+	QString filters(tr("configuration files (*.ini)"));
+
+	QFileDialog dialog(this);
+	dialog.setFileMode(QFileDialog::ExistingFile);
+	dialog.setNameFilter(filters);
+	dialog.setViewMode(QFileDialog::Detail);
+	dialog.setAcceptMode(QFileDialog::AcceptMode::AcceptOpen);
+
+	if (dialog.exec()) {
+		QString fileName = dialog.selectedFiles()[0];
+		QSettings settings(fileName, QSettings::IniFormat);
+		readSettings(settings);
+	}
+};
+
 
 void Attys_scope::setInfo(const char * txt)
 {
@@ -543,6 +599,7 @@ void Attys_scope::enterFileName() {
 	dialog.setFileMode(QFileDialog::AnyFile);
 	dialog.setNameFilter(filters);
 	dialog.setViewMode(QFileDialog::Detail);
+	dialog.setAcceptMode(QFileDialog::AcceptMode::AcceptSave);
 
 	if (dialog.exec()) {
 		QString fileName = dialog.selectedFiles()[0];
