@@ -352,7 +352,12 @@ Attys_scope::Attys_scope(QWidget *parent,
 	changeTB();
 
 	if (!ignoreSettings) {
-		readSettings();
+		QSettings settings(QSettings::IniFormat,
+			QSettings::UserScope,
+			ATTYS_STRING,
+			PROGRAM_NAME);
+
+		readSettings(settings);
 	}
 
 	attysScopeWindow->startDAQ();
@@ -360,7 +365,9 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 
 // config constants
-#define SETTINGS_GLOBAL "global"
+#define SETTINGS_UDP "udp"
+#define SETTINGS_UDP_PORT "port"
+#define SETTINGS_UDP_ON "transmit"
 #define SETTINGS_CHANNELS "channelconfig"
 #define SETTINGS_SPECIAL "special_config%09d_ch%09d"
 #define SETTINGS_CURRENT "current_config%09d"
@@ -370,14 +377,14 @@ Attys_scope::Attys_scope(QWidget *parent,
 #define BANDSTOP_SETTING_FORMAT "bandstop_dev%09d_ch%09d"
 #define GAIN_SETTING_FORMAT "gain_mapping_dev%09d_ch%09d"
 
-void Attys_scope::readSettings() {
-	QSettings settings(QSettings::IniFormat,
-		QSettings::UserScope,
-		ATTYS_STRING,
-		PROGRAM_NAME);
-
+void Attys_scope::readSettings(QSettings &settings) {
 	int channels = AttysComm::NCHANNELS;
 	int nch_enabled = 0;
+
+	settings.beginGroup(SETTINGS_UDP);
+	udpTextEdit->setText(QString::number(settings.value(SETTINGS_UDP_PORT, 65000).toInt()));
+	udpCheckBox->setChecked(settings.value(SETTINGS_UDP_ON, 0).toBool());
+	settings.endGroup();
 
 	settings.beginGroup(SETTINGS_CHANNELS);
 
@@ -430,6 +437,53 @@ void Attys_scope::readSettings() {
 		channel[0][0]->setChannel(0);
 }
 
+void Attys_scope::writeSettings(QSettings & settings)
+{
+
+	settings.beginGroup(SETTINGS_UDP);
+	settings.setValue(SETTINGS_UDP_PORT, udpTextEdit->toPlainText().toInt());
+	settings.setValue(SETTINGS_UDP_ON, udpCheckBox->isChecked());
+	settings.endGroup();
+
+	int channels = AttysComm::NCHANNELS;
+	settings.beginGroup(SETTINGS_CHANNELS);
+	for (int n = 0; n<attysScan.nAttysDevices; n++) {
+		for (int i = 0; i<channels; i++) {
+			char tmp[128];
+
+			sprintf(tmp, CHSETTING_FORMAT, n, i);
+			settings.setValue(tmp,
+				channel[n][i]->getChannel());
+
+			sprintf(tmp, GAIN_SETTING_FORMAT, n, i);
+			settings.setValue(tmp,
+				gain[n][i]->getGain());
+
+			sprintf(tmp, HIGHPASS_SETTING_FORMAT, n, i);
+			settings.setValue(tmp,
+				highpass[n][i]->getFrequency());
+
+			sprintf(tmp, LOWPASS_SETTING_FORMAT, n, i);
+			float flp = lowpass[n][i]->getFrequency();
+			settings.setValue(tmp, flp);
+
+			sprintf(tmp, BANDSTOP_SETTING_FORMAT, n, i);
+			float fbs = bandstop[n][i]->getFrequency();
+			settings.setValue(tmp, fbs);
+		}
+		for (int i = 0; i < 2; i++) {
+			char tmpSp[256];
+			sprintf(tmpSp, SETTINGS_SPECIAL, n, i);
+			settings.setValue(tmpSp, special[n][i]->getSpecial());
+		}
+		char tmpCur[256];
+		sprintf(tmpCur, SETTINGS_CURRENT, n);
+		//		fprintf(stderr,"curr=%d\n",current[n]->getCurrent());
+		settings.setValue(tmpCur, current[n]->getCurrent());
+	}
+	settings.endGroup();
+}
+
 void Attys_scope::setInfo(const char * txt)
 {
 	QString t = txt;
@@ -444,43 +498,7 @@ Attys_scope::~Attys_scope() {
 			   ATTYS_STRING,
 			   PROGRAM_NAME);
 
-	int channels = AttysComm::NCHANNELS;
-	settings.beginGroup(SETTINGS_CHANNELS);
-	for(int n=0;n<attysScan.nAttysDevices;n++) {
-		for(int i=0;i<channels;i++) {
-			char tmp[128];
-
-			sprintf(tmp,CHSETTING_FORMAT,n,i);
-			settings.setValue(tmp, 
-					  channel[n][i] -> getChannel() );
-
-			sprintf(tmp, GAIN_SETTING_FORMAT, n, i);
-			settings.setValue(tmp,
-				gain[n][i]->getGain());
-
-			sprintf(tmp, HIGHPASS_SETTING_FORMAT, n, i);
-			settings.setValue(tmp,
-				highpass[n][i]->getFrequency());
-
-			sprintf(tmp, LOWPASS_SETTING_FORMAT, n, i);
-			float flp = lowpass[n][i]->getFrequency();
-			settings.setValue(tmp,flp);
-
-			sprintf(tmp, BANDSTOP_SETTING_FORMAT, n, i);
-			float fbs = bandstop[n][i]->getFrequency();
-			settings.setValue(tmp, fbs);
-		}
-		for (int i = 0; i < 2; i++) {
-			char tmpSp[256];
-			sprintf(tmpSp, SETTINGS_SPECIAL, n, i);
-			settings.setValue(tmpSp, special[n][i]->getSpecial());
-		}
-		char tmpCur[256];
-		sprintf(tmpCur, SETTINGS_CURRENT, n);
-//		fprintf(stderr,"curr=%d\n",current[n]->getCurrent());
-		settings.setValue(tmpCur, current[n]->getCurrent());
-	}
-	settings.endGroup();
+	writeSettings(settings);
 }
 
 
