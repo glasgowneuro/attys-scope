@@ -31,6 +31,15 @@ which then plots a bar graph in realtime.
 * Open the .sln file
 * Build solution
 
+## Linux Ubuntu packages for xenial and bionic
+Add these two repositories...
+```
+sudo add-apt-repository ppa:berndporr/attys
+sudo add-apt-repository ppa:berndporr/usbdux
+```
+...and then select attys-scope. This will then install also
+the other required packages.
+
 ## Compile under Linux
 * git clone https://github.com/glasgowneuro/AttysComm.git and compile/install it.
 * git clone https://github.com/glasgowneuro/attys-scope.git 
