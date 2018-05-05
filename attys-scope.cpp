@@ -407,13 +407,13 @@ void Attys_scope::readSettings(QSettings &settings) {
 			char tmpSp[256];
 			sprintf(tmpSp, SETTINGS_SPECIAL, n, i);
 			int a = settings.value(tmpSp, 0).toInt();
-			_RPT1(0, "settings special %d\n", a);
+			// _RPT1(0, "settings special %d\n", a);
 			special[n][i]->setSpecial(a);
 		}
 		char tmpCur[256];
 		sprintf(tmpCur, SETTINGS_CURRENT, n);
 		int a = settings.value(tmpCur, 0).toInt();
-		_RPT1(0, "settings current %d\n", a);
+		// _RPT1(0, "settings current %d\n", a);
 		current[n]->setCurrent(a);
 
 		char tmpCh[128];

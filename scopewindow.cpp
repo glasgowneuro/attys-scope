@@ -179,7 +179,7 @@ void ScopeWindow::startDAQ() {
 			minV[n][attysScan.attysComm[n]->INDEX_Analogue_channel_1] = -attysScan.attysComm[n]->getADCFullScaleRange(0);
 			maxV[n][attysScan.attysComm[n]->INDEX_Analogue_channel_1] = attysScan.attysComm[n]->getADCFullScaleRange(0);
 		}
-		_RPT1(0, "ADC1 max = %f\n", attysScan.attysComm[n]->getADCFullScaleRange(0));
+		// _RPT1(0, "ADC1 max = %f\n", attysScan.attysComm[n]->getADCFullScaleRange(0));
 		if (attys_scope->special[n][1]->getSpecial() == SPECIAL_TEMPERATURE) {
 			minV[n][attysScan.attysComm[n]->INDEX_Analogue_channel_2] = -20;
 			maxV[n][attysScan.attysComm[n]->INDEX_Analogue_channel_2] = 80;
@@ -188,7 +188,7 @@ void ScopeWindow::startDAQ() {
 			minV[n][attysScan.attysComm[n]->INDEX_Analogue_channel_2] = -attysScan.attysComm[n]->getADCFullScaleRange(1);
 			maxV[n][attysScan.attysComm[n]->INDEX_Analogue_channel_2] = attysScan.attysComm[n]->getADCFullScaleRange(1);
 		}
-		_RPT1(0, "ADC2 max = %f\n", attysScan.attysComm[n]->getADCFullScaleRange(1));
+		// _RPT1(0, "ADC2 max = %f\n", attysScan.attysComm[n]->getADCFullScaleRange(1));
 	}
 
 }
