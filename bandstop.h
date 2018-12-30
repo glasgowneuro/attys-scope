@@ -5,8 +5,6 @@
 
 #include <Iir.h>
 
-#define BSORDER 2
-
 class Bandstop : public QComboBox {
 
     Q_OBJECT
@@ -31,7 +29,7 @@ public:
 	void setFrequency(float f);
 
 private:
-	Iir::Butterworth::BandStop<BSORDER>* bs;
+	Iir::RBJ::IIRNotch bs;
 
 public:
 	float filter(float v);

@@ -6,7 +6,6 @@
 
 Lowpass::Lowpass(float _samplingrate, float cutoff) : QComboBox() {
 
-	lp = new Iir::Butterworth::LowPass<LPORDER>;
 	frequency = cutoff;
 	samplingrate = _samplingrate;
 
@@ -34,11 +33,8 @@ Lowpass::Lowpass(float _samplingrate, float cutoff) : QComboBox() {
 void Lowpass::setFrequencyIndex ( int index ) {
  	frequency = (float)(itemData(index).toFloat());
 	if (fabs(frequency) > 0) {
-		lp->setup(LPORDER,
-			samplingrate,
-			(float)fabs(frequency));
-		//_RPT2(0, "lowpass=%fHz,idx=%d\n", frequency,index);
-		lp->reset();
+		lp.setup(samplingrate,
+			 (float)fabs(frequency));
 	}
 }
 
@@ -53,11 +49,11 @@ void Lowpass::setFrequency(float f) {
 
 float Lowpass::filter(float v) {
 	if (frequency > 0) {
-		return lp->filter(v);
+		return lp.filter(v);
 	}
 	else {
 		if (frequency < 0) {
-			return lp->filter(fabs(v));
+			return lp.filter(fabs(v));
 		}
 	}
 	return v;

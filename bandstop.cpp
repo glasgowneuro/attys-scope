@@ -5,8 +5,6 @@
 
 
 Bandstop::Bandstop(float _samplingrate, float _center, float _width) : QComboBox() {
-
-	bs = new Iir::Butterworth::BandStop<BSORDER>;
 	frequency = _center;
 	samplingrate = _samplingrate;
 	if (_width > 0) {
@@ -33,12 +31,9 @@ Bandstop::Bandstop(float _samplingrate, float _center, float _width) : QComboBox
 void Bandstop::setFrequencyIndex ( int index ) {
  	frequency = (float)(itemData(index).toFloat());
 	if (frequency > 0) {
-		bs->setup(BSORDER,
-			samplingrate,
-			frequency,
-			width);
+		bs.setup(samplingrate,
+			 frequency);
 		//_RPT2(0, "Bandstop=%fHz,idx=%d\n", frequency,index);
-		bs->reset();
 	}
 }
 
@@ -53,7 +48,7 @@ void Bandstop::setFrequency(float f) {
 
 float Bandstop::filter(float v) {
 	if (frequency > 0) {
-		return bs->filter(v);
+		return bs.filter(v);
 	}
 	return v;
 }

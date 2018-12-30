@@ -5,7 +5,7 @@
 
 #include <Iir.h>
 
-#define HPORDER 2
+#define HPORDER 4
 
 // defines how quickly the DC detector follows the signal
 // the larger the value the slower
@@ -40,7 +40,7 @@ private:
 	float dcValue;
 
 private:
-	Iir::Butterworth::HighPass<HPORDER>* hp;
+	Iir::Butterworth::HighPass<HPORDER> hp;
 
 public:
 	float filter(float v);

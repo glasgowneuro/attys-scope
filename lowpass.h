@@ -5,7 +5,7 @@
 
 #include <Iir.h>
 
-#define LPORDER 2
+#define LPORDER 4
 
 class Lowpass : public QComboBox {
 
@@ -30,7 +30,7 @@ public:
 	void setFrequency(float f);
 
 private:
-	Iir::Butterworth::LowPass<LPORDER>* lp;
+	Iir::Butterworth::LowPass<LPORDER> lp;
 
 public:
 	float filter(float v);

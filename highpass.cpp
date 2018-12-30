@@ -6,7 +6,6 @@
 
 Highpass::Highpass(float _samplingrate, float cutoff) : QComboBox() {
 
-	hp = new Iir::Butterworth::HighPass<HPORDER>;
 	frequency = cutoff;
 	samplingrate = _samplingrate;
 	dcValue = 0;
@@ -35,11 +34,9 @@ Highpass::Highpass(float _samplingrate, float cutoff) : QComboBox() {
 void Highpass::setFrequencyIndex ( int index ) {
  	frequency = itemData(index).toFloat()/10.0;
 	if (frequency > 0) {
-		hp->setup(HPORDER,
-			samplingrate,
-			(float)frequency);
+		hp.setup(samplingrate,
+			 (float)frequency);
 		//_RPT1(0, "Highpass cutoff: %f Hz\n", frequency);
-		hp->reset();
 	}
 }
 
@@ -63,7 +60,7 @@ float Highpass::filter(float v) {
 	}
 	dcCtr = samplingrate;
 	if (frequency > 0) {
-		return hp->filter(v);
+		return hp.filter(v);
 	}
 	return v;
 }
