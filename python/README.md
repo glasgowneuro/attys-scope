@@ -1,6 +1,6 @@
-# attys_scope
+# Python code examples for attys-scope
 Python scripts to demonstrate how to process data with
-attys_scope for Linux/Window afterwards and in realtime.
+attys-scope.
 
 All realtime demos read the data via the UDP port 65000.
 Make sure attys_scope's broadcast is on.

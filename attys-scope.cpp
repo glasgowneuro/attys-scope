@@ -320,7 +320,21 @@ Attys_scope::Attys_scope(QWidget *parent,
 	statusgrp->setAttribute(Qt::WA_DeleteOnClose, false);
 	statusLayout = new QHBoxLayout;
 
-	sprintf(status,"# of Attys devs: %d, Sampling rate: %d Hz.",
+	statusLayout->addWidget(new QLabel("Config:"));
+	savePushButton = new QPushButton("save");
+	savePushButton->setStyleSheet(styleSheetButton);
+	savePushButton->setFont(*tbFont);
+	connect(savePushButton, SIGNAL(clicked()),
+		this, SLOT(slotSaveSettings()));
+	statusLayout->addWidget(savePushButton);
+	loadPushButton = new QPushButton("load");
+	loadPushButton->setStyleSheet(styleSheetButton);
+	loadPushButton->setFont(*tbFont);
+	connect(loadPushButton, SIGNAL(clicked()),
+		this, SLOT(slotLoadSettings()));
+	statusLayout->addWidget(loadPushButton);
+
+	sprintf(status,"%d Attys, fs=%d Hz.",
 		attysScan.nAttysDevices,
 		attysScan.attysComm[0]->getSamplingRateInHz());
 	statusLabel = new QLabel(status);
@@ -352,7 +366,12 @@ Attys_scope::Attys_scope(QWidget *parent,
 	changeTB();
 
 	if (!ignoreSettings) {
-		readSettings();
+		QSettings settings(QSettings::IniFormat,
+			QSettings::UserScope,
+			ATTYS_STRING,
+			PROGRAM_NAME);
+
+		readSettings(settings);
 	}
 
 	attysScopeWindow->startDAQ();
@@ -360,7 +379,9 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 
 // config constants
-#define SETTINGS_GLOBAL "global"
+#define SETTINGS_UDP "udp"
+#define SETTINGS_UDP_PORT "port"
+#define SETTINGS_UDP_ON "transmit"
 #define SETTINGS_CHANNELS "channelconfig"
 #define SETTINGS_SPECIAL "special_config%09d_ch%09d"
 #define SETTINGS_CURRENT "current_config%09d"
@@ -370,14 +391,14 @@ Attys_scope::Attys_scope(QWidget *parent,
 #define BANDSTOP_SETTING_FORMAT "bandstop_dev%09d_ch%09d"
 #define GAIN_SETTING_FORMAT "gain_mapping_dev%09d_ch%09d"
 
-void Attys_scope::readSettings() {
-	QSettings settings(QSettings::IniFormat,
-		QSettings::UserScope,
-		ATTYS_STRING,
-		PROGRAM_NAME);
-
+void Attys_scope::readSettings(QSettings &settings) {
 	int channels = AttysComm::NCHANNELS;
 	int nch_enabled = 0;
+
+	settings.beginGroup(SETTINGS_UDP);
+	udpTextEdit->setText(QString::number(settings.value(SETTINGS_UDP_PORT, 65000).toInt()));
+	udpCheckBox->setChecked(settings.value(SETTINGS_UDP_ON, 0).toBool());
+	settings.endGroup();
 
 	settings.beginGroup(SETTINGS_CHANNELS);
 
@@ -386,13 +407,13 @@ void Attys_scope::readSettings() {
 			char tmpSp[256];
 			sprintf(tmpSp, SETTINGS_SPECIAL, n, i);
 			int a = settings.value(tmpSp, 0).toInt();
-			_RPT1(0, "settings special %d\n", a);
+			// _RPT1(0, "settings special %d\n", a);
 			special[n][i]->setSpecial(a);
 		}
 		char tmpCur[256];
 		sprintf(tmpCur, SETTINGS_CURRENT, n);
 		int a = settings.value(tmpCur, 0).toInt();
-		_RPT1(0, "settings current %d\n", a);
+		// _RPT1(0, "settings current %d\n", a);
 		current[n]->setCurrent(a);
 
 		char tmpCh[128];
@@ -428,7 +449,96 @@ void Attys_scope::readSettings() {
 	// at least one should be active not to make the user nervous.
 	if (nch_enabled == 0)
 		channel[0][0]->setChannel(0);
+	udpTransmit();
 }
+
+void Attys_scope::writeSettings(QSettings & settings)
+{
+
+	settings.beginGroup(SETTINGS_UDP);
+	settings.setValue(SETTINGS_UDP_PORT, udpTextEdit->toPlainText().toInt());
+	settings.setValue(SETTINGS_UDP_ON, udpCheckBox->isChecked());
+	settings.endGroup();
+
+	int channels = AttysComm::NCHANNELS;
+	settings.beginGroup(SETTINGS_CHANNELS);
+	for (int n = 0; n<attysScan.nAttysDevices; n++) {
+		for (int i = 0; i<channels; i++) {
+			char tmp[128];
+
+			sprintf(tmp, CHSETTING_FORMAT, n, i);
+			settings.setValue(tmp,
+				channel[n][i]->getChannel());
+
+			sprintf(tmp, GAIN_SETTING_FORMAT, n, i);
+			settings.setValue(tmp,
+				gain[n][i]->getGain());
+
+			sprintf(tmp, HIGHPASS_SETTING_FORMAT, n, i);
+			settings.setValue(tmp,
+				highpass[n][i]->getFrequency());
+
+			sprintf(tmp, LOWPASS_SETTING_FORMAT, n, i);
+			float flp = lowpass[n][i]->getFrequency();
+			settings.setValue(tmp, flp);
+
+			sprintf(tmp, BANDSTOP_SETTING_FORMAT, n, i);
+			float fbs = bandstop[n][i]->getFrequency();
+			settings.setValue(tmp, fbs);
+		}
+		for (int i = 0; i < 2; i++) {
+			char tmpSp[256];
+			sprintf(tmpSp, SETTINGS_SPECIAL, n, i);
+			settings.setValue(tmpSp, special[n][i]->getSpecial());
+		}
+		char tmpCur[256];
+		sprintf(tmpCur, SETTINGS_CURRENT, n);
+		//		fprintf(stderr,"curr=%d\n",current[n]->getCurrent());
+		settings.setValue(tmpCur, current[n]->getCurrent());
+	}
+	settings.endGroup();
+}
+
+
+void Attys_scope::slotSaveSettings() {
+	QFileDialog::Options options;
+	QString filters(tr("configuration files (*.ini)"));
+
+	QFileDialog dialog(this);
+	dialog.setFileMode(QFileDialog::AnyFile);
+	dialog.setNameFilter(filters);
+	dialog.setViewMode(QFileDialog::Detail);
+	dialog.setAcceptMode(QFileDialog::AcceptMode::AcceptSave);
+
+	if (dialog.exec()) {
+		QString fileName = dialog.selectedFiles()[0];
+		QString extension = dialog.selectedNameFilter();
+		extension = extension.mid(extension.indexOf("."), 4);
+		if (fileName.indexOf(extension) == -1) {
+			fileName = fileName + extension;
+		}
+		QSettings settings(fileName, QSettings::IniFormat);
+		writeSettings(settings);
+	}
+};
+
+void Attys_scope::slotLoadSettings() {
+	QFileDialog::Options options;
+	QString filters(tr("configuration files (*.ini)"));
+
+	QFileDialog dialog(this);
+	dialog.setFileMode(QFileDialog::ExistingFile);
+	dialog.setNameFilter(filters);
+	dialog.setViewMode(QFileDialog::Detail);
+	dialog.setAcceptMode(QFileDialog::AcceptMode::AcceptOpen);
+
+	if (dialog.exec()) {
+		QString fileName = dialog.selectedFiles()[0];
+		QSettings settings(fileName, QSettings::IniFormat);
+		readSettings(settings);
+	}
+};
+
 
 void Attys_scope::setInfo(const char * txt)
 {
@@ -444,43 +554,7 @@ Attys_scope::~Attys_scope() {
 			   ATTYS_STRING,
 			   PROGRAM_NAME);
 
-	int channels = AttysComm::NCHANNELS;
-	settings.beginGroup(SETTINGS_CHANNELS);
-	for(int n=0;n<attysScan.nAttysDevices;n++) {
-		for(int i=0;i<channels;i++) {
-			char tmp[128];
-
-			sprintf(tmp,CHSETTING_FORMAT,n,i);
-			settings.setValue(tmp, 
-					  channel[n][i] -> getChannel() );
-
-			sprintf(tmp, GAIN_SETTING_FORMAT, n, i);
-			settings.setValue(tmp,
-				gain[n][i]->getGain());
-
-			sprintf(tmp, HIGHPASS_SETTING_FORMAT, n, i);
-			settings.setValue(tmp,
-				highpass[n][i]->getFrequency());
-
-			sprintf(tmp, LOWPASS_SETTING_FORMAT, n, i);
-			float flp = lowpass[n][i]->getFrequency();
-			settings.setValue(tmp,flp);
-
-			sprintf(tmp, BANDSTOP_SETTING_FORMAT, n, i);
-			float fbs = bandstop[n][i]->getFrequency();
-			settings.setValue(tmp, fbs);
-		}
-		for (int i = 0; i < 2; i++) {
-			char tmpSp[256];
-			sprintf(tmpSp, SETTINGS_SPECIAL, n, i);
-			settings.setValue(tmpSp, special[n][i]->getSpecial());
-		}
-		char tmpCur[256];
-		sprintf(tmpCur, SETTINGS_CURRENT, n);
-//		fprintf(stderr,"curr=%d\n",current[n]->getCurrent());
-		settings.setValue(tmpCur, current[n]->getCurrent());
-	}
-	settings.endGroup();
+	writeSettings(settings);
 }
 
 
@@ -525,6 +599,7 @@ void Attys_scope::enterFileName() {
 	dialog.setFileMode(QFileDialog::AnyFile);
 	dialog.setNameFilter(filters);
 	dialog.setViewMode(QFileDialog::Detail);
+	dialog.setAcceptMode(QFileDialog::AcceptMode::AcceptSave);
 
 	if (dialog.exec()) {
 		QString fileName = dialog.selectedFiles()[0];

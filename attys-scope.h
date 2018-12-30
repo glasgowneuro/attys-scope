@@ -12,6 +12,7 @@ class Attys_scope;
 #include <QGroupBox>
 #include <QLabel>
 #include <QScrollArea>
+#include <QSettings>
 #include <qsplashscreen.h>
 #include <qpointer.h>
 #include <qfont.h>
@@ -28,7 +29,7 @@ class Attys_scope;
 #include "AttysScan.h"
 
 // version number
-#define VERSION "1.5.1"
+#define VERSION "1.5.2"
 
 #define ATTYS_STRING "ATTYS"
 #define PROGRAM_NAME "attys-scope"
@@ -171,7 +172,13 @@ public:
  **/
 	 QPointer<QPushButton> clearScreenPushButton;
 
+	 QPointer<QPushButton> savePushButton;
+	 QPointer<QPushButton> loadPushButton;
+
 private slots:
+    void slotSaveSettings();
+    void slotLoadSettings();
+
 /**
  * Button to increase the time-base has been pressed
  **/
@@ -273,7 +280,8 @@ private:
 	QFont* tbFont;
 
 	private:
-		void readSettings();
+		void readSettings(QSettings &settings);
+		void writeSettings(QSettings &settings);
 
 	public:
 		void setInfo(const char* txt);

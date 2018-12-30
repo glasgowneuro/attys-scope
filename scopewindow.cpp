@@ -179,7 +179,7 @@ void ScopeWindow::startDAQ() {
 			minV[n][attysScan.attysComm[n]->INDEX_Analogue_channel_1] = -attysScan.attysComm[n]->getADCFullScaleRange(0);
 			maxV[n][attysScan.attysComm[n]->INDEX_Analogue_channel_1] = attysScan.attysComm[n]->getADCFullScaleRange(0);
 		}
-		_RPT1(0, "ADC1 max = %f\n", attysScan.attysComm[n]->getADCFullScaleRange(0));
+		// _RPT1(0, "ADC1 max = %f\n", attysScan.attysComm[n]->getADCFullScaleRange(0));
 		if (attys_scope->special[n][1]->getSpecial() == SPECIAL_TEMPERATURE) {
 			minV[n][attysScan.attysComm[n]->INDEX_Analogue_channel_2] = -20;
 			maxV[n][attysScan.attysComm[n]->INDEX_Analogue_channel_2] = 80;
@@ -188,7 +188,7 @@ void ScopeWindow::startDAQ() {
 			minV[n][attysScan.attysComm[n]->INDEX_Analogue_channel_2] = -attysScan.attysComm[n]->getADCFullScaleRange(1);
 			maxV[n][attysScan.attysComm[n]->INDEX_Analogue_channel_2] = attysScan.attysComm[n]->getADCFullScaleRange(1);
 		}
-		_RPT1(0, "ADC2 max = %f\n", attysScan.attysComm[n]->getADCFullScaleRange(1));
+		// _RPT1(0, "ADC2 max = %f\n", attysScan.attysComm[n]->getADCFullScaleRange(1));
 	}
 
 }
@@ -241,8 +241,6 @@ void ScopeWindow::updateTime() {
 	if (udpSocket) {
 		if (udpStatus < 0) {
 			attys_scope->setInfo(" UDP broadcast error");
-		} else {
-			attys_scope->setInfo(" Broadcasting UDP");
 		}
 	} else {
 		attys_scope->setInfo("");
@@ -286,6 +284,7 @@ void ScopeWindow::writeFile() {
 
 void ScopeWindow::startUDP(int port)
 {
+	stopUDP();
 	udpSocket = new QUdpSocket(this);
 	udpPort = port;
 	_RPT1(0, "UDP transmit on port %d\n",port);
@@ -293,7 +292,9 @@ void ScopeWindow::startUDP(int port)
 
 void ScopeWindow::stopUDP()
 {
-	delete udpSocket;
+	if (udpSocket != NULL) {
+		delete udpSocket;
+	}
 	udpSocket = NULL;
 }
 
