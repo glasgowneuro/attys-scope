@@ -3,7 +3,6 @@
 #include<qfont.h>
 #include<stdio.h>
 
-
 Bandstop::Bandstop(float _samplingrate, float _center, float _width) : QComboBox() {
 	frequency = _center;
 	samplingrate = _samplingrate;
@@ -32,7 +31,8 @@ void Bandstop::setFrequencyIndex ( int index ) {
  	frequency = (float)(itemData(index).toFloat());
 	if (frequency > 0) {
 		bs.setup(samplingrate,
-			 frequency);
+			 frequency,
+			 width);
 		//_RPT2(0, "Bandstop=%fHz,idx=%d\n", frequency,index);
 	}
 }
