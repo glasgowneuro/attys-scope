@@ -123,7 +123,19 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_5FDD7685F6C641029C0C4C1B55110BA6"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_6092E42EA11546DBBB3F6875407C17AE"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_61970BCC563D41A4BC74A038B018BDCA"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -195,13 +207,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_9CB4C6AF8D204311B53049D5873A2352"
+        "MsmKey" = "8:_9CAE0C81D46E40A7A0BA52A5DDAAB719"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_A08A223CF70146E29139173E2DE9D141"
+        "MsmKey" = "8:_9CB4C6AF8D204311B53049D5873A2352"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -310,12 +322,6 @@
         "Entry"
         {
         "MsmKey" = "8:_FA00FCEC31F641F2A3B8D6E425CDDEA0"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_FAE0517E3DBA4CE7AE88F771F8A004D0"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -752,6 +758,46 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5FDD7685F6C641029C0C4C1B55110BA6"
+            {
+            "SourcePath" = "8:..\\release\\Qt5PrintSupport.dll"
+            "TargetName" = "8:Qt5PrintSupport.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_989FC54179EC48EDA466EDD4472D3D00"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_61970BCC563D41A4BC74A038B018BDCA"
+            {
+            "SourcePath" = "8:..\\release\\Qt5OpenGL.dll"
+            "TargetName" = "8:Qt5OpenGL.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_989FC54179EC48EDA466EDD4472D3D00"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6EE537FE323E4E709332B70C9C897F07"
             {
             "SourcePath" = "8:..\\release\\translations\\qt_fi.qm"
@@ -972,12 +1018,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9CB4C6AF8D204311B53049D5873A2352"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9CAE0C81D46E40A7A0BA52A5DDAAB719"
             {
-            "SourcePath" = "8:..\\release\\translations\\qt_ja.qm"
-            "TargetName" = "8:qt_ja.qm"
+            "SourcePath" = "8:..\\release\\styles\\qwindowsvistastyle.dll"
+            "TargetName" = "8:qwindowsvistastyle.dll"
             "Tag" = "8:"
-            "Folder" = "8:_0F6158A6E45F4891973B0B59ABF4C871"
+            "Folder" = "8:_989FC54179EC48EDA466EDD4472D3D00"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -992,12 +1038,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A08A223CF70146E29139173E2DE9D141"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9CB4C6AF8D204311B53049D5873A2352"
             {
-            "SourcePath" = "8:..\\release\\Qt5OpenGL.dll"
-            "TargetName" = "8:Qt5OpenGL.dll"
+            "SourcePath" = "8:..\\release\\translations\\qt_ja.qm"
+            "TargetName" = "8:qt_ja.qm"
             "Tag" = "8:"
-            "Folder" = "8:_989FC54179EC48EDA466EDD4472D3D00"
+            "Folder" = "8:_0F6158A6E45F4891973B0B59ABF4C871"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1372,26 +1418,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FAE0517E3DBA4CE7AE88F771F8A004D0"
-            {
-            "SourcePath" = "8:..\\release\\Qt5PrintSupport.dll"
-            "TargetName" = "8:Qt5PrintSupport.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_989FC54179EC48EDA466EDD4472D3D00"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FBFB7699899B4595878AE96A3B3EFF51"
             {
             "SourcePath" = "8:..\\attys-scope.svg"
@@ -1546,7 +1572,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:attys-scope"
         "ProductCode" = "8:{F92FDB18-3CD2-4B49-B473-C6DDF8E5169E}"
-        "PackageCode" = "8:{C17D251C-66E3-43BD-AE29-C04307D4EFE4}"
+        "PackageCode" = "8:{593D537D-FFA3-4AAD-ABA2-340AFB01C833}"
         "UpgradeCode" = "8:{61B338BB-2C5C-411B-9290-DD8EC4E42DD4}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -2155,7 +2181,7 @@
             {
             "UseDynamicProperties" = "11:TRUE"
             "IsDependency" = "11:FALSE"
-            "SourcePath" = "8:C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Redist\\MSVC\\14.10.25008\\MergeModules\\Microsoft_VC150_CRT_x64.msm"
+            "SourcePath" = "8:C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Redist\\MSVC\\14.16.27012\\MergeModules\\Microsoft_VC141_CRT_x64.msm"
                 "Properties"
                 {
                 }
