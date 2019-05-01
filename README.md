@@ -30,6 +30,11 @@ which then plots a bar graph in realtime.
 * "qmake -tp vc" and then re-target the project (right click on attys_scope in the Solutions Explorer -> Retarget Projects)
 * Open the .sln file
 * Build solution
+* go to the "release" subdirectory
+* copy qwt.dll into it
+* run "windeployqt attys-scope.exe qwt.dll" which copies all the DLLs into this directory which are needed to run the app
+* Build the msi installer which will be in the "installer" subdirectory.
+
 
 ## Linux Ubuntu packages for xenial and bionic
 Add these two repositories...
