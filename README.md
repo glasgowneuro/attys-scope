@@ -31,8 +31,7 @@ which then plots a bar graph in realtime.
 * Open the .sln file
 * Build solution
 * go to the "release" subdirectory
-* copy qwt.dll into it
-* run "windeployqt attys-scope.exe qwt.dll" which copies all the DLLs into this directory which are needed to run the app
+* run "windeployqt attys-scope.exe" which copies all the DLLs into this directory which are needed to run the app
 * Build the msi installer which will be in the "installer" subdirectory.
 
 
