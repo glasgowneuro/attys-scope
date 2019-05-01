@@ -9,34 +9,18 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "attys-scope", "attys-scope.
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Win32 = Debug|Win32
 		Debug|x64 = Debug|x64
-		Debug|x86 = Debug|x86
-		Release|Win32 = Release|Win32
 		Release|x64 = Release|x64
-		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C8369784-9F35-496A-B459-500E351D3A02}.Debug|Win32.ActiveCfg = Debug
-		{C8369784-9F35-496A-B459-500E351D3A02}.Debug|Win32.Build.0 = Debug
 		{C8369784-9F35-496A-B459-500E351D3A02}.Debug|x64.ActiveCfg = Debug
 		{C8369784-9F35-496A-B459-500E351D3A02}.Debug|x64.Build.0 = Debug
-		{C8369784-9F35-496A-B459-500E351D3A02}.Debug|x86.ActiveCfg = Debug
-		{C8369784-9F35-496A-B459-500E351D3A02}.Debug|x86.Build.0 = Debug
-		{C8369784-9F35-496A-B459-500E351D3A02}.Release|Win32.ActiveCfg = Release
-		{C8369784-9F35-496A-B459-500E351D3A02}.Release|Win32.Build.0 = Release
 		{C8369784-9F35-496A-B459-500E351D3A02}.Release|x64.ActiveCfg = Release
 		{C8369784-9F35-496A-B459-500E351D3A02}.Release|x64.Build.0 = Release
-		{C8369784-9F35-496A-B459-500E351D3A02}.Release|x86.ActiveCfg = Release
-		{C8369784-9F35-496A-B459-500E351D3A02}.Release|x86.Build.0 = Release
-		{926697CF-8C0F-350B-9985-7118811CD303}.Debug|Win32.ActiveCfg = Debug|x64
 		{926697CF-8C0F-350B-9985-7118811CD303}.Debug|x64.ActiveCfg = Debug|x64
 		{926697CF-8C0F-350B-9985-7118811CD303}.Debug|x64.Build.0 = Debug|x64
-		{926697CF-8C0F-350B-9985-7118811CD303}.Debug|x86.ActiveCfg = Debug|x64
-		{926697CF-8C0F-350B-9985-7118811CD303}.Release|Win32.ActiveCfg = Release|x64
 		{926697CF-8C0F-350B-9985-7118811CD303}.Release|x64.ActiveCfg = Release|x64
 		{926697CF-8C0F-350B-9985-7118811CD303}.Release|x64.Build.0 = Release|x64
-		{926697CF-8C0F-350B-9985-7118811CD303}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
