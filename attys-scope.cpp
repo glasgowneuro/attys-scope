@@ -107,7 +107,8 @@ Attys_scope::Attys_scope(QWidget *parent,
 	current = new QPointer<Current>[attysScan.nAttysDevices];
 	specialLayout = new QPointer<QHBoxLayout>[attysScan.nAttysDevices];
 	
-	AttysComm attysCommTmp(0);
+
+	AttysComm attysCommTmp;
 	for(int n=0;n<attysScan.nAttysDevices;n++) {
 		channelLabel[n]=new QPointer<QLabel>[channels];
 		channel[n]=new QPointer<Channel>[channels];
