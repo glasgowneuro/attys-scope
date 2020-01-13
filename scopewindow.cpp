@@ -188,6 +188,15 @@ void ScopeWindow::startDAQ() {
 			minV[n][attysScan.attysComm[n]->INDEX_Analogue_channel_2] = -attysScan.attysComm[n]->getADCFullScaleRange(1);
 			maxV[n][attysScan.attysComm[n]->INDEX_Analogue_channel_2] = attysScan.attysComm[n]->getADCFullScaleRange(1);
 		}
+		// GPIO channel 1 min/max range
+		minV[n][attysScan.attysComm[n]->INDEX_GPIO0] = -1;
+		maxV[n][attysScan.attysComm[n]->INDEX_GPIO0] = 1;
+		// GPIO channel 2 min/max range
+		minV[n][attysScan.attysComm[n]->INDEX_GPIO1] = -1;
+		maxV[n][attysScan.attysComm[n]->INDEX_GPIO1] = 1;
+		// Charging info
+		minV[n][attysScan.attysComm[n]->INDEX_CHARGING] = -1;
+		maxV[n][attysScan.attysComm[n]->INDEX_CHARGING] = 1;
 		// _RPT1(0, "ADC2 max = %f\n", attysScan.attysComm[n]->getADCFullScaleRange(1));
 	}
 
