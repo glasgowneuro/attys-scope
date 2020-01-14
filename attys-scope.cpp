@@ -232,6 +232,11 @@ Attys_scope::Attys_scope(QWidget *parent,
 	recLayout->addWidget(filePushButton);
 	recLayout->addWidget(new QLabel("    "));
 
+	headerCheckBox = new QCheckBox("&file header");
+	headerCheckBox->setEnabled(true);
+	recLayout->addWidget(headerCheckBox);
+	headerCheckBox->setStyleSheet("font: 18px; padding: 3px;");
+
 	recCheckBox = new QCheckBox( "&REC" );
 	recCheckBox->connect(recCheckBox, SIGNAL( stateChanged(int) ),
 			       this, SLOT( recstartstop(int) ) );
@@ -308,10 +313,10 @@ Attys_scope::Attys_scope(QWidget *parent,
 		       this, SLOT( resetTbEvent() ) );
 	tbLayout->addWidget(tbResetPushButton);
 
-	displayCheckbox = new QCheckBox();
-	displayCheckbox->setChecked(1);
-	tbLayout->addWidget(new QLabel("Running:"));
-	tbLayout->addWidget(displayCheckbox);
+	legendCheckBox = new QCheckBox();
+	legendCheckBox->setChecked(1);
+	tbLayout->addWidget(new QLabel("Legend:"));
+	tbLayout->addWidget(legendCheckBox);
 
 	tbgrp->setLayout(tbLayout);
 	restLayout->addWidget(tbgrp);
@@ -391,6 +396,8 @@ Attys_scope::Attys_scope(QWidget *parent,
 #define LOWPASS_SETTING_FORMAT "lowpass_dev%09d_ch%09d"
 #define BANDSTOP_SETTING_FORMAT "bandstop_dev%09d_ch%09d"
 #define GAIN_SETTING_FORMAT "gain_mapping_dev%09d_ch%09d"
+#define SETTINGS_LEGENDS "legends"
+#define SETTINGS_HEADER "header"
 
 void Attys_scope::readSettings(QSettings &settings) {
 	int channels = AttysComm::NCHANNELS;
@@ -399,6 +406,8 @@ void Attys_scope::readSettings(QSettings &settings) {
 	settings.beginGroup(SETTINGS_UDP);
 	udpTextEdit->setText(QString::number(settings.value(SETTINGS_UDP_PORT, 65000).toInt()));
 	udpCheckBox->setChecked(settings.value(SETTINGS_UDP_ON, 0).toBool());
+	legendCheckBox->setChecked(settings.value(SETTINGS_LEGENDS, 0).toBool());
+	headerCheckBox->setChecked(settings.value(SETTINGS_HEADER, 0).toBool());
 	settings.endGroup();
 
 	settings.beginGroup(SETTINGS_CHANNELS);
@@ -459,6 +468,8 @@ void Attys_scope::writeSettings(QSettings & settings)
 	settings.beginGroup(SETTINGS_UDP);
 	settings.setValue(SETTINGS_UDP_PORT, udpTextEdit->toPlainText().toInt());
 	settings.setValue(SETTINGS_UDP_ON, udpCheckBox->isChecked());
+	settings.setValue(SETTINGS_HEADER, headerCheckBox->isChecked());
+	settings.setValue(SETTINGS_LEGENDS, legendCheckBox->isChecked());
 	settings.endGroup();
 
 	int channels = AttysComm::NCHANNELS;

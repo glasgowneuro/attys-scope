@@ -29,7 +29,7 @@ class Attys_scope;
 #include "AttysScan.h"
 
 // version number
-#define VERSION "1.5.4"
+#define VERSION "2.0.0"
 
 #define ATTYS_STRING "ATTYS"
 #define PROGRAM_NAME "attys-scope"
@@ -54,24 +54,29 @@ public:
 	~Attys_scope();
 
 public:
-/**
- * Sets the filename for the data-file
- **/
+	/**
+	* Sets the filename for the data-file
+	**/
 	void setFilename(QString fn,int csv);
 	
 public:
 	void enableControls();
 	void disableControls();
 
-/**
- * Button which controls recording
- **/
+	/**
+	* Button which controls recording
+	**/
     QPointer<QCheckBox> recCheckBox;
+
+	/**
+	 * Button which controls recording
+	 **/
+	QPointer<QCheckBox> headerCheckBox;
 
 	/**
 	Display on/off
 	**/
-	QPointer<QCheckBox> displayCheckbox;
+	QPointer<QCheckBox> legendCheckBox;
 
 	/**
 	* Array for the special settings

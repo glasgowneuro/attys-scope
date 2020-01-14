@@ -429,7 +429,7 @@ void ScopeWindow::paintData(float** buffer) {
 		return;
 	}
 
-	if (attys_scope->displayCheckbox->isChecked()) {
+	if (attys_scope->legendCheckBox->isChecked()) {
 		display_data = 1;
 	}
 
@@ -445,6 +445,10 @@ void ScopeWindow::paintData(float** buffer) {
 	if (xer>=w) {
 		xer=xer-w;
 	}
+
+	QFontMetrics fm = paint.fontMetrics();
+	int width = fm.width(QString::fromStdString(attysScan.attysComm[0]->CHANNEL_SHORT_DESCRIPTION[0]+"0 "));
+
 	paint.drawLine(xer,0,
 		       xer,h);
 	int act=1;
@@ -468,6 +472,11 @@ void ScopeWindow::paintData(float** buffer) {
 				if (xpos % 2) {
 					paint.drawPoint(xpos, yZero);
 				}
+				if ( (attys_scope->legendCheckBox->isChecked()) && (xpos < width) ) {
+					QString s = QString::fromStdString(attysScan.attysComm[0]->CHANNEL_SHORT_DESCRIPTION[attys_scope->channel[n][i]->getChannel()]);
+					s = QString::asprintf("%d ",n) + s;
+					paint.drawText(QPoint(0,yZero), s);
+				}
 				if ((xpos + 2) == w) {
 					ypos[n][i][0] = yTmp;
 				}
@@ -478,20 +487,12 @@ void ScopeWindow::paintData(float** buffer) {
 	xpos++;
 	if ((xpos+1)>=w) {
 		xpos=0;
-		if (!(attys_scope->displayCheckbox->isChecked())) {
-			display_data = 0;
-		}
+
 	}
 }
 
 
-
-//
-// Handles paint events for the ComediScope widget.
-// When the paint-event is triggered the averaging is done, the data is
-// displayed and saved to disk.
-//
-
+// called by the refresh timer
 void ScopeWindow::paintEvent(QPaintEvent *) {
 
 	// let's empty the ring bufferes and plot them
@@ -594,14 +595,12 @@ void ScopeWindow::setTB(int us) {
 	}
 }
 
-//
-// Handles timer events for the ComediScope widget.
-//
 
 void ScopeWindow::timerEvent( QTimerEvent * )
 {
 	repaint();
 }
+
 
 void ScopeWindow::clearScreen()
 {
