@@ -49,6 +49,7 @@ class ScopeWindow;
 
 #define VOLT_FORMAT_STRING "%+.3f"
 
+#define DUMMY_SAMPLE_CONSTANT 0
 
 class ScopeWindow : public QWidget
 {
@@ -271,6 +272,8 @@ private:
 	};
 
 	AttysScopeCommMessage attysScopeCommMessage;
+
+	float dummySample[AttysComm::NCHANNELS];
 
 };
 

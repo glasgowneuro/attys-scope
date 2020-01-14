@@ -49,6 +49,11 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp)
 	// points to itself for the message listener
 	attysScopeCommMessage.scopeWindow = this;
 
+	// sample returned when an Attys disconnects
+	for (int i = 0; i < AttysComm::NCHANNELS; i++) {
+		dummySample[i] = DUMMY_SAMPLE_CONSTANT;
+	}
+
 	// initialise the graphics stuff
 	ypos = new int**[attysScan.nAttysDevices];
 	assert(ypos != NULL);
@@ -489,15 +494,39 @@ void ScopeWindow::paintData(float** buffer) {
 
 void ScopeWindow::paintEvent(QPaintEvent *) {
 
+	// let's empty the ring bufferes and plot them
 	for (;;) {
 
+		// number of devices which re-connect at the moment
+		int nReconnecting = 0;
 		for (int n = 0; n < attysScan.nAttysDevices; n++) {
 			int hasSample = attysScan.attysComm[n]->hasSampleAvilabale();
-			if (!hasSample) return;
+			int isReconnecting = attysScan.attysComm[n]->isInitialising();
+			if (isReconnecting) {
+				// no data available but soon, so no sample to get
+				// but can be set to zero temporarily
+				nReconnecting++;
+			}
+			else {
+				// we should have samples here but if not we return and
+				// wait for some
+				if (!hasSample) return;
+			}
+		}
+
+		if (nReconnecting == attysScan.nAttysDevices) {
+			// all attys re-connecting at the moment so nothing to do
+			return;
 		}
 
 		for (int n = 0; n < attysScan.nAttysDevices; n++) {
-			float* values = attysScan.attysComm[n]->getSampleFromBuffer();
+			float* values;
+			if (!(attysScan.attysComm[n]->isInitialising())) {
+				values = attysScan.attysComm[n]->getSampleFromBuffer();
+			}
+			else {
+				values = dummySample;
+			}
 			if (attys_scope->special[n][0]->getSpecial() == SPECIAL_TEMPERATURE) {
 				values[attysScan.attysComm[n]->INDEX_Analogue_channel_1] = AttysComm::phys2temperature(values[attysScan.attysComm[n]->INDEX_Analogue_channel_1]);
 			}
