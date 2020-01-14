@@ -46,12 +46,16 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp)
 	
 	setAttribute(Qt::WA_OpaquePaintEvent);
 
+	// points to itself for the message listener
+	attysScopeCommMessage.scopeWindow = this;
+
 	// initialise the graphics stuff
 	ypos = new int**[attysScan.nAttysDevices];
 	assert(ypos != NULL);
 	minV = new float*[attysScan.nAttysDevices];
 	maxV = new float*[attysScan.nAttysDevices];
 	for(int devNo=0;devNo<attysScan.nAttysDevices;devNo++) {
+		attysScan.attysComm[devNo]->registerMessageCallback(&attysScopeCommMessage);
 		ypos[devNo]=new int*[AttysComm::NCHANNELS];
 		minV[devNo] = new float[AttysComm::NCHANNELS];
 		maxV[devNo] = new float[AttysComm::NCHANNELS];
@@ -207,6 +211,14 @@ ScopeWindow::~ScopeWindow() {
 		if (attysScan.attysComm[i]) {
 			attysScan.attysComm[i]->quit();
 		}
+	}
+}
+
+// called after an Attys has re-connected
+void ScopeWindow::attysHasReconnected() {
+	_RPT0(0, "Attys has reconnected. Clearing ringbuffers.\n");
+	for (int n = 0; n < attysScan.nAttysDevices; n++) {
+		attysScan.attysComm[n]->resetRingbuffer();
 	}
 }
 
