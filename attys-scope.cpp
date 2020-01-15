@@ -572,6 +572,7 @@ Attys_scope::~Attys_scope() {
 
 void Attys_scope::disableControls() {
 	filePushButton->setEnabled( false );
+	headerCheckBox->setEnabled( false );
 	int channels = AttysComm::NCHANNELS;
 	for(int n=0;n<attysScan.nAttysDevices;n++) {
 		for(int i=0;i<channels;i++) {
@@ -583,6 +584,7 @@ void Attys_scope::disableControls() {
 
 void Attys_scope::enableControls() {
 	filePushButton->setEnabled( true );
+	headerCheckBox->setEnabled( true );
 	int channels = AttysComm::NCHANNELS;
 	for(int n=0;n<attysScan.nAttysDevices;n++) {
 		for(int i=0;i<channels;i++) {

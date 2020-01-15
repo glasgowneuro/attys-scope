@@ -4,6 +4,7 @@
 #include <QTimerEvent>
 #include <QPaintEvent>
 #include <QMessageBox>
+#include <QFileInfo>
 
 extern "C" {
 #include<stdio.h>
@@ -37,7 +38,8 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp)
 	rec_file = NULL;
 
 	// filename
-	rec_filename = NULL;
+	rec_filename = QString();
+	finalFilename = QString();
 
 	// flag if data has been recorded and we need a new filename
 	recorded = 0;
@@ -219,29 +221,21 @@ ScopeWindow::~ScopeWindow() {
 	}
 }
 
-// called after an Attys has re-connected
-void ScopeWindow::attysHasReconnected() {
-	_RPT0(0, "Attys has reconnected. Clearing ringbuffers.\n");
-	for (int n = 0; n < attysScan.nAttysDevices; n++) {
-		attysScan.attysComm[n]->resetRingbuffer();
-	}
-}
-
 void ScopeWindow::updateTime() {
 	QString s;
 	if (!rec_file) {
-		if (rec_filename == NULL) {
+		if (finalFilename.isEmpty()) {
 			s.sprintf(EXECUTABLE_NAME " " VERSION);
 		} else {
 			if (recorded) {
-				s=(*rec_filename)+" --- file saved";
+				s=rec_filename + " --- file saved";
 			} else {
-				s=(*rec_filename)+" --- press REC to record ";
+				s=rec_filename + " --- press REC to record ";
 			}
 		}
 	} else {
-		if (rec_filename) {
-			s = (*rec_filename) +
+		if (!finalFilename.isEmpty()) {
+			s = finalFilename +
 				QString().sprintf("--- rec: %ldsec", nsamples / attysScan.attysComm[0]->getSamplingRateInHz());
 		}
 	}
@@ -273,8 +267,7 @@ void ScopeWindow::updateTime() {
 
 
 void ScopeWindow::setFilename(QString name,int tsv) {
-	if (rec_filename) delete rec_filename;
-	rec_filename = new QString(name);
+	rec_filename = name;
 	recorded=0;
 	if (tsv) {
 		separator='\t';
@@ -359,33 +352,95 @@ void ScopeWindow::writeUDP() {
 	}
 }
 
+
+void ScopeWindow::openFile() {
+	QRegExp reg("[0-9]{1,9}$");
+	if (rec_filename.isEmpty()) {
+		throw "Empty filename";
+	}
+	// QString suffix = "";
+	QStringList splitFilename = rec_filename.split(".");
+	QString basename = splitFilename.at(0);
+	int lengthBasename = basename.size();
+	qDebug() << "Basename=" << basename;
+	QString suffix = rec_filename.split(".").at(1);
+	qDebug() << "suffix=" << suffix;
+	int pos = reg.indexIn(basename);
+	if (-1 != pos) {
+		basename = basename.left(pos);
+		qDebug() << "basename w/o number=" << basename;
+	}
+	finalFilename = rec_filename;
+	if ((fileNumber > 0) || (-1 != pos)) {
+		char tmp[256];
+		sprintf(tmp, "%%0%dd", lengthBasename - pos);
+		qDebug() << "Format string=" << tmp;
+		finalFilename = basename + QString::asprintf(tmp, fileNumber) + QString(".") + suffix;
+	}
+	qDebug() << "Full name=" << finalFilename;
+	rec_file = fopen(finalFilename.toLocal8Bit().constData(),"wt");
+	// could we open it?
+	if (!rec_file) {
+		rec_filename = QString();
+		attys_scope->recCheckBox->setChecked(0);
+		attys_scope->recCheckBox->setEnabled(0);
+		recorded = 0;
+		attys_scope->enableControls();
+		throw finalFilename.toLocal8Bit().constData();
+	}
+	if (attys_scope->headerCheckBox->isChecked()) {
+		fprintf(rec_file, "# %lu", (unsigned long)time(NULL));
+		for (int n = 0; n < attysScan.nAttysDevices; n++) {
+			fprintf(rec_file, "%c%s", separator, attysScan.attysName[n]);
+		}
+		fprintf(rec_file, "\n");
+	}
+}
+
+
 void ScopeWindow::startRec() {
 	if (recorded) return;
 	if (rec_filename == NULL) return;
 	attys_scope->disableControls();
 	// counter for samples
 	nsamples = 0;
-	rec_file = fopen(rec_filename->toLocal8Bit().constData(),
-		"wt");
-	// could we open it?
-	if (!rec_file) {
-		// could not open
-		delete rec_filename;
-		rec_filename = NULL;
-		// print error msg
+	fileNumber = 0;
+	try {
+		openFile();
+	} catch (const char* msg) {
 		fprintf(stderr,
 			"Writing failed.\n");
 		QMessageBox msgBox;
-		msgBox.setText("File could not be saved: " + QString(strerror(errno)));
+		msgBox.setText(QString(msg) + QString(" could not be saved: ") + QString(strerror(errno)));
 		msgBox.exec();
-		attys_scope->recCheckBox->setChecked(0);
-		attys_scope->recCheckBox->setEnabled(0);
-		recorded = 0;
-		attys_scope->enableControls();
-		if (rec_filename) delete rec_filename;
-		rec_filename = NULL;
+		finalFilename = "";
 	}
 }
+
+
+// called after an Attys has re-connected
+void ScopeWindow::attysHasReconnected() {
+	_RPT0(0, "Attys has reconnected. Clearing ringbuffers.\n");
+	for (int n = 0; n < attysScan.nAttysDevices; n++) {
+		attysScan.attysComm[n]->resetRingbuffer();
+	}
+	if (rec_file) {
+		fclose(rec_file);
+		fileNumber++;
+		try {
+			openFile();
+		}
+		catch (const char* msg) {
+			fprintf(stderr,
+				"Writing failed.\n");
+			QMessageBox msgBox;
+			msgBox.setText(QString(msg) + QString(" could not be saved: ") + QString(strerror(errno)));
+			msgBox.exec();
+			finalFilename = "";
+		}
+	}
+}
+
 
 
 void ScopeWindow::stopRec() {
@@ -397,8 +452,8 @@ void ScopeWindow::stopRec() {
 	// re-enabel channel switches
 	attys_scope->enableControls();
 	// we should have a filename, get rid of it and create an empty one
-	if (rec_filename) delete rec_filename;
-	rec_filename = NULL;
+	rec_filename = QString();
+	finalFilename = QString();
 }
 
 

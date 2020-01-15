@@ -152,14 +152,24 @@ private:
 
 private:
 	/**
-	 * the filename of the data-file
+	 * the filename of the data-file as entered by the user
 	 **/
-	QString*     rec_filename;
+	QString     rec_filename;
+
+    /**
+	 * The filename of the date-file as actually used to save the data
+	 **/
+	QString      finalFilename;
 
 	/**
 	 * the file descriptor to the data-file
 	 **/
 	FILE*       rec_file = nullptr;
+
+	/**
+	 * Running number in case of re-connects
+	 **/
+	int fileNumber = 0;
 
 	/**
 	 * number of channels switched on
@@ -197,6 +207,11 @@ public:
 	 * Ends recording
 	 **/
 	void stopRec();
+
+	/**
+	* Opens file
+	**/
+	void openFile();
 
 private:
 	/**
