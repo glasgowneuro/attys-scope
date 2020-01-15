@@ -370,7 +370,9 @@ void ScopeWindow::openFile() {
 	if (attys_scope->headerCheckBox->isChecked()) {
 		fprintf(rec_file, "# %lu", (unsigned long)time(NULL));
 		for (int n = 0; n < attysScan.nAttysDevices; n++) {
-			fprintf(rec_file, "%c%s", separator, attysScan.attysName[n]);
+			char tmp[256];
+			attysScan.attysComm[n]->getBluetoothAdressString(tmp);
+			fprintf(rec_file, "%c%s", separator, tmp);
 		}
 		fprintf(rec_file, "\n");
 	}
@@ -504,7 +506,7 @@ void ScopeWindow::paintData(float** buffer) {
 	}
 
 	QFontMetrics fm = paint.fontMetrics();
-	int width = fm.width(QString::fromStdString(attysScan.attysComm[0]->CHANNEL_SHORT_DESCRIPTION[0]+"0 "));
+	int width = fm.width(QString::fromStdString(attysScan.attysComm[0]->CHANNEL_SHORT_DESCRIPTION[0]+"0: "));
 
 	paint.drawLine(xer,0,
 		       xer,h);
@@ -531,7 +533,12 @@ void ScopeWindow::paintData(float** buffer) {
 				}
 				if ( (attys_scope->legendCheckBox->isChecked()) && (xpos < width) ) {
 					QString s = QString::fromStdString(attysScan.attysComm[0]->CHANNEL_SHORT_DESCRIPTION[attys_scope->channel[n][i]->getChannel()]);
-					s = QString::asprintf("%d ",n) + s;
+					if (!(attysScan.attysComm[n]->isInitialising())) {
+						s = QString::asprintf("%d  ", n) + s;
+					}
+					else {
+						s = QString::asprintf("%d  offline", n);
+					}
 					paint.drawText(QPoint(0,yZero), s);
 				}
 				if ((xpos + 2) == w) {
@@ -574,6 +581,14 @@ void ScopeWindow::paintEvent(QPaintEvent *) {
 
 		if (nReconnecting == attysScan.nAttysDevices) {
 			// all attys re-connecting at the moment so nothing to do
+			QPainter paint(this);
+			paint.fillRect(0, 0, width(), height(), QColor(255, 255, 255));
+			if (attysScan.nAttysDevices > 1) {
+				paint.drawText(QPoint(width() / 3, height() / 2), "All Attys are offline");
+			}
+			else {
+				paint.drawText(QPoint(width() / 2.3, height() / 2), "Connecting");
+			}
 			return;
 		}
 
