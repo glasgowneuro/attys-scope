@@ -277,27 +277,6 @@ void ScopeWindow::setFilename(QString name,int tsv) {
 }
 
 
-void ScopeWindow::writeFile() {
-	if (!rec_file) return;
-	fprintf(rec_file, "%f", ((float)nsamples) / ((float)attysScan.attysComm[0]->getSamplingRateInHz()));
-	for (int n = 0; n < attysScan.nAttysDevices; n++) {
-		int nFiltered = 0;
-		for (int i = 0; i < AttysComm::NCHANNELS; i++) {
-			if (attys_scope->channel[n][i]->isActive()) {
-				nFiltered++;
-			}
-			float phy = unfiltDAQData[n][i];
-			fprintf(rec_file, "%c%f", separator, phy);
-		}
-		for (int i = 0; i < nFiltered; i++) {
-			float phy = filtDAQData[n][i];
-			fprintf(rec_file, "%c%f", separator, phy);
-		}
-	}
-	fprintf(rec_file, "\n");
-}
-
-
 void ScopeWindow::startUDP(int port)
 {
 	stopUDP();
@@ -455,6 +434,29 @@ void ScopeWindow::stopRec() {
 	rec_filename = QString();
 	finalFilename = QString();
 }
+
+
+void ScopeWindow::writeFile() {
+	if (!rec_file) return;
+	fprintf(rec_file, "%f", ((float)nsamples) / ((float)attysScan.attysComm[0]->getSamplingRateInHz()));
+	for (int n = 0; n < attysScan.nAttysDevices; n++) {
+		int nFiltered = 0;
+		for (int i = 0; i < AttysComm::NCHANNELS; i++) {
+			if (attys_scope->channel[n][i]->isActive()) {
+				nFiltered++;
+			}
+			float phy = unfiltDAQData[n][i];
+			fprintf(rec_file, "%c%f", separator, phy);
+		}
+		for (int i = 0; i < nFiltered; i++) {
+			float phy = filtDAQData[n][i];
+			fprintf(rec_file, "%c%f", separator, phy);
+		}
+	}
+	fprintf(rec_file, "\n");
+}
+
+
 
 
 

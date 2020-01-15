@@ -122,7 +122,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 		special[n] = new QPointer<Special>[2];
 		current[n] = new Current();
 
-		allChLayout->addWidget(new QLabel(QString(attysScan.attysName[n])+"\n"), row, 1);
+		allChLayout->addWidget(new QLabel(QString::asprintf("Attys #%d (%s)\n",n,attysScan.attysName[n])), row, 1);
 		row++;
 		specialLayout[n] = new QHBoxLayout;
 		for (int i = 0; i < 2; i++) {
