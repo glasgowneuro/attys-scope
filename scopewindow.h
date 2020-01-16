@@ -223,27 +223,27 @@ private:
 	/**
 	 * flag if data has been recorded. Prevents overwrite.
 	 **/
-	int recorded;
+	int recorded = 0;
 
 	/**
 	 * comma separated?
 	 **/
-	char separator;
+	char separator = '\t';
 
 	/**
 	 * Timer for printing the voltages in the textfields
 	 **/
-	QTimer* counter;
+	QTimer* counter = NULL;
 
 	/**
 	 * Raw daq data from the A/D converter which is saved to a file
 	 **/
-	float** unfiltDAQData;
+	float** unfiltDAQData = NULL;
 
 	/**
 	* Filtered daq data from the A/D converter which is saved to a file
 	**/
-	float** filtDAQData;
+	float** filtDAQData = NULL;
 
 public:
 	/**
@@ -273,6 +273,7 @@ public:
 // mechanisms for re-connect
 
 	void attysHasReconnected();
+	void clearAllRingbuffers();
 
 private:
 	class AttysScopeCommMessage : public AttysCommMessage {
@@ -282,6 +283,9 @@ private:
 		virtual void hasMessage(int msg, const char*) {
 			if ( (msg == AttysComm::MESSAGE_RECONNECTED) && scopeWindow ) {
 				scopeWindow->attysHasReconnected();
+			}
+			if ((msg == AttysComm::MESSAGE_RECEIVING_DATA) && scopeWindow) {
+				scopeWindow->clearAllRingbuffers();
 			}
 		}
 	};

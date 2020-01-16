@@ -20,7 +20,7 @@ signals:
 	void signalRestart();
 	
 private:
-	int current;
+	int current = 0;
 	
 public:
 	inline int getCurrent() {return current;};

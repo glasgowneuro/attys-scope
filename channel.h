@@ -17,9 +17,9 @@ private slots:
 	void channelChanged(int i);
 	
 private:
-	int channel;
-	int numberOfChannels;
-	const std::string* channelLabels;
+	int channel = 0;
+	int numberOfChannels = 0;
+	const std::string* channelLabels = NULL;
 	
 public:
 	inline int getChannel() {return channel;};

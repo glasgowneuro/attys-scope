@@ -224,11 +224,11 @@ ScopeWindow::~ScopeWindow() {
 void ScopeWindow::updateTime() {
 	QString s;
 	if (!rec_file) {
-		if (finalFilename.isEmpty()) {
+		if (rec_filename.isEmpty()) {
 			s.sprintf(EXECUTABLE_NAME " " VERSION);
 		} else {
 			if (recorded) {
-				s=rec_filename + " --- file saved";
+				s=finalFilename + " --- file saved";
 			} else {
 				s=rec_filename + " --- press REC to record ";
 			}
@@ -399,12 +399,17 @@ void ScopeWindow::startRec() {
 }
 
 
-// called after an Attys has re-connected
-void ScopeWindow::attysHasReconnected() {
-	_RPT0(0, "Attys has reconnected. Clearing ringbuffers.\n");
+void ScopeWindow::clearAllRingbuffers() {
 	for (int n = 0; n < attysScan.nAttysDevices; n++) {
 		attysScan.attysComm[n]->resetRingbuffer();
 	}
+	_RPT0(0, "Ringbuffers cleared.\n");
+}
+
+
+// called after an Attys has re-connected
+void ScopeWindow::attysHasReconnected() {
+	_RPT0(0, "Attys has reconnected.\n");
 	if (rec_file) {
 		fclose(rec_file);
 		fileNumber++;
@@ -421,6 +426,7 @@ void ScopeWindow::attysHasReconnected() {
 		}
 	}
 }
+
 
 
 
