@@ -71,7 +71,7 @@ public:
 	/**
 	 * Button which controls recording
 	 **/
-	QPointer<QCheckBox> headerCheckBox;
+	QPointer<QCheckBox> saveFilteredCheckBox;
 
 	/**
 	Display on/off

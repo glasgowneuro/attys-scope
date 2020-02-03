@@ -230,13 +230,15 @@ Attys_scope::Attys_scope(QWidget *parent,
 	connect(filePushButton, SIGNAL( clicked() ),
 		this, SLOT( enterFileName() ) );
 	recLayout->addWidget(filePushButton);
+
+	recLayout->addWidget(new QLabel(" "));
+
+	saveFilteredCheckBox = new QCheckBox("&append filtered channels");
+	saveFilteredCheckBox->setChecked(1);
+	saveFilteredCheckBox->setEnabled(true);
+	recLayout->addWidget(saveFilteredCheckBox);
+
 	recLayout->addWidget(new QLabel("    "));
-
-	headerCheckBox = new QCheckBox("&file header");
-	headerCheckBox->setEnabled(true);
-	recLayout->addWidget(headerCheckBox);
-	headerCheckBox->setStyleSheet("font: 18px; padding: 3px;");
-
 	recCheckBox = new QCheckBox( "&REC" );
 	recCheckBox->connect(recCheckBox, SIGNAL( stateChanged(int) ),
 			       this, SLOT( recstartstop(int) ) );
@@ -397,7 +399,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 #define BANDSTOP_SETTING_FORMAT "bandstop_dev%09d_ch%09d"
 #define GAIN_SETTING_FORMAT "gain_mapping_dev%09d_ch%09d"
 #define SETTINGS_LEGENDS "legends"
-#define SETTINGS_HEADER "header"
+#define SETTINGS_SAVE_FILTERED "header"
 
 void Attys_scope::readSettings(QSettings &settings) {
 	int channels = AttysComm::NCHANNELS;
@@ -407,7 +409,7 @@ void Attys_scope::readSettings(QSettings &settings) {
 	udpTextEdit->setText(QString::number(settings.value(SETTINGS_UDP_PORT, 65000).toInt()));
 	udpCheckBox->setChecked(settings.value(SETTINGS_UDP_ON, 0).toBool());
 	legendCheckBox->setChecked(settings.value(SETTINGS_LEGENDS, 0).toBool());
-	headerCheckBox->setChecked(settings.value(SETTINGS_HEADER, 0).toBool());
+	saveFilteredCheckBox->setChecked(settings.value(SETTINGS_SAVE_FILTERED, 1).toBool());
 	settings.endGroup();
 
 	settings.beginGroup(SETTINGS_CHANNELS);
@@ -468,7 +470,7 @@ void Attys_scope::writeSettings(QSettings & settings)
 	settings.beginGroup(SETTINGS_UDP);
 	settings.setValue(SETTINGS_UDP_PORT, udpTextEdit->toPlainText().toInt());
 	settings.setValue(SETTINGS_UDP_ON, udpCheckBox->isChecked());
-	settings.setValue(SETTINGS_HEADER, headerCheckBox->isChecked());
+	settings.setValue(SETTINGS_SAVE_FILTERED, saveFilteredCheckBox->isChecked());
 	settings.setValue(SETTINGS_LEGENDS, legendCheckBox->isChecked());
 	settings.endGroup();
 
@@ -572,7 +574,7 @@ Attys_scope::~Attys_scope() {
 
 void Attys_scope::disableControls() {
 	filePushButton->setEnabled( false );
-	headerCheckBox->setEnabled( false );
+	saveFilteredCheckBox->setEnabled( false );
 	int channels = AttysComm::NCHANNELS;
 	for(int n=0;n<attysScan.nAttysDevices;n++) {
 		for(int i=0;i<channels;i++) {
@@ -584,7 +586,7 @@ void Attys_scope::disableControls() {
 
 void Attys_scope::enableControls() {
 	filePushButton->setEnabled( true );
-	headerCheckBox->setEnabled( true );
+	saveFilteredCheckBox->setEnabled( true );
 	int channels = AttysComm::NCHANNELS;
 	for(int n=0;n<attysScan.nAttysDevices;n++) {
 		for(int i=0;i<channels;i++) {

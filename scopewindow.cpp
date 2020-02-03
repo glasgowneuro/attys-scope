@@ -299,21 +299,13 @@ void ScopeWindow::writeUDP() {
 	char tmp[1024];
 	sprintf(tmp, "%f", ((float)nsamples) / ((float)attysScan.attysComm[0]->getSamplingRateInHz()));
 	for (int n = 0; n < attysScan.nAttysDevices; n++) {
-		int nFiltered = 0;
 		for (int i = 0; i < AttysComm::NCHANNELS; i++) {
-			if (attys_scope->channel[n][i]->isActive()) {
-				nFiltered++;
-			}
 			float phy = unfiltDAQData[n][i];
 			sprintf(tmp+strlen(tmp), ",%f", phy);
 		}
-		for (int i = 0; i < nFiltered; i++) {
+		for (int i = 0; i < AttysComm::NCHANNELS; i++) {
 			float phy = filtDAQData[n][i];
 			sprintf(tmp+strlen(tmp), ",%f", phy);
-		}
-		for (int i = 0; i < (AttysComm::NCHANNELS - nFiltered); i++) {
-			float phy = 0;
-			sprintf(tmp + strlen(tmp), ",%f", phy);
 		}
 	}
 	sprintf(tmp+strlen(tmp), "\n");
@@ -357,7 +349,7 @@ void ScopeWindow::openFile() {
 		finalFilename = basename + QString::asprintf(tmp, fileNumber) + QString(".") + suffix;
 	}
 	qDebug() << "Full name=" << finalFilename;
-	rec_file = fopen(finalFilename.toLocal8Bit().constData(),"wt");
+	rec_file = fopen(finalFilename.toLocal8Bit().constData(), "wt");
 	// could we open it?
 	if (!rec_file) {
 		rec_filename = QString();
@@ -367,15 +359,13 @@ void ScopeWindow::openFile() {
 		attys_scope->enableControls();
 		throw finalFilename.toLocal8Bit().constData();
 	}
-	if (attys_scope->headerCheckBox->isChecked()) {
-		fprintf(rec_file, "# %lu", (unsigned long)time(NULL));
-		for (int n = 0; n < attysScan.nAttysDevices; n++) {
-			char tmp[256];
-			attysScan.attysComm[n]->getBluetoothAdressString(tmp);
-			fprintf(rec_file, "%c%s", separator, tmp);
-		}
-		fprintf(rec_file, "\n");
+	fprintf(rec_file, "# %lu", (unsigned long)time(NULL));
+	for (int n = 0; n < attysScan.nAttysDevices; n++) {
+		char tmp[256];
+		attysScan.attysComm[n]->getBluetoothAdressString(tmp);
+		fprintf(rec_file, "%c%s", separator, tmp);
 	}
+	fprintf(rec_file, "\n");
 }
 
 
@@ -448,17 +438,17 @@ void ScopeWindow::writeFile() {
 	if (!rec_file) return;
 	fprintf(rec_file, "%f", ((float)nsamples) / ((float)attysScan.attysComm[0]->getSamplingRateInHz()));
 	for (int n = 0; n < attysScan.nAttysDevices; n++) {
-		int nFiltered = 0;
 		for (int i = 0; i < AttysComm::NCHANNELS; i++) {
-			if (attys_scope->channel[n][i]->isActive()) {
-				nFiltered++;
-			}
 			float phy = unfiltDAQData[n][i];
 			fprintf(rec_file, "%c%f", separator, phy);
 		}
-		for (int i = 0; i < nFiltered; i++) {
-			float phy = filtDAQData[n][i];
-			fprintf(rec_file, "%c%f", separator, phy);
+	}
+	if (attys_scope->saveFilteredCheckBox->isChecked()) {
+		for (int n = 0; n < attysScan.nAttysDevices; n++) {
+			for (int i = 0; i < AttysComm::NCHANNELS; i++) {
+				float phy = filtDAQData[n][i];
+				fprintf(rec_file, "%c%f", separator, phy);
+			}
 		}
 	}
 	fprintf(rec_file, "\n");
@@ -612,7 +602,6 @@ void ScopeWindow::paintEvent(QPaintEvent *) {
 			if (attys_scope->special[n][1]->getSpecial() == SPECIAL_TEMPERATURE) {
 				values[attysScan.attysComm[n]->INDEX_Analogue_channel_2] = AttysComm::phys2temperature(values[attysScan.attysComm[n]->INDEX_Analogue_channel_2]);
 			}
-			int nFiltered = 0;
 			for (int i = 0; i < AttysComm::NCHANNELS; i++) {
 				unfiltDAQData[n][i] = values[i];
 				if (attys_scope->channel[n][i]->isActive()) {
@@ -623,9 +612,12 @@ void ScopeWindow::paintEvent(QPaintEvent *) {
 					value = attys_scope->highpass[n][i]->filter(value);
 					value = attys_scope->lowpass[n][i]->filter(value);
 					value = attys_scope->bandstop[n][i]->filter(value);
-					filtDAQData[n][nFiltered++] = value;
+					filtDAQData[n][i] = value;
 					// average response if TB is slower than sampling rate
 					adAvgBuffer[n][i] = adAvgBuffer[n][i] + value;
+				}
+				else {
+					filtDAQData[n][i] = 0;
 				}
 			}
 		}
