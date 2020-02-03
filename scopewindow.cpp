@@ -344,7 +344,12 @@ void ScopeWindow::openFile() {
 	finalFilename = rec_filename;
 	if ((fileNumber > 0) || (-1 != pos)) {
 		char tmp[256];
-		sprintf(tmp, "%%0%dd", lengthBasename - pos);
+		if (pos > 0) {
+			sprintf(tmp, "%%0%dd", lengthBasename - pos);
+		}
+		else {
+			sprintf(tmp, "%%0%dd", 9);
+		}
 		qDebug() << "Format string=" << tmp;
 		finalFilename = basename + QString::asprintf(tmp, fileNumber) + QString(".") + suffix;
 	}
