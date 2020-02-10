@@ -233,10 +233,10 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	recLayout->addWidget(new QLabel(" "));
 
-	saveFilteredCheckBox = new QCheckBox("&append filtered channels");
-	saveFilteredCheckBox->setChecked(1);
-	saveFilteredCheckBox->setEnabled(true);
-	recLayout->addWidget(saveFilteredCheckBox);
+	vers1dataCheckBox = new QCheckBox("&V1.x data format");
+	vers1dataCheckBox->setChecked(1);
+	vers1dataCheckBox->setEnabled(true);
+	recLayout->addWidget(vers1dataCheckBox);
 
 	recLayout->addWidget(new QLabel("    "));
 	recCheckBox = new QCheckBox( "&REC" );
@@ -409,7 +409,7 @@ void Attys_scope::readSettings(QSettings &settings) {
 	udpTextEdit->setText(QString::number(settings.value(SETTINGS_UDP_PORT, 65000).toInt()));
 	udpCheckBox->setChecked(settings.value(SETTINGS_UDP_ON, 0).toBool());
 	legendCheckBox->setChecked(settings.value(SETTINGS_LEGENDS, 0).toBool());
-	saveFilteredCheckBox->setChecked(settings.value(SETTINGS_SAVE_FILTERED, 1).toBool());
+	vers1dataCheckBox->setChecked(settings.value(SETTINGS_SAVE_FILTERED, 1).toBool());
 	settings.endGroup();
 
 	settings.beginGroup(SETTINGS_CHANNELS);
@@ -470,7 +470,7 @@ void Attys_scope::writeSettings(QSettings & settings)
 	settings.beginGroup(SETTINGS_UDP);
 	settings.setValue(SETTINGS_UDP_PORT, udpTextEdit->toPlainText().toInt());
 	settings.setValue(SETTINGS_UDP_ON, udpCheckBox->isChecked());
-	settings.setValue(SETTINGS_SAVE_FILTERED, saveFilteredCheckBox->isChecked());
+	settings.setValue(SETTINGS_SAVE_FILTERED, vers1dataCheckBox->isChecked());
 	settings.setValue(SETTINGS_LEGENDS, legendCheckBox->isChecked());
 	settings.endGroup();
 
@@ -574,7 +574,7 @@ Attys_scope::~Attys_scope() {
 
 void Attys_scope::disableControls() {
 	filePushButton->setEnabled( false );
-	saveFilteredCheckBox->setEnabled( false );
+	vers1dataCheckBox->setEnabled( false );
 	int channels = AttysComm::NCHANNELS;
 	for(int n=0;n<attysScan.nAttysDevices;n++) {
 		for(int i=0;i<channels;i++) {
@@ -586,7 +586,7 @@ void Attys_scope::disableControls() {
 
 void Attys_scope::enableControls() {
 	filePushButton->setEnabled( true );
-	saveFilteredCheckBox->setEnabled( true );
+	vers1dataCheckBox->setEnabled( true );
 	int channels = AttysComm::NCHANNELS;
 	for(int n=0;n<attysScan.nAttysDevices;n++) {
 		for(int i=0;i<channels;i++) {

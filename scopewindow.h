@@ -167,14 +167,19 @@ private:
 	FILE*       rec_file = nullptr;
 
 	/**
-	 * Running number in case of re-connects
-	 **/
-	int fileNumber = 0;
-
-	/**
 	 * number of channels switched on
 	 **/
 	int         num_channels = 0;
+
+	/**
+	* time when recording starts
+	**/
+	unsigned long start_time = 0;
+
+	/**
+	* reconnecting flag
+	**/
+	int reconnectFlag = 0;
 
 private:
 	/**

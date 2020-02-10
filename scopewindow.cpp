@@ -329,31 +329,7 @@ void ScopeWindow::openFile() {
 	if (rec_filename.isEmpty()) {
 		throw "Empty filename";
 	}
-	// QString suffix = "";
-	QStringList splitFilename = rec_filename.split(".");
-	QString basename = splitFilename.at(0);
-	int lengthBasename = basename.size();
-	qDebug() << "Basename=" << basename;
-	QString suffix = rec_filename.split(".").at(1);
-	qDebug() << "suffix=" << suffix;
-	int pos = reg.indexIn(basename);
-	if (-1 != pos) {
-		basename = basename.left(pos);
-		qDebug() << "basename w/o number=" << basename;
-	}
 	finalFilename = rec_filename;
-	if ((fileNumber > 0) || (-1 != pos)) {
-		char tmp[256];
-		if (pos > 0) {
-			sprintf(tmp, "%%0%dd", lengthBasename - pos);
-		}
-		else {
-			sprintf(tmp, "%%0%dd", 9);
-		}
-		qDebug() << "Format string=" << tmp;
-		finalFilename = basename + QString::asprintf(tmp, fileNumber) + QString(".") + suffix;
-	}
-	qDebug() << "Full name=" << finalFilename;
 	rec_file = fopen(finalFilename.toLocal8Bit().constData(), "wt");
 	// could we open it?
 	if (!rec_file) {
@@ -364,13 +340,15 @@ void ScopeWindow::openFile() {
 		attys_scope->enableControls();
 		throw finalFilename.toLocal8Bit().constData();
 	}
-	fprintf(rec_file, "# %lu", (unsigned long)time(NULL));
-	for (int n = 0; n < attysScan.nAttysDevices; n++) {
-		char tmp[256];
-		attysScan.attysComm[n]->getBluetoothAdressString(tmp);
-		fprintf(rec_file, "%c%s", separator, tmp);
+	if (!(attys_scope->vers1dataCheckBox->isChecked())) {
+		fprintf(rec_file, "# %lu", (unsigned long)time(NULL));
+		for (int n = 0; n < attysScan.nAttysDevices; n++) {
+			char tmp[256];
+			attysScan.attysComm[n]->getBluetoothAdressString(tmp);
+			fprintf(rec_file, "%c%s", separator, tmp);
+		}
+		fprintf(rec_file, "\n");
 	}
-	fprintf(rec_file, "\n");
 }
 
 
@@ -380,7 +358,7 @@ void ScopeWindow::startRec() {
 	attys_scope->disableControls();
 	// counter for samples
 	nsamples = 0;
-	fileNumber = 0;
+	start_time = time(NULL);
 	try {
 		openFile();
 	} catch (const char* msg) {
@@ -405,20 +383,9 @@ void ScopeWindow::clearAllRingbuffers() {
 // called after an Attys has re-connected
 void ScopeWindow::attysHasReconnected() {
 	_RPT0(0, "Attys has reconnected.\n");
-	if (rec_file) {
-		fclose(rec_file);
-		fileNumber++;
-		try {
-			openFile();
-		}
-		catch (const char* msg) {
-			fprintf(stderr,
-				"Writing failed.\n");
-			QMessageBox msgBox;
-			msgBox.setText(QString(msg) + QString(" could not be saved: ") + QString(strerror(errno)));
-			msgBox.exec();
-			finalFilename = "";
-		}
+	if (reconnectFlag) {
+		nsamples = (time(NULL) - start_time) * attysScan.attysComm[0]->getSamplingRateInHz();
+		reconnectFlag = 0;
 	}
 }
 
@@ -441,15 +408,28 @@ void ScopeWindow::stopRec() {
 
 void ScopeWindow::writeFile() {
 	if (!rec_file) return;
-	fprintf(rec_file, "%f", ((float)nsamples) / ((float)attysScan.attysComm[0]->getSamplingRateInHz()));
-	for (int n = 0; n < attysScan.nAttysDevices; n++) {
-		for (int i = 0; i < AttysComm::NCHANNELS; i++) {
-			float phy = unfiltDAQData[n][i];
-			fprintf(rec_file, "%c%f", separator, phy);
+	if (attys_scope->vers1dataCheckBox->isChecked()) {
+		fprintf(rec_file, "%f", ((float)nsamples) / ((float)attysScan.attysComm[0]->getSamplingRateInHz()));
+		for (int n = 0; n < attysScan.nAttysDevices; n++) {
+			for (int i = 0; i < AttysComm::INDEX_Analogue_channel_2; i++) {
+				float phy = unfiltDAQData[n][i];
+				fprintf(rec_file, "%c%f", separator, phy);
+			}
+			for (int i = 0; i < AttysComm::NCHANNELS; i++) {
+				if (attys_scope->channel[n][i]->isActive()) {
+					float phy = filtDAQData[n][i];
+					fprintf(rec_file, "%c%f", separator, phy);
+				}
+			}
 		}
 	}
-	if (attys_scope->saveFilteredCheckBox->isChecked()) {
+	else {
+		fprintf(rec_file, "%f", ((float)nsamples) / ((float)attysScan.attysComm[0]->getSamplingRateInHz()));
 		for (int n = 0; n < attysScan.nAttysDevices; n++) {
+			for (int i = 0; i < AttysComm::NCHANNELS; i++) {
+				float phy = unfiltDAQData[n][i];
+				fprintf(rec_file, "%c%f", separator, phy);
+			}
 			for (int i = 0; i < AttysComm::NCHANNELS; i++) {
 				float phy = filtDAQData[n][i];
 				fprintf(rec_file, "%c%f", separator, phy);
@@ -589,6 +569,9 @@ void ScopeWindow::paintEvent(QPaintEvent *) {
 			}
 			else {
 				paint.drawText(QPoint(width() / 2.3, height() / 2), "Connecting");
+			}
+			if (nsamples > 0) {
+				reconnectFlag = 1;
 			}
 			return;
 		}
