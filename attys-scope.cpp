@@ -729,7 +729,7 @@ int main( int argc, char **argv )
 	// zero on success and non zero on failure
 	if (ret) {
 		a.processEvents();
-		Sleep(5000);
+		std::this_thread::sleep_for(std::chrono::milliseconds(5000));
 		delete splash;
 		return ret;
 	}
@@ -739,7 +739,7 @@ int main( int argc, char **argv )
 		printf("No Attys present or not paired.\n");
 		splash->showMessage("Cound not connect\nand/or no devices paired.");
 		a.processEvents();
-		Sleep(5000);
+		std::this_thread::sleep_for(std::chrono::milliseconds(5000));
 		delete splash;
 		return -1;
 	}
