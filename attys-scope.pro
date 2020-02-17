@@ -15,19 +15,19 @@ Debug:LIBS += \
 	-L/iir1/Debug \
     -liir_static \
 	-lWs2_32 \
-	-L../AttysComm/cpp/Debug \
+	-L../attys-comm/Debug \
 	-lattyscomm_static
 
 Release:LIBS += \
 	-L/iir1/Release \
     -liir_static \
 	-lWs2_32 \
-	-L../AttysComm/cpp/Release \
+	-L../attys-comm/Release \
 	-lattyscomm_static
 
 RESOURCES     = application.qrc
 RC_FILE = attysapp.rc
-INCLUDEPATH += ../AttysComm/cpp
+INCLUDEPATH += ../attys-comm
 MOC_DIR = moc
 OBJECTS_DIR = obj
 }
