@@ -1,0 +1,44 @@
+Attys-scope Dataformat
+
+Column Number & Description
+01 Timestamp
+02 Acceleration_X, Attys #1, Unfiltered.
+03 Acceleration_Y, Attys #1, Unfiltered.
+04 Acceleration_Z, Attys #1, Unfiltered.
+05 Magnetic_field_X, Attys #1, Unfiltered.
+06 Magnetic_field_Y, Attys #1, Unfiltered.
+07 Magnetic_field_Z, Attys #1, Unfiltered.
+08 Analogue_channel_1, Attys #1, Unfiltered.
+09 Analogue_channel_2, Attys #1, Unfiltered.
+10 GPIO 0, Attys #1, Unfiltered.
+11 GPIO 1, Attys #1, Unfiltered.
+12 Acceleration_X, Attys #2, Unfiltered.
+13 Acceleration_Y, Attys #2, Unfiltered.
+14 Acceleration_Z, Attys #2, Unfiltered.
+15 Magnetic_field_X, Attys #2, Unfiltered.
+16 Magnetic_field_Y, Attys #2, Unfiltered.
+17 Magnetic_field_Z, Attys #2, Unfiltered.
+18 Analogue_channel_1, Attys #2, Unfiltered.
+19 Analogue_channel_2, Attys #2, Unfiltered.
+20 GPIO 0, Attys #2, Unfiltered.
+21 GPIO 1, Attys #2, Unfiltered.
+22 Acceleration_X, Attys #1, filtered.
+23 Acceleration_Y, Attys #1, filtered.
+24 Acceleration_Z, Attys #1, filtered.
+25 Magnetic_field_X, Attys #1, filtered.
+26 Magnetic_field_Y, Attys #1, filtered.
+27 Magnetic_field_Z, Attys #1, filtered.
+28 Analogue_channel_1, Attys #1, filtered.
+29 Analogue_channel_2, Attys #1, filtered.
+30 GPIO 0, Attys #1, filtered.
+31 GPIO 1, Attys #1, filtered.
+32 Acceleration_X, Attys #2, filtered.
+33 Acceleration_Y, Attys #2, filtered.
+34 Acceleration_Z, Attys #2, filtered.
+35 Magnetic_field_X, Attys #2, filtered.
+36 Magnetic_field_Y, Attys #2, filtered.
+37 Magnetic_field_Z, Attys #2, filtered.
+38 Analogue_channel_1, Attys #2, filtered.
+39 Analogue_channel_2, Attys #2, filtered.
+40 GPIO 0, Attys #2, filtered.
+41 GPIO 1, Attys #2, filtered.
