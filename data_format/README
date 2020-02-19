@@ -22,6 +22,7 @@ Column Number & Description
 19 Analogue_channel_2, Attys #2, Unfiltered.
 20 GPIO 0, Attys #2, Unfiltered.
 21 GPIO 1, Attys #2, Unfiltered.
+[attys #3, #4 would generate more columns]
 22 Acceleration_X, Attys #1, filtered.
 23 Acceleration_Y, Attys #1, filtered.
 24 Acceleration_Z, Attys #1, filtered.
@@ -42,3 +43,5 @@ Column Number & Description
 39 Analogue_channel_2, Attys #2, filtered.
 40 GPIO 0, Attys #2, filtered.
 41 GPIO 1, Attys #2, filtered.
+[attys #3, #4 would generate more columns]
+
