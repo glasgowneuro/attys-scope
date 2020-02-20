@@ -9,7 +9,7 @@ Lowpass::Lowpass(float _samplingrate, float cutoff) : QComboBox() {
 	frequency = cutoff;
 	samplingrate = _samplingrate;
 
-	setMinimumWidth ( fontMetrics().width("10000Hz") );
+	setMinimumWidth ( fontMetrics().width("10000Hz___") );
 
 	addItem(tr("off"),0);
 	addItem(tr("1Hz"), 1);

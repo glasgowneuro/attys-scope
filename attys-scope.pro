@@ -32,7 +32,7 @@ MOC_DIR = moc
 OBJECTS_DIR = obj
 }
 
-unix {
+unix!macx {
 TEMPLATE	= app
 CONFIG		+= qt release c++11
 HEADERS		= attys-scope.h scopewindow.h gain.h highpass.h lowpass.h channel.h special.h current.h bandstop.h 
@@ -40,6 +40,21 @@ SOURCES		= attys-scope.cpp scopewindow.cpp gain.cpp lowpass.cpp highpass.cpp cha
 TARGET		= attys-scope
 INSTALLS        += target
 LIBS            += -liir ../attys-comm/libattyscomm_static.a -lbluetooth
+QT             	+= widgets
+QT 		+= network
+target.path     = /usr/local/bin
+RESOURCES       = application.qrc
+}
+
+macx {
+TEMPLATE	= app
+CONFIG		+= qt release c++11
+HEADERS		= attys-scope.h scopewindow.h gain.h highpass.h lowpass.h channel.h special.h current.h bandstop.h 
+SOURCES		= attys-scope.cpp scopewindow.cpp gain.cpp lowpass.cpp highpass.cpp channel.cpp special.cpp current.cpp bandstop.cpp 
+TARGET		= attys-scope
+INCLUDEPATH += /usr/local/include
+INSTALLS        += target
+LIBS            += -liir -lattyscomm -L/usr/local/lib
 QT             	+= widgets
 QT 		+= network
 target.path     = /usr/local/bin

@@ -26,9 +26,6 @@ DEFINE_GUID(g_guidServiceClass, 0xb62c4e8d, 0x62cc, 0x404b, 0xbb, 0xbf, 0xbf, 0x
 ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp)
 	: QWidget(attys_scope_tmp) {
 
-        setAutoFillBackground(true);
-        setStyleSheet("background-color:white;");
-	
 	tb_init = 1;
 	tb_counter = tb_init;
 	attys_scope = attys_scope_tmp;
@@ -440,9 +437,9 @@ void ScopeWindow::writeFile() {
 // called by the refresh timer
 void ScopeWindow::paintEvent(QPaintEvent *) {
 	QPainter paint( this );
-	QPen penData[3]={QPen(QColor(0,0,128),1),
-			 QPen(QColor(0,128,0),1),
-			 QPen(QColor(128,0,0),1)};
+	QPen penData[3]={QPen(QColor(0,255,255),1),
+			 QPen(QColor(255,255,0),1),
+			 QPen(QColor(255,0,255),1)};
 	QPen penWhite(Qt::white,2);
 
 	int act = 0;
@@ -451,6 +448,7 @@ void ScopeWindow::paintEvent(QPaintEvent *) {
 			if (attys_scope->
 				channel[n][i]->
 				isActive()) {
+				paint.setPen(penData[act % 3]);
 				if (attys_scope->legendCheckBox->isChecked()) {
 					QString s = QString::fromStdString(attysScan.attysComm[0]->CHANNEL_SHORT_DESCRIPTION[attys_scope->channel[n][i]->getChannel()]);
 					if (!(attysScan.attysComm[n]->isInitialising())) {
@@ -461,9 +459,8 @@ void ScopeWindow::paintEvent(QPaintEvent *) {
 					}
 					paint.drawText(QPoint(0,yzero[n][i]), s);
 				}
-				paint.setPen(penData[act % 3]);
 				for(int x = 0; x < (w-1); x++) {
-					if ((x < xpos) || (x > (xpos+3))) {
+					if ((x < (xpos-1)) || (x > (xpos+3))) {
 						paint.drawLine(x, ypos[n][i][x],
 							       x + 1, ypos[n][i][x + 1]);
 						if (x % 2) {

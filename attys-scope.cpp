@@ -30,11 +30,14 @@ Attys_scope::Attys_scope(QWidget *parent,
 			 int ignoreSettings
 	) : QWidget( parent ) {
 	
+	setStyleSheet("background-color:rgb(32,32,32);");
+        setAutoFillBackground(true);
+	
 	// to the get the stuff a bit closer together
 	char styleSheet[] = "padding:0px;margin:0px;border:0px;";
-	char styleSheetCombo[] = "padding:0px;margin:0px;border:0px;margin-right:2px";
+	char styleSheetCombo[] = "padding:0px;margin:0px;border:0px;margin-right:2px;font: 16px";
 	char styleSheetGroupBox[] = "padding:1px;margin:0px;border:0px";
-	char styleSheetButton[] = "background-color: rgb(224, 224, 224); border: none; outline: none; border-width: 0px; font: 16px; padding: 5px;";
+	char styleSheetButton[] = "background-color: rgb(64,64,64);; border: none; outline: none; border-width: 0px; font: 16px; padding: 5px; color: white;";
 
 	attysScopeWindow=new ScopeWindow(this);
 
@@ -163,10 +166,10 @@ Attys_scope::Attys_scope(QWidget *parent,
 			hbox[n][i]->setSpacing(1);
 			channel[n][i] = new Channel(channels,attysCommTmp.CHANNEL_SHORT_DESCRIPTION);
 			channel[n][i] -> setChannel( i );
-			channel[n][i]->setStyleSheet(styleSheetCombo);
+			//channel[n][i]->setStyleSheet(styleSheetCombo);
 			hbox[n][i]->addWidget(channel[n][i]);
 			voltageTextEdit[n][i]=new QTextEdit(channelgrp[n][i]);
-			voltageTextEdit[n][i]->setStyleSheet(styleSheetCombo);
+			//voltageTextEdit[n][i]->setStyleSheet(styleSheetCombo);
 			hbox[n][i]->addWidget(voltageTextEdit[n][i]);
 			voltageTextEdit[n][i]->setFont(*voltageFont);
 			char tmpVolt[128];
