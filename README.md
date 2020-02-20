@@ -58,5 +58,5 @@ the other required packages.
 ## Post- and realtime processing in Python
 Check out the python subdirectory. This contains scripts for both postprocessing of datafiles and realtime processing.
 
-## UNREAL gaming engine
-The unreal subdirectory contains a class which receives UDP packets from attysscope and also screenshots of the blueprints for both a jumping and driving game
+## Data format
+

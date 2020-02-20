@@ -14,6 +14,7 @@ class ScopeWindow;
 #include <QLayout> 
 #include <QPaintEvent>
 #include <QTimerEvent>
+#include <QBasicTimer>
 #include <QUdpSocket>
 
 #ifdef __linux__ 
@@ -75,11 +76,6 @@ protected:
 	void	paintEvent(QPaintEvent *);
 
 
-	void resizeEvent(QResizeEvent *event) {
-		QWidget::resizeEvent(event);
-		eraseFlag = 1;
-	}
-
 public:
 	/**
 	 * Clears the screen
@@ -98,13 +94,6 @@ private:
 	 **/
 	void	timerEvent(QTimerEvent *);
 
-private slots:
-
-	/**
-	 * Updates the time-code and also the voltages of the channels
-	 **/
-	void	updateTime();
-
 private:
 	/**
 	 * Saves data which has arrived from the AD-converter
@@ -117,6 +106,11 @@ private:
 	int         ***ypos;
 
 	/**
+	 * y-positions of the data
+	 **/
+	int         **yzero;
+
+	/**
 	 * current x-pos
 	 **/
 	int         xpos = 0;
@@ -125,11 +119,6 @@ private:
 	 * elapsed msec
 	 **/
 	long int         nsamples;
-
-	/**
-	* flag if data is displayed
-	**/
-	int display_data;
 
 public:
 	/**
@@ -238,7 +227,7 @@ private:
 	/**
 	 * Timer for printing the voltages in the textfields
 	 **/
-	QTimer* counter = NULL;
+	QBasicTimer counter;
 
 	/**
 	 * Raw daq data from the A/D converter which is saved to a file
@@ -299,6 +288,16 @@ private:
 
 	float dummySample[AttysComm::NCHANNELS];
 
+	// plotting
+	int w = 1;
+	int h = 1;
+	int base = 1;
+	int mainTimerID = 0;
+
+	void calcScreenParameters();
+	void processData();
+	void convertSampleToPlot(float**);
+	void updateTime();
 };
 
 

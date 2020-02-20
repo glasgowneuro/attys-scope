@@ -29,7 +29,7 @@ class Attys_scope;
 #include "AttysScan.h"
 
 // version number
-#define VERSION "2.1.0"
+#define VERSION "2.2.0"
 
 #define ATTYS_STRING "ATTYS"
 #define PROGRAM_NAME "attys-scope"

@@ -26,8 +26,9 @@ DEFINE_GUID(g_guidServiceClass, 0xb62c4e8d, 0x62cc, 0x404b, 0xbb, 0xbf, 0xbf, 0x
 ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp)
 	: QWidget(attys_scope_tmp) {
 
-	display_data = 1;
-
+        setAutoFillBackground(true);
+        setStyleSheet("background-color:white;");
+	
 	tb_init = 1;
 	tb_counter = tb_init;
 	attys_scope = attys_scope_tmp;
@@ -46,8 +47,6 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp)
 
 	//////////////////////////////////////////////////////////////
 	
-	setAttribute(Qt::WA_OpaquePaintEvent);
-
 	// points to itself for the message listener
 	attysScopeCommMessage.scopeWindow = this;
 
@@ -58,12 +57,15 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp)
 
 	// initialise the graphics stuff
 	ypos = new int**[attysScan.nAttysDevices];
+	yzero = new int*[attysScan.nAttysDevices];
 	assert(ypos != NULL);
+	assert(yzero != NULL);
 	minV = new float*[attysScan.nAttysDevices];
 	maxV = new float*[attysScan.nAttysDevices];
 	for(int devNo=0;devNo<attysScan.nAttysDevices;devNo++) {
 		attysScan.attysComm[devNo]->registerMessageCallback(&attysScopeCommMessage);
 		ypos[devNo]=new int*[AttysComm::NCHANNELS];
+		yzero[devNo]=new int[AttysComm::NCHANNELS];
 		minV[devNo] = new float[AttysComm::NCHANNELS];
 		maxV[devNo] = new float[AttysComm::NCHANNELS];
 		assert(ypos[devNo] != NULL);
@@ -71,6 +73,7 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp)
 			minV[devNo][i] = -10;
 			maxV[devNo][i] = 10;
 			ypos[devNo][i] = new int[MAX_DISP_X];
+			yzero[devNo][i] = 0;
 			assert( ypos[devNo][i] != NULL);
 			for(int j=0;j<MAX_DISP_X;j++) {
 				ypos[devNo][i][j]=0;
@@ -157,16 +160,9 @@ void ScopeWindow::startDAQ() {
 		}
 	}
 
-	// ready steady go!
-	counter = new QTimer(this);
-	assert(counter != NULL);
-	connect(counter,
-		SIGNAL(timeout()),
-		this,
-		SLOT(updateTime()));
+	counter.start(500,this);
 
-	startTimer(50);		// run continuous timer
-	counter->start(500);
+	mainTimerID = startTimer(50);		// run continuous timer
 	for (int i = 0; i < attysScan.nAttysDevices; i++) {
 		if (attysScan.attysComm[i])
 			attysScan.attysComm[i]->start();
@@ -441,21 +437,61 @@ void ScopeWindow::writeFile() {
 
 
 
-
-
-void ScopeWindow::paintData(float** buffer) {
+// called by the refresh timer
+void ScopeWindow::paintEvent(QPaintEvent *) {
 	QPainter paint( this );
 	QPen penData[3]={QPen(QColor(0,0,128),1),
 			 QPen(QColor(0,128,0),1),
 			 QPen(QColor(128,0,0),1)};
 	QPen penWhite(Qt::white,2);
-	int w = width();
-	int h = height();
-	if (eraseFlag) {
-		paint.fillRect(0,0,w,h,QColor(255,255,255));
-		eraseFlag = 0;
-		xpos = 0;
+
+	int act = 0;
+	for (int n = 0; n < attysScan.nAttysDevices; n++) {
+		for (int i = 0; i < AttysComm::NCHANNELS; i++) {
+			if (attys_scope->
+				channel[n][i]->
+				isActive()) {
+				if (attys_scope->legendCheckBox->isChecked()) {
+					QString s = QString::fromStdString(attysScan.attysComm[0]->CHANNEL_SHORT_DESCRIPTION[attys_scope->channel[n][i]->getChannel()]);
+					if (!(attysScan.attysComm[n]->isInitialising())) {
+						s = QString::asprintf("%d  ", n) + s;
+					}
+					else {
+						s = QString::asprintf("%d  offline", n);
+					}
+					paint.drawText(QPoint(0,yzero[n][i]), s);
+				}
+				paint.setPen(penData[act % 3]);
+				for(int x = 0; x < (w-1); x++) {
+					if ((x < xpos) || (x > (xpos+3))) {
+						paint.drawLine(x, ypos[n][i][x],
+							       x + 1, ypos[n][i][x + 1]);
+						if (x % 2) {
+							paint.drawPoint(x, yzero[n][i]);
+						}
+					}
+				}
+				act++;
+			}
+		}
 	}
+}
+
+
+void ScopeWindow::setTB(int us) {
+	tb_init=us/(1000000/ attysScan.attysComm[0]->getSamplingRateInHz());
+	tb_counter=tb_init;
+	for(int n=0;n<attysScan.nAttysDevices;n++) {
+		for(int i=0;i<AttysComm::NCHANNELS;i++) {
+			adAvgBuffer[n][i]=0;
+		}
+	}
+}
+
+void ScopeWindow::calcScreenParameters() {
+	w = width();
+	h = height();
+	
 	num_channels=0;
 	
 	for(int n=0;n<attysScan.nAttysDevices;n++) {
@@ -465,33 +501,17 @@ void ScopeWindow::paintData(float** buffer) {
 			}
 		}
 	}
-	if (!num_channels) {
+	
+	if (num_channels < 1) {
 		return;
 	}
 
-	if (attys_scope->legendCheckBox->isChecked()) {
-		display_data = 1;
-	}
+	base = h / num_channels;
+}
 
-	if (!display_data) {
-		return;
-	}
 
-	int base=h/num_channels;
-	if(w <= 0 || h <= 0) 
-		return;
-	paint.setPen(penWhite);
-	int xer=xpos+5;
-	if (xer>=w) {
-		xer=xer-w;
-	}
-
-	QFontMetrics fm = paint.fontMetrics();
-	int width = fm.width(QString::fromStdString(attysScan.attysComm[0]->CHANNEL_SHORT_DESCRIPTION[0]+"0: "));
-
-	paint.drawLine(xer,0,
-		       xer,h);
-	int act=1;
+void ScopeWindow::convertSampleToPlot(float **buffer) {
+	int act = 1;
 	for (int n = 0; n < attysScan.nAttysDevices; n++) {
 		for (int i = 0; i < AttysComm::NCHANNELS; i++) {
 			if (attys_scope->
@@ -499,47 +519,23 @@ void ScopeWindow::paintData(float** buffer) {
 				isActive()) {
 				float dy = (float)base / (float)(maxV[n][attys_scope->channel[n][i]->getChannel()] 
 					- minV[n][attys_scope->channel[n][i]->getChannel()]);
-				paint.setPen(penData[act % 3]);
 				float gain = attys_scope->gain[n][i]->getGain();
 				float value = buffer[n][i] * gain;
-				//if (i == 6 ) 
-				//	_RPT1(0, "%f\n", value);
 				int yZero = base*act - (int)((0 - minV[n][attys_scope->channel[n][i]->getChannel()])*dy);
 				int yTmp = base*act - (int)((value - minV[n][attys_scope->channel[n][i]->getChannel()])*dy);
-				ypos[n][i][xpos + 1] = yTmp;
-				paint.drawLine(xpos, ypos[n][i][xpos],
-					xpos + 1, ypos[n][i][xpos + 1]);
-				if (xpos % 2) {
-					paint.drawPoint(xpos, yZero);
-				}
-				if ( (attys_scope->legendCheckBox->isChecked()) && (xpos < width) ) {
-					QString s = QString::fromStdString(attysScan.attysComm[0]->CHANNEL_SHORT_DESCRIPTION[attys_scope->channel[n][i]->getChannel()]);
-					if (!(attysScan.attysComm[n]->isInitialising())) {
-						s = QString::asprintf("%d  ", n) + s;
-					}
-					else {
-						s = QString::asprintf("%d  offline", n);
-					}
-					paint.drawText(QPoint(0,yZero), s);
-				}
-				if ((xpos + 2) == w) {
-					ypos[n][i][0] = yTmp;
-				}
+				ypos[n][i][xpos] = yTmp;
+				yzero[n][i] = yZero;
 				act++;
 			}
 		}
 	}
-	xpos++;
-	if ((xpos+1)>=w) {
-		xpos=0;
-
+	if ((++xpos) >= w) {
+		xpos = 0;
 	}
 }
 
 
-// called by the refresh timer
-void ScopeWindow::paintEvent(QPaintEvent *) {
-
+void ScopeWindow::processData() {
 	// let's empty the ring bufferes and plot them
 	for (;;) {
 
@@ -559,17 +555,7 @@ void ScopeWindow::paintEvent(QPaintEvent *) {
 				if (!hasSample) return;
 			}
 		}
-
 		if (nReconnecting == attysScan.nAttysDevices) {
-			// all attys re-connecting at the moment so nothing to do
-			QPainter paint(this);
-			paint.fillRect(0, 0, width(), height(), QColor(255, 255, 255));
-			if (attysScan.nAttysDevices > 1) {
-				paint.drawText(QPoint(width() / 3, height() / 2), "All Attys are offline");
-			}
-			else {
-				paint.drawText(QPoint(width() / 2.3, height() / 2), "Connecting");
-			}
 			if (nsamples > 0) {
 				reconnectFlag = 1;
 			}
@@ -585,18 +571,17 @@ void ScopeWindow::paintEvent(QPaintEvent *) {
 				values = dummySample;
 			}
 			if (attys_scope->special[n][0]->getSpecial() == SPECIAL_TEMPERATURE) {
-				values[attysScan.attysComm[n]->INDEX_Analogue_channel_1] = AttysComm::phys2temperature(values[attysScan.attysComm[n]->INDEX_Analogue_channel_1]);
+				values[attysScan.attysComm[n]->INDEX_Analogue_channel_1] =
+					AttysComm::phys2temperature(values[attysScan.attysComm[n]->INDEX_Analogue_channel_1]);
 			}
 			if (attys_scope->special[n][1]->getSpecial() == SPECIAL_TEMPERATURE) {
-				values[attysScan.attysComm[n]->INDEX_Analogue_channel_2] = AttysComm::phys2temperature(values[attysScan.attysComm[n]->INDEX_Analogue_channel_2]);
+				values[attysScan.attysComm[n]->INDEX_Analogue_channel_2] =
+					AttysComm::phys2temperature(values[attysScan.attysComm[n]->INDEX_Analogue_channel_2]);
 			}
 			for (int i = 0; i < AttysComm::NCHANNELS; i++) {
 				unfiltDAQData[n][i] = values[i];
 				if (attys_scope->channel[n][i]->isActive()) {
-					// filtering
 					float value = values[attys_scope->channel[n][i]->getChannel()];
-//					if (i == 6)
-//					_RPT1(0, "%f\n",value);
 					value = attys_scope->highpass[n][i]->filter(value);
 					value = attys_scope->lowpass[n][i]->filter(value);
 					value = attys_scope->bandstop[n][i]->filter(value);
@@ -629,7 +614,7 @@ void ScopeWindow::paintEvent(QPaintEvent *) {
 			}
 
 			// plot the stuff
-			paintData(adAvgBuffer);
+			convertSampleToPlot(adAvgBuffer);
 
 			// clear buffer
 			tb_counter = tb_init;
@@ -643,20 +628,19 @@ void ScopeWindow::paintEvent(QPaintEvent *) {
 }
 
 
-void ScopeWindow::setTB(int us) {
-	tb_init=us/(1000000/ attysScan.attysComm[0]->getSamplingRateInHz());
-	tb_counter=tb_init;
-	for(int n=0;n<attysScan.nAttysDevices;n++) {
-		for(int i=0;i<AttysComm::NCHANNELS;i++) {
-			adAvgBuffer[n][i]=0;
-		}
-	}
-}
-
-
-void ScopeWindow::timerEvent( QTimerEvent * )
+void ScopeWindow::timerEvent( QTimerEvent *event )
 {
-	repaint();
+	if (mainTimerID == event->timerId()) {
+		processData();
+		calcScreenParameters();
+		update();
+		return;
+	}
+	if (counter.timerId() == event->timerId()) {
+		updateTime();
+		return;
+	}
+	QWidget::timerEvent(event);
 }
 
 
