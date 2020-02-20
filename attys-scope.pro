@@ -32,7 +32,7 @@ MOC_DIR = moc
 OBJECTS_DIR = obj
 }
 
-unix!macx {
+unix {
 TEMPLATE	= app
 CONFIG		+= qt release c++11
 HEADERS		= attys-scope.h scopewindow.h gain.h highpass.h lowpass.h channel.h special.h current.h bandstop.h 

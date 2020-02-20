@@ -9,7 +9,7 @@ Channel::Channel(const int nChannels, const std::string* _channelLabels) : QComb
 	numberOfChannels = nChannels;
 	channelLabels = _channelLabels;
 
-	setMinimumWidth ( fontMetrics().width("___50XX______") );
+	setMinimumWidth ( fontMetrics().width("___50XX___") );
 
 	for(int i=0;i<nChannels;i++) {
 		QString str = QString::fromUtf8(channelLabels[i].c_str());

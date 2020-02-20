@@ -11,7 +11,7 @@ Highpass::Highpass(float _samplingrate, float cutoff) : QComboBox() {
 	dcValue = 0;
 	dcCtr = _samplingrate*10;
 
-	setMinimumWidth ( fontMetrics().width("1000Hz___") );
+	setMinimumWidth ( fontMetrics().width("1000Hz_") );
 
 	addItem(tr("off"),-1);
 	addItem(tr("-DC"),0);

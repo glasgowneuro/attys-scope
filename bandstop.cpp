@@ -13,7 +13,7 @@ Bandstop::Bandstop(float _samplingrate, float _center, float _width) : QComboBox
 		width = 5;
 	}
 
-	setMinimumWidth ( fontMetrics().width("10000Hz___") );
+	setMinimumWidth ( fontMetrics().width("10000Hz_") );
 
 	addItem(tr("off"),0);
 	addItem(tr("50Hz"), 50);

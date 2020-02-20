@@ -30,7 +30,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 			 int ignoreSettings
 	) : QWidget( parent ) {
 	
-	setStyleSheet("background-color:rgb(32,32,32);");
+	setStyleSheet("background-color:rgb(32,32,32); color: white;");
         setAutoFillBackground(true);
 	
 	// to the get the stuff a bit closer together
