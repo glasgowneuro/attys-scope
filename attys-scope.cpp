@@ -30,12 +30,13 @@ Attys_scope::Attys_scope(QWidget *parent,
 			 int ignoreSettings
 	) : QWidget( parent ) {
 	
-	setStyleSheet("background-color:rgb(32,32,32); color: white;");
+	setStyleSheet("background-color:rgb(48,48,48); color: white;");
         setAutoFillBackground(true);
 	
 	// to the get the stuff a bit closer together
-	char styleSheet[] = "padding:0px;margin:0px;border:0px;";
-	char styleSheetCombo[] = "padding:0px;margin:0px;border:0px;margin-right:2px;font: 16px";
+	char styleSheetCombo[] = "padding-left:1px; padding-right:1px; font: 18px";
+	char styleSheetLabel[] = "padding-left:1em; padding-right:1px; font: 18px";
+	char styleSheetNoPadding[] = "padding-left:1px; padding-right:1px; font: 18px";
 	char styleSheetGroupBox[] = "padding:1px;margin:0px;border:0px";
 	char styleSheetButton[] = "background-color: rgb(64,64,64);; border: none; outline: none; border-width: 0px; font: 16px; padding: 5px; color: white;";
 
@@ -44,14 +45,6 @@ Attys_scope::Attys_scope(QWidget *parent,
 	int channels = AttysComm::NCHANNELS;
 
 	tb_us = 1000000 / attysScopeWindow->getActualSamplingRate();
-
-	// fonts
-	voltageFont = new QFont("Courier",10);
-	QFontMetrics voltageMetrics(*voltageFont);
-
-	tbFont = new QFont("Courier", 12);
-	tbFont->setBold(true);
-	QFontMetrics tbMetrics(*tbFont);
 
 	// this the main layout which contains two sub-windows:
 	// the control window and the oscilloscope window
@@ -99,8 +92,6 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	channelLabel=new QPointer<QLabel>*[attysScan.nAttysDevices];
 	channel=new QPointer<Channel>*[attysScan.nAttysDevices];
-	voltageTextEdit=new QPointer<QTextEdit>*[attysScan.nAttysDevices];
-	channelgrp=new QPointer<QGroupBox>*[attysScan.nAttysDevices];
 	hbox=new QPointer<QHBoxLayout>*[attysScan.nAttysDevices];
 	gain=new QPointer<Gain>*[attysScan.nAttysDevices];
 	highpass=new QPointer<Highpass>*[attysScan.nAttysDevices];
@@ -115,8 +106,6 @@ Attys_scope::Attys_scope(QWidget *parent,
 	for(int n=0;n<attysScan.nAttysDevices;n++) {
 		channelLabel[n]=new QPointer<QLabel>[channels];
 		channel[n]=new QPointer<Channel>[channels];
-		voltageTextEdit[n]=new QPointer<QTextEdit>[channels];
-		channelgrp[n]=new QPointer<QGroupBox>[channels];
 		hbox[n]=new QPointer<QHBoxLayout>[channels];
 		gain[n]=new QPointer<Gain>[channels];
 		highpass[n]=new QPointer<Highpass>[channels];
@@ -152,57 +141,46 @@ Attys_scope::Attys_scope(QWidget *parent,
 		for(int i=0;i<channels;i++) {
 			// create the group for a channel
 			char tmp[10];
-			channelgrp[n][i] = new QGroupBox();
-			channelgrp[n][i]->setStyleSheet(styleSheet);
-			channelgrp[n][i]->setAttribute(Qt::WA_DeleteOnClose,false);
 			// the corresponding layout
 			hbox[n][i] = new QHBoxLayout();
-			channelgrp[n][i]->setLayout(hbox[n][i]);
+			
 			sprintf(tmp,"%02d:",i);
 			channelLabel[n][i] = new QLabel(tmp);
-			channelLabel[n][i]->setStyleSheet(styleSheet);
-			channelLabel[n][i]->setFont(*voltageFont);
+			channelLabel[n][i]->setStyleSheet(styleSheetNoPadding);
 			hbox[n][i]->addWidget(channelLabel[n][i]);
-			hbox[n][i]->setSpacing(1);
+
 			channel[n][i] = new Channel(channels,attysCommTmp.CHANNEL_SHORT_DESCRIPTION);
 			channel[n][i] -> setChannel( i );
-			//channel[n][i]->setStyleSheet(styleSheetCombo);
+			channel[n][i]->setStyleSheet(styleSheetCombo);
 			hbox[n][i]->addWidget(channel[n][i]);
-			voltageTextEdit[n][i]=new QTextEdit(channelgrp[n][i]);
-			//voltageTextEdit[n][i]->setStyleSheet(styleSheetCombo);
-			hbox[n][i]->addWidget(voltageTextEdit[n][i]);
-			voltageTextEdit[n][i]->setFont(*voltageFont);
-			char tmpVolt[128];
-			sprintf(tmpVolt,"%f",1.0);
-			voltageTextEdit[n][i]->setMaximumSize
-				(voltageMetrics.width(tmpVolt),
-				 (int)(voltageMetrics.height()*1.1));
-			voltageTextEdit[n][i]->
-				setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff ); 
-			voltageTextEdit[n][i]->setReadOnly(true);
-			voltageTextEdit[n][i]->setFont(*voltageFont);
-			// voltageTextEdit[i]->setLineWidth(1);
 
-			hbox[n][i]->addWidget(new QLabel("HP:"));
+			QPointer<QLabel> hp = new QLabel("HP:");
+			hp->setStyleSheet(styleSheetLabel);
+			hbox[n][i]->addWidget(hp);
 			highpass[n][i] = new Highpass(attysScopeWindow->getActualSamplingRate(),-1);
 			highpass[n][i] ->setStyleSheet(styleSheetCombo);
 			hbox[n][i]->addWidget(highpass[n][i]);
 
-			hbox[n][i]->addWidget(new QLabel("LP:"));
+			QPointer<QLabel> lp = new QLabel("LP:");
+			lp->setStyleSheet(styleSheetLabel);
+			hbox[n][i]->addWidget(lp);
 			lowpass[n][i] = new Lowpass(attysScopeWindow->getActualSamplingRate(),0);
 			lowpass[n][i] ->setStyleSheet(styleSheetCombo);
 			hbox[n][i]->addWidget(lowpass[n][i]);
 
-			hbox[n][i]->addWidget(new QLabel("BS:"));
+			QPointer<QLabel> bs = new QLabel("BS");
+			bs->setStyleSheet(styleSheetLabel);
+			hbox[n][i]->addWidget(bs);
 			bandstop[n][i] = new Bandstop(attysScopeWindow->getActualSamplingRate(), 0);
 			bandstop[n][i]->setStyleSheet(styleSheetCombo);
 			hbox[n][i]->addWidget(bandstop[n][i]);
 
+			hbox[n][i]->addWidget(new QLabel(" "));
 			gain[n][i] = new Gain();
 			gain[n][i]->setStyleSheet(styleSheetCombo);
 			hbox[n][i]->addWidget(gain[n][i]);
 
-			allChLayout->addWidget(channelgrp[n][i],row,1);
+			allChLayout->addLayout(hbox[n][i],row,1);
 			row++;
 		}
 	}
@@ -261,12 +239,8 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	udpLayout->addWidget(new QLabel("UDP broadcast on port "));
 
-	udpTextEdit = new QTextEdit("65000");
-	udpTextEdit->setFont(*tbFont);
-	udpTextEdit->setMaximumHeight(tbMetrics.height() * 1.5);
-	udpTextEdit->setMaximumWidth(tbMetrics.width('X') * 14);
-	udpTextEdit->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	udpLayout->addWidget(udpTextEdit);
+	udpLineEdit = new QLineEdit("65000");
+	udpLayout->addWidget(udpLineEdit);
 
 	udpCheckBox = new QCheckBox("&Broadcast");
 	udpCheckBox->setSizePolicy(QSizePolicy(QSizePolicy::Fixed,
@@ -290,30 +264,22 @@ Attys_scope::Attys_scope(QWidget *parent,
 	tbIncPushButton = new QPushButton( "&slower" );
 
 	tbIncPushButton->setStyleSheet(styleSheetButton);
-	tbIncPushButton->setFont(*tbFont);
 	tbgrp->connect(tbIncPushButton, SIGNAL( clicked() ),
 		this, SLOT( incTbEvent() ) );
 	tbLayout->addWidget(tbIncPushButton);
 
 	tbDecPushButton = new QPushButton( "&faster" );
 	tbDecPushButton->setStyleSheet(styleSheetButton);
-	tbDecPushButton->setFont(*tbFont);	
 	tbgrp->connect(tbDecPushButton, SIGNAL( clicked() ),
 		       this, SLOT( decTbEvent() ) );
 	tbLayout->addWidget(tbDecPushButton);
 
-	tbInfoTextEdit = new QTextEdit(tbgrp);
-	tbInfoTextEdit->setFont (*tbFont);
-	QFontMetrics metricsTb(*tbFont);
-	tbInfoTextEdit->setMaximumHeight ( tbMetrics.height() * 1.5 );
-	tbInfoTextEdit->setMaximumWidth ( tbMetrics.width('X') * 10 );
-	tbInfoTextEdit->setReadOnly(true);
-	tbInfoTextEdit->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-	tbLayout->addWidget(tbInfoTextEdit);
+	tbInfoLineEdit = new QLineEdit(tbgrp);
+	tbInfoLineEdit->setReadOnly(true);
+	tbLayout->addWidget(tbInfoLineEdit);
 
 	tbResetPushButton = new QPushButton( "clear" );
 	tbResetPushButton->setStyleSheet(styleSheetButton);
-	tbResetPushButton->setFont(*tbFont);	
 	tbgrp->connect(tbResetPushButton, SIGNAL( clicked() ),
 		       this, SLOT( resetTbEvent() ) );
 	tbLayout->addWidget(tbResetPushButton);
@@ -334,13 +300,11 @@ Attys_scope::Attys_scope(QWidget *parent,
 	statusLayout->addWidget(new QLabel("Config:"));
 	savePushButton = new QPushButton("save");
 	savePushButton->setStyleSheet(styleSheetButton);
-	savePushButton->setFont(*tbFont);
 	connect(savePushButton, SIGNAL(clicked()),
 		this, SLOT(slotSaveSettings()));
 	statusLayout->addWidget(savePushButton);
 	loadPushButton = new QPushButton("load");
 	loadPushButton->setStyleSheet(styleSheetButton);
-	loadPushButton->setFont(*tbFont);
 	connect(loadPushButton, SIGNAL(clicked()),
 		this, SLOT(slotLoadSettings()));
 	statusLayout->addWidget(loadPushButton);
@@ -368,7 +332,6 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	allChScrollArea->setSizePolicy ( QSizePolicy(QSizePolicy::Fixed,
 						     QSizePolicy::Expanding ) );
-	allChScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 	allChScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
 	mainLayout->addWidget(controlBox);
@@ -409,7 +372,7 @@ void Attys_scope::readSettings(QSettings &settings) {
 	int nch_enabled = 0;
 
 	settings.beginGroup(SETTINGS_UDP);
-	udpTextEdit->setText(QString::number(settings.value(SETTINGS_UDP_PORT, 65000).toInt()));
+	udpLineEdit->setText(QString::number(settings.value(SETTINGS_UDP_PORT, 65000).toInt()));
 	udpCheckBox->setChecked(settings.value(SETTINGS_UDP_ON, 0).toBool());
 	legendCheckBox->setChecked(settings.value(SETTINGS_LEGENDS, 0).toBool());
 	vers1dataCheckBox->setChecked(settings.value(SETTINGS_SAVE_FILTERED, 1).toBool());
@@ -471,7 +434,7 @@ void Attys_scope::writeSettings(QSettings & settings)
 {
 
 	settings.beginGroup(SETTINGS_UDP);
-	settings.setValue(SETTINGS_UDP_PORT, udpTextEdit->toPlainText().toInt());
+	settings.setValue(SETTINGS_UDP_PORT, udpLineEdit->text().toInt());
 	settings.setValue(SETTINGS_UDP_ON, udpCheckBox->isChecked());
 	settings.setValue(SETTINGS_SAVE_FILTERED, vers1dataCheckBox->isChecked());
 	settings.setValue(SETTINGS_LEGENDS, legendCheckBox->isChecked());
@@ -674,7 +637,7 @@ void Attys_scope::changeTB() {
 	} else {
 		s.sprintf( "%d sec", tb_us/1000000);
 	}		
-	tbInfoTextEdit->setText(s);
+	tbInfoLineEdit->setText(s);
 	attysScopeWindow->setTB(tb_us);
 }
 
@@ -685,13 +648,13 @@ void Attys_scope::resetTbEvent() {
 
 void Attys_scope::udpTransmit() {
 	if (udpCheckBox->isChecked()) {
-		udpTextEdit->setEnabled(0);
-		int port = udpTextEdit->toPlainText().toInt();
+		udpLineEdit->setEnabled(0);
+		int port = udpLineEdit->text().toInt();
 		attysScopeWindow->startUDP(port);
 	}
 	else {
 		attysScopeWindow->stopUDP();
-		udpTextEdit->setEnabled(1);
+		udpLineEdit->setEnabled(1);
 	}
 };
 

@@ -9,8 +9,6 @@ Lowpass::Lowpass(float _samplingrate, float cutoff) : QComboBox() {
 	frequency = cutoff;
 	samplingrate = _samplingrate;
 
-	setMinimumWidth ( fontMetrics().width("10000Hz_") );
-
 	addItem(tr("off"),0);
 	addItem(tr("1Hz"), 1);
 	addItem(tr("2Hz"), 2);
@@ -28,6 +26,9 @@ Lowpass::Lowpass(float _samplingrate, float cutoff) : QComboBox() {
 		SLOT( setFrequencyIndex(int) ) );
 
 	setFrequency(cutoff);
+	
+	int width = minimumSizeHint().width();
+	setMinimumWidth(width * 1.25);
 }
 
 void Lowpass::setFrequencyIndex ( int index ) {

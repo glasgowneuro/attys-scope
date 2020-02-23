@@ -6,8 +6,6 @@
 
 Gain::Gain() : QComboBox() {
 
-	setMinimumWidth ( fontMetrics().width("_x5000XX__") );
-
 	addItem(tr("x1"),1.0);
 	addItem(tr("x2"),2.0);
 	addItem(tr("x5"),5.0);
@@ -26,6 +24,9 @@ Gain::Gain() : QComboBox() {
 		SIGNAL( activated(int) ),
 		this,
 		SLOT( setGainIndex(int) ) );
+
+	int width = minimumSizeHint().width();
+	setMinimumWidth(width * 1.1);
 
 }
 

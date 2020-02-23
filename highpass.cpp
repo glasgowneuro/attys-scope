@@ -29,6 +29,9 @@ Highpass::Highpass(float _samplingrate, float cutoff) : QComboBox() {
 		SLOT( setFrequencyIndex(int) ) );
 
 	setFrequency(cutoff);
+
+	int width = minimumSizeHint().width();
+	setMinimumWidth(width * 1.1);
 }
 
 void Highpass::setFrequencyIndex ( int index ) {

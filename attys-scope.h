@@ -8,7 +8,7 @@ class Attys_scope;
 #include <QPushButton>
 #include <QCheckBox>
 #include <QLayout> 
-#include <QTextEdit>
+#include <QLineEdit>
 #include <QGroupBox>
 #include <QLabel>
 #include <QScrollArea>
@@ -96,11 +96,6 @@ public:
 
 public:
     /**
-     * Array of the voltages
-     **/
-	QPointer<QTextEdit>**  voltageTextEdit;
-
-    /**
      * Array for the channel settings
      **/
 	QPointer<Channel>** channel;
@@ -133,7 +128,7 @@ public:
     /**
      * Text-field: elapsed time
      **/
-	QPointer<QTextEdit> timeInfoTextEdit;
+	QPointer<QLineEdit> timeInfoLineEdit;
 
     /**
      * Text-field for the file-name
@@ -143,7 +138,7 @@ public:
 	/**
 	* port for UDP
 	**/
-	QPointer<QTextEdit> udpTextEdit;
+	QPointer<QLineEdit> udpLineEdit;
 
 	/**
 	* switches on UDP broadcast
@@ -170,7 +165,7 @@ public:
 /**
  * Text-field: time between samples
  **/
-	 QPointer<QTextEdit> tbInfoTextEdit;
+	 QPointer<QLineEdit> tbInfoLineEdit;
 
 /**
  * Button: clears the screen
@@ -233,11 +228,6 @@ private:
  * Time between two samples in ms
  **/
     int tb_us;
-
-/**
- * Group which keeps one channel together
- **/
-	QPointer<QGroupBox>** channelgrp;
 
 /**
  * Layout which keeps one channel together

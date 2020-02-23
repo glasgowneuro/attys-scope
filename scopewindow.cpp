@@ -234,20 +234,6 @@ void ScopeWindow::updateTime() {
 	}
 	attys_scope->setWindowTitle( s );
 
-	char tmp[256];
-	for(int n=0;n<attysScan.nAttysDevices;n++) {
-		for(int i=0;i<AttysComm::NCHANNELS;i++) {
-			if (attys_scope->channel[n][i]->isActive()) {
-				float phys = unfiltDAQData[n][attys_scope->channel[n][i]->getChannel()];
-				sprintf(tmp, VOLT_FORMAT_STRING, phys);
-			}
-			else {
-				sprintf(tmp, "---");
-			}
-			attys_scope->voltageTextEdit[n][i]->setText(tmp);
-		}
-	}
-
 	if (udpSocket) {
 		if (udpStatus < 0) {
 			attys_scope->setInfo(" UDP broadcast error");
