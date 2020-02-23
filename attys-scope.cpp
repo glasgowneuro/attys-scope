@@ -39,6 +39,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	char styleSheetNoPadding[] = "padding-left:1px; padding-right:1px; font: 18px";
 	char styleSheetGroupBox[] = "padding:1px;margin:0px;border:0px";
 	char styleSheetButton[] = "background-color: rgb(64,64,64);; border: none; outline: none; border-width: 0px; font: 16px; padding: 5px; color: white;";
+	char styleCheckBox[] = "QCheckBox::indicator {width: 2em; height: 2em;}";
 
 	attysScopeWindow=new ScopeWindow(this);
 
@@ -225,7 +226,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 			       this, SLOT( recstartstop(int) ) );
 	recCheckBox->setEnabled( false );
 	recLayout->addWidget(recCheckBox);
-	recCheckBox->setStyleSheet("font: bold 18px; padding: 3px;");
+	recCheckBox->setStyleSheet(styleCheckBox);
 
 	recGroupBox->setLayout(recLayout);
 	restLayout->addWidget(recGroupBox);
