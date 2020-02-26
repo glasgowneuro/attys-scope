@@ -144,6 +144,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 			char tmp[10];
 			// the corresponding layout
 			hbox[n][i] = new QHBoxLayout();
+			hbox[n][i]->setMargin(5);
 			
 			sprintf(tmp,"%02d:",i);
 			channelLabel[n][i] = new QLabel(tmp);
