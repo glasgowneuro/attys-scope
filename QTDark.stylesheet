@@ -33,7 +33,11 @@ QWidget::item:selected {
 }
 
 QComboBox QAbstractItemView {
-    min-width: 150px;
+    min-width: 100px;
+}
+
+QComboBox {
+	  font-size: 10pt;
 }
 
 QPushButton {

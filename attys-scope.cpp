@@ -41,7 +41,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	// to the get the stuff a bit closer together
 	char styleSheetCombo[] = "padding-left:1px; padding-right:1px";
 	char styleSheetLabel[] = "padding-left:1em; padding-right:1px";
-	char styleSheetNoPadding[] = "padding-left:1px; padding-right:1px";
+	char styleSheetNoPadding[] = "padding-left:1px; padding-right:1px; width:1em; font-family: courier;";
 	char styleCheckBox[] = "QCheckBox::indicator {width: 2em; height: 2em;}";
 
 	attysScopeWindow=new ScopeWindow(this);
@@ -159,7 +159,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 			lowpass[n][i] ->setStyleSheet(styleSheetCombo);
 			hbox[n][i]->addWidget(lowpass[n][i]);
 
-			QPointer<QLabel> bs = new QLabel("BS");
+			QPointer<QLabel> bs = new QLabel("BS:");
 			bs->setStyleSheet(styleSheetLabel);
 			hbox[n][i]->addWidget(bs);
 			bandstop[n][i] = new Bandstop(attysScopeWindow->getActualSamplingRate(), 0);
