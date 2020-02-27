@@ -73,7 +73,6 @@ Attys_scope::Attys_scope(QWidget *parent,
 	allChLayout = new QGridLayout;
 	allChGroup = new QGroupBox;
 	allChGroup->setAttribute(Qt::WA_DeleteOnClose, false);
-	allChLayout->setSpacing(0);
 	allChGroup->setLayout(allChLayout);
 	allChGroup->setSizePolicy ( QSizePolicy(QSizePolicy::Fixed,
 						QSizePolicy::Expanding ) );
