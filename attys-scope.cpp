@@ -33,7 +33,6 @@ Attys_scope::Attys_scope(QWidget *parent,
 	QFile style(":/QTDark.stylesheet");
 	style.open(QIODevice::ReadOnly);
 
-//	setStyleSheet("background-color:rgb(48,48,48); color: white;");
 	setStyleSheet(style.readAll());
 	style.close();
 	
@@ -43,8 +42,6 @@ Attys_scope::Attys_scope(QWidget *parent,
 	char styleSheetCombo[] = "padding-left:1px; padding-right:1px; font: 18px";
 	char styleSheetLabel[] = "padding-left:1em; padding-right:1px; font: 18px";
 	char styleSheetNoPadding[] = "padding-left:1px; padding-right:1px; font: 18px";
-	char styleSheetGroupBox[] = "padding:1px;margin:0px;border:0px";
-	char styleSheetButton[] = "background-color: rgb(64,64,64);; border: none; outline: none; border-width: 0px; font: 16px; padding: 5px; color: white;";
 	char styleCheckBox[] = "QCheckBox::indicator {width: 2em; height: 2em;}";
 
 	attysScopeWindow=new ScopeWindow(this);
@@ -61,7 +58,6 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	// the corresponding box which contains all the controls
 	controlBox = new QGroupBox ();
-	controlBox->setStyleSheet(styleSheetGroupBox);
 	controlBox->setSizePolicy ( QSizePolicy(QSizePolicy::Fixed,
 						QSizePolicy::Minimum ) );
 	controlBox->setAttribute(Qt::WA_DeleteOnClose, false);
@@ -88,7 +84,6 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	allChLayout = new QGridLayout;
 	allChGroup = new QGroupBox;
-	allChGroup->setStyleSheet(styleSheetGroupBox);
 	allChGroup->setAttribute(Qt::WA_DeleteOnClose, false);
 	allChLayout->setSpacing(0);
 	allChGroup->setLayout(allChLayout);
@@ -200,12 +195,10 @@ Attys_scope::Attys_scope(QWidget *parent,
 	restLayout = new QVBoxLayout;
 	// the corresponding box which contains all the controls
 	restGroup = new QGroupBox;
-	restGroup->setStyleSheet(styleSheetGroupBox);
 	restGroup->setAttribute(Qt::WA_DeleteOnClose, false);
 
 	// group for the record stuff
 	recGroupBox = new QGroupBox();
-	recGroupBox->setStyleSheet(styleSheetGroupBox);
 	recGroupBox->setAttribute(Qt::WA_DeleteOnClose, false);
 	recLayout = new QHBoxLayout();
 
@@ -215,7 +208,6 @@ Attys_scope::Attys_scope(QWidget *parent,
 	filePushButton = new QPushButton( "filename" );
 	filePushButton->setSizePolicy ( QSizePolicy(QSizePolicy::Fixed,
 						    QSizePolicy::Fixed ));
-	filePushButton->setStyleSheet(styleSheetButton);
 	connect(filePushButton, SIGNAL( clicked() ),
 		this, SLOT( enterFileName() ) );
 	recLayout->addWidget(filePushButton);
@@ -241,7 +233,6 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	// group for the UDP stuff
 	udpGroupBox = new QGroupBox();
-	udpGroupBox->setStyleSheet(styleSheetGroupBox);
 	udpGroupBox->setAttribute(Qt::WA_DeleteOnClose, false);
 	udpLayout = new QHBoxLayout();
 
@@ -262,7 +253,6 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	// group for the time base
 	tbgrp = new QGroupBox();
-	udpGroupBox->setStyleSheet(styleSheetGroupBox);
 	tbgrp->setAttribute(Qt::WA_DeleteOnClose, false);
 	tbLayout = new QHBoxLayout;
 
@@ -271,13 +261,11 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	tbIncPushButton = new QPushButton( "&slower" );
 
-	tbIncPushButton->setStyleSheet(styleSheetButton);
 	tbgrp->connect(tbIncPushButton, SIGNAL( clicked() ),
 		this, SLOT( incTbEvent() ) );
 	tbLayout->addWidget(tbIncPushButton);
 
 	tbDecPushButton = new QPushButton( "&faster" );
-	tbDecPushButton->setStyleSheet(styleSheetButton);
 	tbgrp->connect(tbDecPushButton, SIGNAL( clicked() ),
 		       this, SLOT( decTbEvent() ) );
 	tbLayout->addWidget(tbDecPushButton);
@@ -287,7 +275,6 @@ Attys_scope::Attys_scope(QWidget *parent,
 	tbLayout->addWidget(tbInfoLineEdit);
 
 	tbResetPushButton = new QPushButton( "clear" );
-	tbResetPushButton->setStyleSheet(styleSheetButton);
 	tbgrp->connect(tbResetPushButton, SIGNAL( clicked() ),
 		       this, SLOT( resetTbEvent() ) );
 	tbLayout->addWidget(tbResetPushButton);
@@ -301,18 +288,15 @@ Attys_scope::Attys_scope(QWidget *parent,
 	restLayout->addWidget(tbgrp);
 
 	statusgrp = new QGroupBox;
-	statusgrp->setStyleSheet(styleSheetGroupBox);
 	statusgrp->setAttribute(Qt::WA_DeleteOnClose, false);
 	statusLayout = new QHBoxLayout;
 
 	statusLayout->addWidget(new QLabel("Config:"));
 	savePushButton = new QPushButton("save");
-	savePushButton->setStyleSheet(styleSheetButton);
 	connect(savePushButton, SIGNAL(clicked()),
 		this, SLOT(slotSaveSettings()));
 	statusLayout->addWidget(savePushButton);
 	loadPushButton = new QPushButton("load");
-	loadPushButton->setStyleSheet(styleSheetButton);
 	connect(loadPushButton, SIGNAL(clicked()),
 		this, SLOT(slotLoadSettings()));
 	statusLayout->addWidget(loadPushButton);

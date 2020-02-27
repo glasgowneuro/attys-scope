@@ -32,10 +32,6 @@ QWidget::item:selected {
 	background: #3D7848;
 }
 
-QCheckBox, QRadioButton {
-	border: none;
-}
-
 QRadioButton::indicator, QCheckBox::indicator {
 	width: 13px;
 	height: 13px;
@@ -60,7 +56,28 @@ QRadioButton::indicator:checked:hover, QCheckBox::indicator:checked:hover {
 	background: #DDDDDD;
 }
 
+
+QPushButton {
+	background-color: rgb(64,64,64);
+	border: none;
+	outline: none;
+	border-width: 0px;
+	font: 16px;
+	padding: 5px;
+	color: white;
+}
+
+QCheckBox, QRadioButton {
+	border: none;
+}
+
+QRadioButton::indicator, QCheckBox::indicator {
+	width: 13px;
+	height: 13px;
+}
+
 QGroupBox {
+	border: 0px;
 	margin-top: 6px;
 }
 
@@ -163,12 +180,12 @@ QAbstractItemView {
 }
 
 QHeaderView {
-	border: 1px solid #5A5A5A;
+	border: 0px solid #5A5A5A;
 }
 
 QHeaderView::section {
 	background: #191919;
-	border: 1px solid #5A5A5A;
+	border: 0px solid #5A5A5A;
 	padding: 4px;
 }
 
@@ -194,20 +211,9 @@ QTabBar::tab:selected {
 	background: #353535;
 }
 
-QComboBox::down-arrow {
-	border: 1px solid #5A5A5A;
-	background: #353535;
-}
-
 QComboBox::drop-down {
 	border: 1px solid #5A5A5A;
 	background: #353535;
-}
-
-QComboBox::down-arrow {
-	width: 3px;
-	height: 3px;
-	border: 1px solid #5A5A5A;
 }
 
 QAbstractSpinBox {
