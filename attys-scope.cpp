@@ -279,11 +279,6 @@ Attys_scope::Attys_scope(QWidget *parent,
 		       this, SLOT( resetTbEvent() ) );
 	tbLayout->addWidget(tbResetPushButton);
 
-	legendCheckBox = new QCheckBox();
-	legendCheckBox->setChecked(1);
-	tbLayout->addWidget(new QLabel("Legend:"));
-	tbLayout->addWidget(legendCheckBox);
-
 	tbgrp->setLayout(tbLayout);
 	restLayout->addWidget(tbgrp);
 
@@ -356,7 +351,6 @@ Attys_scope::Attys_scope(QWidget *parent,
 #define LOWPASS_SETTING_FORMAT "lowpass_dev%09d_ch%09d"
 #define BANDSTOP_SETTING_FORMAT "bandstop_dev%09d_ch%09d"
 #define GAIN_SETTING_FORMAT "gain_mapping_dev%09d_ch%09d"
-#define SETTINGS_LEGENDS "legends"
 #define SETTINGS_SAVE_FILTERED "header"
 
 void Attys_scope::readSettings(QSettings &settings) {
@@ -366,7 +360,6 @@ void Attys_scope::readSettings(QSettings &settings) {
 	settings.beginGroup(SETTINGS_UDP);
 	udpLineEdit->setText(QString::number(settings.value(SETTINGS_UDP_PORT, 65000).toInt()));
 	udpCheckBox->setChecked(settings.value(SETTINGS_UDP_ON, 0).toBool());
-	legendCheckBox->setChecked(settings.value(SETTINGS_LEGENDS, 0).toBool());
 	vers1dataCheckBox->setChecked(settings.value(SETTINGS_SAVE_FILTERED, 1).toBool());
 	settings.endGroup();
 
@@ -429,7 +422,6 @@ void Attys_scope::writeSettings(QSettings & settings)
 	settings.setValue(SETTINGS_UDP_PORT, udpLineEdit->text().toInt());
 	settings.setValue(SETTINGS_UDP_ON, udpCheckBox->isChecked());
 	settings.setValue(SETTINGS_SAVE_FILTERED, vers1dataCheckBox->isChecked());
-	settings.setValue(SETTINGS_LEGENDS, legendCheckBox->isChecked());
 	settings.endGroup();
 
 	int channels = AttysComm::NCHANNELS;

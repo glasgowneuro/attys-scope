@@ -32,31 +32,6 @@ QWidget::item:selected {
 	background: #3D7848;
 }
 
-QRadioButton::indicator, QCheckBox::indicator {
-	width: 13px;
-	height: 13px;
-}
-
-QRadioButton::indicator::unchecked, QCheckBox::indicator::unchecked {
-	border: 1px solid #5A5A5A;
-	background: none;
-}
-
-QRadioButton::indicator:unchecked:hover, QCheckBox::indicator:unchecked:hover {
-	border: 1px solid #DDDDDD;
-}
-
-QRadioButton::indicator::checked, QCheckBox::indicator::checked {
-	border: 1px solid #5A5A5A;
-	background: #5A5A5A;
-}
-
-QRadioButton::indicator:checked:hover, QCheckBox::indicator:checked:hover {
-	border: 1px solid #DDDDDD;
-	background: #DDDDDD;
-}
-
-
 QPushButton {
 	background-color: rgb(64,64,64);
 	border: none;

@@ -74,11 +74,6 @@ public:
 	QPointer<QCheckBox> vers1dataCheckBox;
 
 	/**
-	Display on/off
-	**/
-	QPointer<QCheckBox> legendCheckBox;
-
-	/**
 	* Array for the special settings
 	**/
 	QPointer<Special>** special;

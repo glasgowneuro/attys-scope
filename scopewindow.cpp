@@ -435,16 +435,15 @@ void ScopeWindow::paintEvent(QPaintEvent *) {
 				channel[n][i]->
 				isActive()) {
 				paint.setPen(penData[act % 3]);
-				if (attys_scope->legendCheckBox->isChecked()) {
-					QString s = QString::fromStdString(attysScan.attysComm[0]->CHANNEL_SHORT_DESCRIPTION[attys_scope->channel[n][i]->getChannel()]);
-					if (!(attysScan.attysComm[n]->isInitialising())) {
-						s = QString::asprintf("%d  ", n) + s;
-					}
-					else {
-						s = QString::asprintf("%d  offline", n);
-					}
-					paint.drawText(QPoint(0,yzero[n][i]), s);
+				QString s = QString::fromStdString(attysScan.attysComm[0]->
+								   CHANNEL_SHORT_DESCRIPTION[attys_scope->channel[n][i]->getChannel()]);
+				if (!(attysScan.attysComm[n]->isInitialising())) {
+					s = QString::asprintf("%d  ", n) + s;
 				}
+				else {
+					s = QString::asprintf("%d  offline", n);
+				}
+				paint.drawText(QPoint(0,yzero[n][i]), s);
 				for(int x = 0; x < (w-1); x++) {
 					if ((x < (xpos-1)) || (x > (xpos+3))) {
 						paint.drawLine(x, ypos[n][i][x],
