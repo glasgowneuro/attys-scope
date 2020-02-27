@@ -24,8 +24,8 @@ Bandstop::Bandstop(float _samplingrate, float _center, float _width) : QComboBox
 
 	setFrequency(_center);
 
-	int width = minimumSizeHint().width();
-	setMinimumWidth(width * 1.1);
+	//	int width = minimumSizeHint().width();
+	//	setMinimumWidth(width * 1.1);
 }
 
 void Bandstop::setFrequencyIndex ( int index ) {

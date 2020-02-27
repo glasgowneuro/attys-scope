@@ -234,11 +234,8 @@ private:
 
 	char status[256];
 
-	QPointer<QGroupBox> controlBox;
-
 	QPointer<QVBoxLayout> controlLayout;
 	QPointer<QVBoxLayout> scopeLayout;
-	QPointer<QGroupBox> scopeGroup;
 
 	QPointer<QScrollArea> allChScrollArea;
 	QPointer<QVBoxLayout> allChScrollLayout;

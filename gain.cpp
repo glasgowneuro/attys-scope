@@ -25,9 +25,6 @@ Gain::Gain() : QComboBox() {
 		this,
 		SLOT( setGainIndex(int) ) );
 
-	int width = minimumSizeHint().width();
-	setMinimumWidth(width * 1.1);
-
 }
 
 void Gain::setGainIndex ( int index ) {

@@ -39,9 +39,9 @@ Attys_scope::Attys_scope(QWidget *parent,
         setAutoFillBackground(true);
 	
 	// to the get the stuff a bit closer together
-	char styleSheetCombo[] = "padding-left:1px; padding-right:1px; font: 18px";
-	char styleSheetLabel[] = "padding-left:1em; padding-right:1px; font: 18px";
-	char styleSheetNoPadding[] = "padding-left:1px; padding-right:1px; font: 18px";
+	char styleSheetCombo[] = "padding-left:1px; padding-right:1px";
+	char styleSheetLabel[] = "padding-left:1em; padding-right:1px";
+	char styleSheetNoPadding[] = "padding-left:1px; padding-right:1px";
 	char styleCheckBox[] = "QCheckBox::indicator {width: 2em; height: 2em;}";
 
 	attysScopeWindow=new ScopeWindow(this);
@@ -53,25 +53,13 @@ Attys_scope::Attys_scope(QWidget *parent,
 	// this the main layout which contains two sub-windows:
 	// the control window and the oscilloscope window
 	mainLayout = new QHBoxLayout;
-	mainLayout->setSpacing(0);
 	setLayout(mainLayout);
 
-	// the corresponding box which contains all the controls
-	controlBox = new QGroupBox ();
-	controlBox->setSizePolicy ( QSizePolicy(QSizePolicy::Fixed,
-						QSizePolicy::Minimum ) );
-	controlBox->setAttribute(Qt::WA_DeleteOnClose, false);
-
 	// now we create another layout which contains all the controls
-	controlLayout = new QVBoxLayout(controlBox);
-	controlLayout->setSpacing(0);
-	controlLayout->setMargin(0);
+	controlLayout = new QVBoxLayout;
 
 	// this is the vertical layout for all the controls
 	scopeLayout = new QVBoxLayout(0);
-	// the corresponding box which contains all the controls
-	scopeGroup = new QGroupBox ();
-	scopeGroup->setAttribute(Qt::WA_DeleteOnClose, false);
 
 	// we create a scroll area
 	allChScrollArea = new QScrollArea();
@@ -309,20 +297,17 @@ Attys_scope::Attys_scope(QWidget *parent,
 	restGroup->setSizePolicy ( QSizePolicy(QSizePolicy::Fixed,
 						QSizePolicy::Fixed ) );
 
-	controlBox->setLayout(controlLayout);
-
-	attysScopeWindow->setMinimumWidth ( 400 );
+	attysScopeWindow->setMinimumWidth ( 500 );
 	attysScopeWindow->setMinimumHeight ( 200 );
 
 	scopeLayout->addWidget(attysScopeWindow);
-	scopeGroup->setLayout(scopeLayout);
 
 	allChScrollArea->setSizePolicy ( QSizePolicy(QSizePolicy::Fixed,
 						     QSizePolicy::Expanding ) );
 	allChScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-	mainLayout->addWidget(controlBox);
-	mainLayout->addWidget(scopeGroup);
+	mainLayout->addLayout(controlLayout);
+	mainLayout->addWidget(attysScopeWindow);
 
 	changeTB();
 
@@ -465,7 +450,6 @@ void Attys_scope::writeSettings(QSettings & settings)
 
 
 void Attys_scope::slotSaveSettings() {
-	QFileDialog::Options options;
 	QString filters(tr("configuration files (*.ini)"));
 
 	QFileDialog dialog(this);
@@ -487,7 +471,6 @@ void Attys_scope::slotSaveSettings() {
 };
 
 void Attys_scope::slotLoadSettings() {
-	QFileDialog::Options options;
 	QString filters(tr("configuration files (*.ini)"));
 
 	QFileDialog dialog(this);
@@ -556,7 +539,6 @@ void Attys_scope::setFilename(QString fn,int tsv) {
 
 
 void Attys_scope::enterFileName() {
-	QFileDialog::Options options;
 	QString filters(tr("tab separated values (*.tsv);;"
 			   "comma separated values (*.csv)"
 				));

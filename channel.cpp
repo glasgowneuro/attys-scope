@@ -23,8 +23,7 @@ Channel::Channel(const int nChannels, const std::string* _channelLabels) : QComb
 		SLOT( channelChanged(int) ) );
 	
 	int width = minimumSizeHint().width();
-	setMinimumWidth(width * 1.25);
-	
+	setMinimumWidth(width);	
 }
 
 void Channel::channelChanged ( int index ) {

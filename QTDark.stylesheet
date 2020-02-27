@@ -32,6 +32,10 @@ QWidget::item:selected {
 	background: #3D7848;
 }
 
+QComboBox QAbstractItemView {
+    min-width: 150px;
+}
+
 QPushButton {
 	background-color: rgb(64,64,64);
 	border: none;

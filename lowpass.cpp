@@ -27,8 +27,8 @@ Lowpass::Lowpass(float _samplingrate, float cutoff) : QComboBox() {
 
 	setFrequency(cutoff);
 	
-	int width = minimumSizeHint().width();
-	setMinimumWidth(width * 1.25);
+	//	int width = minimumSizeHint().width();
+	//	setMinimumWidth(width);
 }
 
 void Lowpass::setFrequencyIndex ( int index ) {
