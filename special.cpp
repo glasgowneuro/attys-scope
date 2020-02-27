@@ -5,9 +5,6 @@
 
 
 Special::Special() : QComboBox() {
-
-	setMinimumWidth ( fontMetrics().width("x50XXg") );
-
 	addItem(tr("normal"),SPECIAL_NORMAL);
 	addItem(tr("ECG/Einth"),SPECIAL_ECG);
 	addItem(tr("I const"), SPECIAL_I);

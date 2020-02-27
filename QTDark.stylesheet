@@ -61,7 +61,8 @@ QRadioButton::indicator, QCheckBox::indicator {
 
 QGroupBox {
 	border: 0px;
-	margin: 6px;
+	margin-left: 6px;
+	margin-right: 6px;
 }
 
 QGroupBox::title {
