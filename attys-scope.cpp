@@ -40,7 +40,9 @@ Attys_scope::Attys_scope(QWidget *parent,
 	
 	// to the get the stuff a bit closer together
 	char styleSheetCombo[] = "padding-left:1px; padding-right:1px";
-	char styleSheetLabel[] = "padding-left:1em; padding-right:1px";
+	char styleSheetChannel[] = "padding-left:1px; padding-right:1px; min-width: 3.2em;";
+	char styleSheetGain[] = "padding-left:1px; padding-right:1px; min-width: 3.2em;";
+	char styleSheetLabel[] = "padding-left:0.5em; padding-right:1px";
 	char styleSheetNoPadding[] = "padding-left:1px; padding-right:1px; width:1em; font-family: courier;";
 	char styleCheckBox[] = "QCheckBox::indicator {width: 2em; height: 2em;}";
 
@@ -141,7 +143,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 			channel[n][i] = new Channel(channels,attysCommTmp.CHANNEL_SHORT_DESCRIPTION);
 			channel[n][i] -> setChannel( i );
-			channel[n][i]->setStyleSheet(styleSheetCombo);
+			channel[n][i]->setStyleSheet(styleSheetChannel);
 			hbox[n][i]->addWidget(channel[n][i]);
 
 			QPointer<QLabel> hp = new QLabel("HP:");
@@ -167,7 +169,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 			hbox[n][i]->addWidget(new QLabel(" "));
 			gain[n][i] = new Gain();
-			gain[n][i]->setStyleSheet(styleSheetCombo);
+			gain[n][i]->setStyleSheet(styleSheetGain);
 			hbox[n][i]->addWidget(gain[n][i]);
 
 			allChLayout->addLayout(hbox[n][i],row,1);

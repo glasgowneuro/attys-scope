@@ -32,12 +32,17 @@ QWidget::item:selected {
 	background: #3D7848;
 }
 
-QComboBox QAbstractItemView {
-    min-width: 100px;
-}
-
 QComboBox {
 	  font-size: 10pt;
+}
+
+QComboBox::drop-down {
+	border: 1px solid #5A5A5A;
+	background: #353535;
+}
+
+QComboBox QAbstractItemView {
+    min-width: 100px;
 }
 
 QPushButton {
@@ -192,11 +197,6 @@ QTabBar::tab {
 }
 
 QTabBar::tab:selected {
-	background: #353535;
-}
-
-QComboBox::drop-down {
-	border: 1px solid #5A5A5A;
 	background: #353535;
 }
 
