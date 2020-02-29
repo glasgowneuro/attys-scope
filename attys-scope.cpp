@@ -664,10 +664,16 @@ int main( int argc, char **argv )
 
 	QPixmap pixmap(":/attys.png");
 	QSplashScreen* splash = new QSplashScreen(pixmap);
-	splash->setFont( QFont("Helvetica", 10) );
+	splash->setFont( QFont("Helvetica", 14, QFont::Black) );
 	splash->show();
 	splash->showMessage("Scanning for paired devices");
 	a.processEvents();
+
+	// callback
+	AttysScanMsg attysScanMsg;
+	attysScanMsg.splash = splash;
+	attysScanMsg.app = &a;
+	attysScan.registerCallback(&attysScanMsg);
 
 	// see if we have any Attys!
 	int ret = attysScan.scan();
@@ -676,6 +682,7 @@ int main( int argc, char **argv )
 	if (ret) {
 		a.processEvents();
 		std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+		attysScan.unregisterCallback();
 		delete splash;
 		return ret;
 	}
@@ -686,6 +693,7 @@ int main( int argc, char **argv )
 		splash->showMessage("Cound not connect\nand/or no devices paired.");
 		a.processEvents();
 		std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+		attysScan.unregisterCallback();
 		delete splash;
 		return -1;
 	}
@@ -699,6 +707,7 @@ int main( int argc, char **argv )
 
 	// show widget
 	attys_scope.show();
+	attysScan.unregisterCallback();
 	splash->finish(&attys_scope);
 	delete splash;
 	// run event loop

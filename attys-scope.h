@@ -37,6 +37,20 @@ class Attys_scope;
 #define EXECUTABLE_NAME "attys-scope"
 
 
+struct AttysScanMsg : public AttysScanListener {
+	QSplashScreen* splash = NULL;
+	QApplication* app = NULL;
+        virtual void message(const int, const char * msg) {
+		if (splash) {
+			splash->showMessage(msg);
+			if (app) {
+				app->processEvents();
+			}
+		}
+	}
+};
+
+
 class Attys_scope : public QWidget
 {
 	
