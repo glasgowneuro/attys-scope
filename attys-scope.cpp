@@ -102,6 +102,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 		bandstop[n]=new QPointer<Bandstop>[channels];
 		special[n] = new QPointer<Special>[2];
 		current[n] = new Current();
+		current[n]->setStyleSheet(styleSheetChannel);
 
 		allChLayout->addWidget(new QLabel(QString::asprintf("Attys #%d (%s)\n",n,attysScan.attysName[n])), row, 1);
 		row++;
