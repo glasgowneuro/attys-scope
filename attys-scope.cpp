@@ -44,8 +44,8 @@ Attys_scope::Attys_scope(QWidget *parent,
 	char styleSheetChannel[] = "padding-left:1px; padding-right:1px; min-width: 3.2em;";
 	char styleSheetGain[] = "padding-left:1px; padding-right:1px; min-width: 3.2em;";
 #else
-	char styleSheetChannel[] = "padding-left:1px; padding-right:1px;";
-	char styleSheetGain[] = "padding-left:1px; padding-right:1px;";
+	char styleSheetChannel[] = "padding-left:1px; padding-right:1px; min-width: 3.5em;";
+	char styleSheetGain[] = "padding-left:1px; padding-right:1px; min-width: 3.5em;";
 #endif
 	char styleSheetLabel[] = "padding-left:0.5em; padding-right:1px";
 	char styleSheetNoPadding[] = "padding-left:1px; padding-right:1px; width:1em; font-family: courier;";
