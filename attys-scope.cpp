@@ -70,15 +70,6 @@ Attys_scope::Attys_scope(QWidget *parent,
 	// this is the vertical layout for all the controls
 	scopeLayout = new QVBoxLayout(0);
 
-	// we create a scroll area
-	allChScrollArea = new QScrollArea();
-	allChScrollArea->setAttribute(Qt::WA_DeleteOnClose, false);
-	// this is the layout containing the scrollArea
-	allChScrollLayout = new QVBoxLayout();
-	// to this layout we add just one widget which is the scroll area
-	allChScrollLayout->addWidget(allChScrollArea);
-
-
 	allChLayout = new QGridLayout;
 	allChGroup = new QGroupBox;
 	allChGroup->setAttribute(Qt::WA_DeleteOnClose, false);
@@ -184,8 +175,17 @@ Attys_scope::Attys_scope(QWidget *parent,
 		}
 	}
 
-	controlLayout->addWidget(allChScrollArea);
+	// we create a scroll area
+	allChScrollArea = new QScrollArea();
+	allChScrollArea->setWidgetResizable(false);
+	allChScrollArea->setAttribute(Qt::WA_DeleteOnClose, false);
 	allChScrollArea->setWidget(allChGroup);
+	// this is the layout containing the scrollArea
+	allChScrollLayout = new QVBoxLayout();
+	// to this layout we add just one widget which is the scroll area
+	allChScrollLayout->addWidget(allChScrollArea);
+
+	controlLayout->addWidget(allChScrollArea);
 
 	// now we create another layout which contains all the remaining controls
 	restLayout = new QVBoxLayout;
