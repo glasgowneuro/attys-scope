@@ -40,8 +40,13 @@ Attys_scope::Attys_scope(QWidget *parent,
 	
 	// to the get the stuff a bit closer together
 	char styleSheetCombo[] = "padding-left:1px; padding-right:1px";
+#ifdef _WIN32
 	char styleSheetChannel[] = "padding-left:1px; padding-right:1px; min-width: 3.2em;";
 	char styleSheetGain[] = "padding-left:1px; padding-right:1px; min-width: 3.2em;";
+#else
+	char styleSheetChannel[] = "padding-left:1px; padding-right:1px;";
+	char styleSheetGain[] = "padding-left:1px; padding-right:1px;";
+#endif
 	char styleSheetLabel[] = "padding-left:0.5em; padding-right:1px";
 	char styleSheetNoPadding[] = "padding-left:1px; padding-right:1px; width:1em; font-family: courier;";
 	char styleCheckBox[] = "QCheckBox::indicator {width: 2em; height: 2em;}";

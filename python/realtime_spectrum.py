@@ -14,7 +14,7 @@ import matplotlib.animation as animation
 import threading
 
 # read from channel 9
-channel = 9
+channel = 2
 
 ringbuffersize = 1024
 
@@ -59,7 +59,7 @@ spectrum = np.absolute(spectrum)
 line, = ax.semilogx(np.linspace(0,125,len(spectrum)),spectrum)
 # axis
 ax.set_xlim(0,125)
-ax.set_ylim(0, 0.00001)
+#ax.set_ylim(0, 0.00001)
 ax.set_xlabel('Frequency/Hz')
 ax.set_ylabel('Amplitude/V')
 ax.set_title('Frequency spectrum')
