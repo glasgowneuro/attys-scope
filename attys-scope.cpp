@@ -50,6 +50,8 @@ Attys_scope::Attys_scope(QWidget *parent,
 	char styleSheetLabel[] = "padding-left:0.5em; padding-right:1px";
 	char styleSheetNoPadding[] = "padding-left:1px; padding-right:1px; width:1em; font-family: courier;";
 	char styleCheckBox[] = "QCheckBox::indicator {width: 2em; height: 2em;}";
+	char styleLineEdit[] = "width:1em;";
+	char styleProfile[] = "font-size:12px;";
 
 	attysScopeWindow=new ScopeWindow(this);
 
@@ -208,7 +210,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	recLayout->addWidget(new QLabel(" "));
 
-	vers1dataCheckBox = new QCheckBox("&V1.x data format");
+	vers1dataCheckBox = new QCheckBox("&V1.x fmt");
 	vers1dataCheckBox->setChecked(1);
 	vers1dataCheckBox->setEnabled(true);
 	recLayout->addWidget(vers1dataCheckBox);
@@ -233,6 +235,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	udpLayout->addWidget(new QLabel("UDP broadcast on port "));
 
 	udpLineEdit = new QLineEdit("65000");
+	udpLineEdit->setStyleSheet(styleLineEdit);
 	udpLayout->addWidget(udpLineEdit);
 
 	udpCheckBox = new QCheckBox("&Broadcast");
@@ -266,12 +269,13 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	tbInfoLineEdit = new QLineEdit(tbgrp);
 	tbInfoLineEdit->setReadOnly(true);
+	tbInfoLineEdit->setStyleSheet(styleLineEdit);
 	tbLayout->addWidget(tbInfoLineEdit);
 
-	tbResetPushButton = new QPushButton( "clear" );
-	tbgrp->connect(tbResetPushButton, SIGNAL( clicked() ),
-		       this, SLOT( resetTbEvent() ) );
-	tbLayout->addWidget(tbResetPushButton);
+	sprintf(status, "Fs=%d Hz",
+		attysScan.attysComm[0]->getSamplingRateInHz());
+	statusLabel = new QLabel(status);
+	tbLayout->addWidget(statusLabel);
 
 	tbgrp->setLayout(tbLayout);
 	restLayout->addWidget(tbgrp);
@@ -282,19 +286,16 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	statusLayout->addWidget(new QLabel("Config:"));
 	savePushButton = new QPushButton("save");
+	savePushButton->setStyleSheet(styleProfile);
 	connect(savePushButton, SIGNAL(clicked()),
 		this, SLOT(slotSaveSettings()));
 	statusLayout->addWidget(savePushButton);
 	loadPushButton = new QPushButton("load");
+	loadPushButton->setStyleSheet(styleProfile);
 	connect(loadPushButton, SIGNAL(clicked()),
 		this, SLOT(slotLoadSettings()));
 	statusLayout->addWidget(loadPushButton);
 
-	sprintf(status,"%d Attys, fs=%d Hz.",
-		attysScan.nAttysDevices,
-		attysScan.attysComm[0]->getSamplingRateInHz());
-	statusLabel = new QLabel(status);
-	statusLayout->addWidget(statusLabel);
 	statusgrp->setLayout(statusLayout);
 	restLayout->addWidget(statusgrp);
 
@@ -309,9 +310,15 @@ Attys_scope::Attys_scope(QWidget *parent,
 	scopeLayout->addWidget(attysScopeWindow);
 
 	allChScrollArea->setSizePolicy ( QSizePolicy(QSizePolicy::Fixed,
-						     QSizePolicy::Expanding ) );
+						QSizePolicy::Expanding ) );
 	allChScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
+	sprintf(status, "%d Attys", attysScan.getNAttysDevices());
+	statusLabel = new QLabel(status);
+	controlLayout->addWidget(statusLabel);
+
+	attysScopeWindow->setSizePolicy(QSizePolicy(QSizePolicy::Expanding,
+		QSizePolicy::Expanding));
 	mainLayout->addLayout(controlLayout);
 	mainLayout->addWidget(attysScopeWindow);
 
@@ -496,8 +503,8 @@ void Attys_scope::slotLoadSettings() {
 void Attys_scope::setInfo(const char * txt)
 {
 	QString t = txt;
-	QString s = status;
-	statusLabel->setText(status+t);
+	QString s = "attys-scope";
+//	statusLabel->setText(status+t);
 }
 
 

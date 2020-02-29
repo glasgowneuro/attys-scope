@@ -153,11 +153,6 @@ public:
      **/
 	 QPointer<QPushButton> tbDecPushButton;
 
-    /**
-     * Button: Reset screen
-     **/
-	 QPointer<QPushButton> tbResetPushButton;
-
 /**
  * Text-field: time between samples
  **/
@@ -233,8 +228,6 @@ private:
 
 	QPointer<QLabel> statusLabel;
 
-	char status[256];
-
 	QPointer<QVBoxLayout> controlLayout;
 	QPointer<QVBoxLayout> scopeLayout;
 
@@ -277,6 +270,7 @@ private:
 	private:
 		int restartInfo = 1;
 
+		char status[256];
 
 
 };

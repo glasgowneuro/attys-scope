@@ -55,6 +55,10 @@ QPushButton {
 	color: white;
 }
 
+QPushButton:disabled {
+	color: rgb(96,96,96);
+}
+
 QCheckBox, QRadioButton {
 	border: none;
 }
@@ -268,4 +272,8 @@ QProgressBar::chunk {
 
 QMenu::separator {
 	background: #353535;
+}
+
+QScrollArea {
+	padding: 0px;
 }
