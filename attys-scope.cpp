@@ -214,7 +214,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	recLayout->addWidget(vers1dataCheckBox);
 
 	recLayout->addWidget(new QLabel("    "));
-	recCheckBox = new QCheckBox( "&REC" );
+	recCheckBox = new RecButton();
 	recCheckBox->connect(recCheckBox, SIGNAL( stateChanged(int) ),
 			       this, SLOT( recstartstop(int) ) );
 	recCheckBox->setEnabled( false );
@@ -570,7 +570,7 @@ void Attys_scope::enterFileName() {
 // callback
 void Attys_scope::recstartstop(int) 
 {
-  if (recCheckBox->checkState()==Qt::Checked) 
+  if (recCheckBox->checkState()) 
     {
       attysScopeWindow->startRec();
     } 

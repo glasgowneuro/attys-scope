@@ -578,7 +578,7 @@ void ScopeWindow::processData() {
 		}
 
 		// save data
-		if (attys_scope->recCheckBox->checkState() == Qt::Checked) {
+		if (attys_scope->recCheckBox->checkState()) {
 			writeFile();
 		}
 

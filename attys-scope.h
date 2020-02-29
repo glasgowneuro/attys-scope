@@ -25,6 +25,7 @@ class Attys_scope;
 #include "highpass.h"
 #include "lowpass.h"
 #include "bandstop.h"
+#include "recbutton.h"
 #include "AttysComm.h"
 #include "AttysScan.h"
 
@@ -66,7 +67,7 @@ public:
 	/**
 	* Button which controls recording
 	**/
-    QPointer<QCheckBox> recCheckBox;
+    QPointer<RecButton> recCheckBox;
 
 	/**
 	 * Button which controls recording
