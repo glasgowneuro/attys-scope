@@ -29,6 +29,10 @@
 	border: 1px solid #5A5A5A;
 }
 
+*:disabled {
+	color: rgb(96,96,96);
+}
+
 QWidget::item:selected {
 	background: #3D7848;
 }
@@ -54,10 +58,6 @@ QPushButton {
 	font: 16px;
 	padding: 5px;
 	color: white;
-}
-
-QPushButton:disabled {
-	color: rgb(96,96,96);
 }
 
 QCheckBox, QRadioButton {

@@ -14,6 +14,43 @@ Oscilloscope program for the Attys (http://www.attys.tech).
 The screenshot above shows attys-scope in action under Windows where it feeds the data into a Python program
 which then plots a bar graph in realtime.
 
+## Data format
+
+The file format can be comma separated or tab separated for saving. UDP is always CSV.
+
+### Header
+
+```
+# TIMESTAMP_IN_UNIX_EPOCH ATTYS1MAC ATTYS2MAC ...
+```
+
+### Columns
+
+1. TIME
+2. RAW_AccX
+3. RAW_AccY
+4. RAW_AccZ
+5. RAW_MagX
+6. RAW_MagY
+7. RAW_MagZ
+8. RAW_CH1
+9. RAW_CH2
+10. RAW_DIO1
+11. RAW_DIO2 
+12. FILT_AccX
+13. FILT_AccY
+14. FILT_AccZ
+15. FILT_MagX
+16. FILT_MagY
+17. FILT_MagZ
+18. FILT_CH1
+19. FILT_CH2
+20. FILT_DIO1
+21. FILT_DIO2
+22. RAW_AccX of the 2nd Attys
+22. ...
+
+
 ## Requires
 * QT5
 * IIR1 libaray (https://github.com/berndporr/iir1)

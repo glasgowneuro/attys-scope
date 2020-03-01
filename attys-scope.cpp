@@ -209,13 +209,6 @@ Attys_scope::Attys_scope(QWidget *parent,
 		this, SLOT( enterFileName() ) );
 	recLayout->addWidget(filePushButton);
 
-	recLayout->addWidget(new QLabel(" "));
-
-	vers1dataCheckBox = new QCheckBox("&V1.x fmt");
-	vers1dataCheckBox->setChecked(1);
-	vers1dataCheckBox->setEnabled(true);
-	recLayout->addWidget(vers1dataCheckBox);
-
 	recLayout->addWidget(new QLabel("    "));
 	recCheckBox = new RecButton();
 	recCheckBox->connect(recCheckBox, SIGNAL( stateChanged(int) ),
@@ -223,6 +216,14 @@ Attys_scope::Attys_scope(QWidget *parent,
 	recCheckBox->setEnabled( false );
 	recLayout->addWidget(recCheckBox);
 	recCheckBox->setStyleSheet(styleCheckBox);
+
+	recLayout->addWidget(new QLabel(" "));
+
+	vers1dataCheckBox = new QCheckBox("&V1.x fmt");
+	vers1dataCheckBox->setStyleSheet("font-size: 10pt;");
+	vers1dataCheckBox->setChecked(0);
+	vers1dataCheckBox->setEnabled(true);
+	recLayout->addWidget(vers1dataCheckBox);
 
 	recGroupBox->setLayout(recLayout);
 	restLayout->addWidget(recGroupBox);
