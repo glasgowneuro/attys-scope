@@ -13,13 +13,20 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import threading
 
-# update rate in ms
+# in ms the update
 updateRate = 1000
 
-# Title for the Channel:
-titleChannel = "Frequency spectrum"
+# read from channels:
+
+# Title for Channel1:
+titleChannel1 = "Kirsty's EEG"
 # From data Column:
-channel = 7
+channel1 = 7
+
+# Title for Channel2:
+titleChannel2 = "Katie's EEG"
+# From data Column:
+channel2 = 28
 
 # minimal frequency detectable in Hz
 minF = 1000.0 / updateRate
@@ -54,35 +61,49 @@ t = threading.Thread(target=readSocket)
 t.start()
 
 # now let's plot the data
-fig, ax = plt.subplots(1,1)
-ax.set_xlim(minF,125)
-ax.set_xlabel('')
-ax.set_ylabel('Amplitude/V')
-ax.set_xlabel('Frequency/Hz')
-ax.set_title(titleChannel)
+fig, (ax1,ax2) = plt.subplots(2,1)
+fig.subplots_adjust(hspace=0.5)
+ax1.set_xlim(minF,125)
+ax2.set_xlim(minF,125)
+ax1.set_xlabel('')
+ax1.set_ylabel('Amplitude/V')
+ax1.set_xlabel('Frequency/Hz')
+ax2.set_xlabel('Frequency/Hz')
+ax2.set_ylabel('Amplitude/V')
+ax1.set_title(titleChannel1)
+ax2.set_title(titleChannel2)
 
 # empty axes
 e = np.array([1,2])
-line, = ax.semilogx(e,e)
+line1, = ax1.semilogx(e,e)
+line2, = ax2.semilogx(e,e)
 
 # receives the data from the generator below
 def update(data):
     global ringbuffer
-    global channel
-    global line
-    global ax, fig
-    global titlePlot
+    global channel1
+    global channel2
+    global line1
+    global line2
+    global ax1,ax2, fig
+    global titlePlot1
+    global titlePlot2
     # axis
-    spectrum = np.fft.rfft(np.array(ringbuffer)[:,channel])
+    spectrum1 = np.fft.rfft(np.array(ringbuffer)[:,channel1])
+    spectrum2 = np.fft.rfft(np.array(ringbuffer)[:,channel2])
     # absolute value
-    spectrum = np.abs(spectrum)/len(spectrum)
-    spectrum[0] = 0
-    line.set_data(np.linspace(0,125,len(spectrum)), spectrum)
+    spectrum1 = np.abs(spectrum1)/len(spectrum1)
+    spectrum2 = np.abs(spectrum2)/len(spectrum2)
+    spectrum1[0] = 0
+    spectrum2[0] = 0
+    line1.set_data(np.linspace(0,125,len(spectrum1)), spectrum1)
+    line2.set_data(np.linspace(0,125,len(spectrum2)), spectrum2)
     # set new max
-    ax.set_ylim(0,spectrum.max()*1.2)
+    ax1.set_ylim(0,spectrum1.max()*1.2)
+    ax2.set_ylim(0,spectrum2.max()*1.2)
     ringbuffer = []
     # return the line
-    return line
+    return [line1,line2]
 
 # start the animation
 ani = animation.FuncAnimation(fig, update, interval=1000)
