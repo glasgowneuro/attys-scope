@@ -664,7 +664,7 @@ int main( int argc, char **argv )
 
 	QPixmap pixmap(":/attys.png");
 	QSplashScreen* splash = new QSplashScreen(pixmap);
-	splash->setFont( QFont("Helvetica", 14, QFont::Black) );
+	splash->setFont( QFont("Helvetica", 10, QFont::Black) );
 	splash->show();
 	splash->showMessage("Scanning for paired devices");
 	a.processEvents();
@@ -676,7 +676,7 @@ int main( int argc, char **argv )
 	attysScan.registerCallback(&attysScanMsg);
 
 	// see if we have any Attys!
-	int ret = attysScan.scan();
+	int ret = attysScan.scan(AttysScan::MAX_ATTYS_DEVS);
 
 	// zero on success and non zero on failure
 	if (ret) {
