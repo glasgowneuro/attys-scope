@@ -16,7 +16,10 @@ which then plots a bar graph in realtime.
 
 ## Data format
 
-The file format can be comma separated or tab separated for saving. UDP is always CSV.
+For saving data to a file the format is either "comma separated" (CSV) or "tab separated" (TSV).
+
+UDP packets are always transmitted as CSV.
+
 
 ### Header
 
