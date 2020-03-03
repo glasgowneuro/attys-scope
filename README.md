@@ -81,6 +81,21 @@ sudo add-apt-repository ppa:berndporr/usbdux
 ...and then select attys-scope. This will then install also
 the other required packages.
 
+## MacOS packages
+
+Add these two taps
+
+```
+brew tap berndporr/dsp
+brew tap glasgowneuro/attys
+```
+
+and install attys-scope:
+
+```
+brew install attys-scope
+```
+
 ## Compile under Linux
 * git clone https://github.com/glasgowneuro/attys-comm.git and compile/install it.
 * git clone https://github.com/glasgowneuro/attys-scope.git 
