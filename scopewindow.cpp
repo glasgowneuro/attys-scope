@@ -524,7 +524,7 @@ void ScopeWindow::processData() {
 		// number of devices which re-connect at the moment
 		int nReconnecting = 0;
 		for (int n = 0; n < attysScan.nAttysDevices; n++) {
-			int hasSample = attysScan.attysComm[n]->hasSampleAvilabale();
+			int hasSample = attysScan.attysComm[n]->hasSampleAvailable();
 			int isReconnecting = attysScan.attysComm[n]->isInitialising();
 			if (isReconnecting) {
 				// no data available but soon, so no sample to get
