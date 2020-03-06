@@ -1530,15 +1530,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:attys-scope"
-        "ProductCode" = "8:{288B98C5-0DE3-4C29-BB95-6BC314BDB10B}"
-        "PackageCode" = "8:{B591AB41-16C0-4FC5-BE71-4BBA8A789F8C}"
+        "ProductCode" = "8:{773C84F8-1EA7-437E-BDB8-2A42C872B795}"
+        "PackageCode" = "8:{B5E636D1-3140-475E-8862-1E8DF8EBF11F}"
         "UpgradeCode" = "8:{61B338BB-2C5C-411B-9290-DD8EC4E42DD4}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:2.1.0"
+        "ProductVersion" = "8:2.0.1"
         "Manufacturer" = "8:glasgow_neuro"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -2155,7 +2155,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_3767FD80AC094AA893B9CDF7D57E8A10"
             {
-            "SourcePath" = "8:..\\debug\\attys-scope.exe"
+            "SourcePath" = "8:..\\release\\attys-scope.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_989FC54179EC48EDA466EDD4472D3D00"
