@@ -103,7 +103,6 @@ Attys_scope::Attys_scope(QWidget *parent,
 		special[n] = new QPointer<Special>[2];
 		current[n] = new Current();
 		current[n]->setStyleSheet(styleSheetChannel);
-
 		allChLayout->addWidget(new QLabel(QString::asprintf("Attys #%d (%s)\n",n,attysScan.attysName[n])), row, 1);
 		row++;
 		specialLayout[n] = new QHBoxLayout;
@@ -505,8 +504,7 @@ void Attys_scope::slotLoadSettings() {
 void Attys_scope::setInfo(const char * txt)
 {
 	QString t = txt;
-	QString s = "attys-scope";
-//	statusLabel->setText(status+t);
+	statusLabel->setText(status+QString(" ")+t);
 }
 
 
@@ -612,11 +610,11 @@ void Attys_scope::decTbEvent() {
 void Attys_scope::changeTB() {
 	QString s;
 	if (tb_us<1000) {
-		s.sprintf( "%d usec", tb_us);
+		s = QString::asprintf( "%d usec", tb_us);
 	} else if (tb_us<1000000) {
-		s.sprintf( "%d msec", tb_us/1000);
+		s = QString::asprintf( "%d msec", tb_us/1000);
 	} else {
-		s.sprintf( "%d sec", tb_us/1000000);
+		s = QString::asprintf( "%d sec", tb_us/1000000);
 	}		
 	tbInfoLineEdit->setText(s);
 	attysScopeWindow->setTB(tb_us);
@@ -693,7 +691,7 @@ int main( int argc, char **argv )
 		printf("No Attys present or not paired.\n");
 		splash->showMessage("Cound not connect\nand/or no devices paired.");
 		a.processEvents();
-		std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 		attysScan.unregisterCallback();
 		delete splash;
 		return -1;

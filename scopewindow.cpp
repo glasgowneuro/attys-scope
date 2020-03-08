@@ -218,7 +218,7 @@ void ScopeWindow::updateTime() {
 	QString s;
 	if (!rec_file) {
 		if (rec_filename.isEmpty()) {
-			s.sprintf(EXECUTABLE_NAME " " VERSION);
+			s = QString::asprintf(EXECUTABLE_NAME " " VERSION);
 		} else {
 			if (recorded) {
 				s=finalFilename + " --- file saved";
@@ -229,7 +229,7 @@ void ScopeWindow::updateTime() {
 	} else {
 		if (!finalFilename.isEmpty()) {
 			s = finalFilename +
-				QString().sprintf("--- rec: %ldsec", nsamples / attysScan.attysComm[0]->getSamplingRateInHz());
+				QString::asprintf("--- rec: %ldsec", nsamples / attysScan.attysComm[0]->getSamplingRateInHz());
 		}
 	}
 	attys_scope->setWindowTitle( s );
@@ -437,7 +437,7 @@ void ScopeWindow::paintEvent(QPaintEvent *) {
 				paint.setPen(penData[act % 3]);
 				QString s = QString::fromStdString(attysScan.attysComm[0]->
 								   CHANNEL_SHORT_DESCRIPTION[attys_scope->channel[n][i]->getChannel()]);
-				if (!(attysScan.attysComm[n]->isInitialising())) {
+				if (attysScan.attysComm[n]->hasActiveConnection()) {
 					s = QString::asprintf("%d  ", n) + s;
 				}
 				else {
@@ -525,16 +525,16 @@ void ScopeWindow::processData() {
 		int nReconnecting = 0;
 		for (int n = 0; n < attysScan.nAttysDevices; n++) {
 			int hasSample = attysScan.attysComm[n]->hasSampleAvailable();
-			int isReconnecting = attysScan.attysComm[n]->isInitialising();
-			if (isReconnecting) {
-				// no data available but soon, so no sample to get
-				// but can be set to zero temporarily
-				nReconnecting++;
-			}
-			else {
+			int isActive = attysScan.attysComm[n]->hasActiveConnection();
+			if (isActive) {
 				// we should have samples here but if not we return and
 				// wait for some
 				if (!hasSample) return;
+			}
+			else {
+				// no data available but soon, so no sample to get
+				// but can be set to zero temporarily
+				nReconnecting++;
 			}
 		}
 		if (nReconnecting == attysScan.nAttysDevices) {
@@ -546,7 +546,7 @@ void ScopeWindow::processData() {
 
 		for (int n = 0; n < attysScan.nAttysDevices; n++) {
 			float* values;
-			if (!(attysScan.attysComm[n]->isInitialising())) {
+			if (attysScan.attysComm[n]->hasActiveConnection()) {
 				values = attysScan.attysComm[n]->getSampleFromBuffer();
 			}
 			else {
