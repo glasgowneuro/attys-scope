@@ -246,7 +246,7 @@ public:
 	void startDAQ();
 
 public:
-	int getActualSamplingRate() { return attysScan.attysComm[0]->getSamplingRateInHz(); }
+	int getActualSamplingRate() { return attysScan.getAttysComm(0)->getSamplingRateInHz(); }
 
 
 private:

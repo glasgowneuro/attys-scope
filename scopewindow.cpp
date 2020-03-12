@@ -53,14 +53,14 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp)
 	}
 
 	// initialise the graphics stuff
-	ypos = new int**[attysScan.nAttysDevices];
-	yzero = new int*[attysScan.nAttysDevices];
+	ypos = new int**[attysScan.getNAttysDevices()];
+	yzero = new int*[attysScan.getNAttysDevices()];
 	assert(ypos != NULL);
 	assert(yzero != NULL);
-	minV = new float*[attysScan.nAttysDevices];
-	maxV = new float*[attysScan.nAttysDevices];
-	for(int devNo=0;devNo<attysScan.nAttysDevices;devNo++) {
-		attysScan.attysComm[devNo]->registerMessageCallback(&attysScopeCommMessage);
+	minV = new float*[attysScan.getNAttysDevices()];
+	maxV = new float*[attysScan.getNAttysDevices()];
+	for(int devNo=0;devNo<attysScan.getNAttysDevices();devNo++) {
+		attysScan.getAttysComm(devNo)->registerMessageCallback(&attysScopeCommMessage);
 		ypos[devNo]=new int*[AttysComm::NCHANNELS];
 		yzero[devNo]=new int[AttysComm::NCHANNELS];
 		minV[devNo] = new float[AttysComm::NCHANNELS];
@@ -81,13 +81,13 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp)
 	xpos=0;
 	nsamples=0;
 
-	adAvgBuffer = new float*[attysScan.nAttysDevices];
+	adAvgBuffer = new float*[attysScan.getNAttysDevices()];
 	assert( adAvgBuffer != NULL );
-	unfiltDAQData = new float*[attysScan.nAttysDevices];
-	filtDAQData = new float*[attysScan.nAttysDevices];
+	unfiltDAQData = new float*[attysScan.getNAttysDevices()];
+	filtDAQData = new float*[attysScan.getNAttysDevices()];
 	assert( unfiltDAQData != NULL );
 	assert(filtDAQData != NULL);
-	for(int devNo=0;devNo<attysScan.nAttysDevices;devNo++) {
+	for(int devNo=0;devNo<attysScan.getNAttysDevices();devNo++) {
 		// floating point buffer for plotting
 		adAvgBuffer[devNo]=new float[AttysComm::NCHANNELS];
 		assert( adAvgBuffer[devNo] != NULL );
@@ -109,96 +109,96 @@ ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp)
 
 void ScopeWindow::startDAQ() {
 
-	for (int i = 0; i < attysScan.nAttysDevices; i++) {
-		if (attysScan.attysComm[i]) {
-			attysScan.attysComm[i]->setBiasCurrent(attys_scope->current[i]->getCurrent());
+	for (int i = 0; i < attysScan.getNAttysDevices(); i++) {
+		if (attysScan.getAttysComm(i)) {
+			attysScan.getAttysComm(i)->setBiasCurrent(attys_scope->current[i]->getCurrent());
 			int curr_ch1 = 0;
 			int curr_ch2 = 0;
 
 			switch (attys_scope->special[i][0]->getSpecial()) {
 			case SPECIAL_NORMAL:
-				attysScan.attysComm[i]->setAdc0_mux_index(attysScan.attysComm[i]->ADC_MUX_NORMAL);
+				attysScan.getAttysComm(i)->setAdc0_mux_index(attysScan.getAttysComm(i)->ADC_MUX_NORMAL);
 				break;
 			case SPECIAL_ECG:
-				attysScan.attysComm[i]->setAdc0_mux_index(attysScan.attysComm[i]->ADC_MUX_ECG_EINTHOVEN);
+				attysScan.getAttysComm(i)->setAdc0_mux_index(attysScan.getAttysComm(i)->ADC_MUX_ECG_EINTHOVEN);
 				break;
 			case SPECIAL_TEMPERATURE:
-				attysScan.attysComm[i]->setAdc0_mux_index(attysScan.attysComm[i]->ADC_MUX_TEMPERATURE);
+				attysScan.getAttysComm(i)->setAdc0_mux_index(attysScan.getAttysComm(i)->ADC_MUX_TEMPERATURE);
 				break;
 			case SPECIAL_I:
-				attysScan.attysComm[i]->setAdc0_mux_index(attysScan.attysComm[i]->ADC_MUX_NORMAL);
+				attysScan.getAttysComm(i)->setAdc0_mux_index(attysScan.getAttysComm(i)->ADC_MUX_NORMAL);
 				curr_ch1 = 1;
 				break;
 			default:
-				attysScan.attysComm[i]->setAdc0_mux_index(attysScan.attysComm[i]->ADC_MUX_NORMAL);
+				attysScan.getAttysComm(i)->setAdc0_mux_index(attysScan.getAttysComm(i)->ADC_MUX_NORMAL);
 			}
-			attysScan.attysComm[i]->setAdc0_gain_index(attys_scope->special[i][0]->getGainIndex());
+			attysScan.getAttysComm(i)->setAdc0_gain_index(attys_scope->special[i][0]->getGainIndex());
 
 			switch (attys_scope->special[i][1]->getSpecial()) {
 			case SPECIAL_NORMAL:
-				attysScan.attysComm[i]->setAdc1_mux_index(attysScan.attysComm[i]->ADC_MUX_NORMAL);
+				attysScan.getAttysComm(i)->setAdc1_mux_index(attysScan.getAttysComm(i)->ADC_MUX_NORMAL);
 				break;
 			case SPECIAL_ECG:
-				attysScan.attysComm[i]->setAdc1_mux_index(attysScan.attysComm[i]->ADC_MUX_ECG_EINTHOVEN);
+				attysScan.getAttysComm(i)->setAdc1_mux_index(attysScan.getAttysComm(i)->ADC_MUX_ECG_EINTHOVEN);
 				break;
 			case SPECIAL_TEMPERATURE:
-				attysScan.attysComm[i]->setAdc1_mux_index(attysScan.attysComm[i]->ADC_MUX_TEMPERATURE);
+				attysScan.getAttysComm(i)->setAdc1_mux_index(attysScan.getAttysComm(i)->ADC_MUX_TEMPERATURE);
 				break;
 			case SPECIAL_I:
-				attysScan.attysComm[i]->setAdc1_mux_index(attysScan.attysComm[i]->ADC_MUX_NORMAL);
+				attysScan.getAttysComm(i)->setAdc1_mux_index(attysScan.getAttysComm(i)->ADC_MUX_NORMAL);
 				curr_ch2 = 1;
 				break;
 			default:
-				attysScan.attysComm[i]->setAdc1_mux_index(attysScan.attysComm[i]->ADC_MUX_NORMAL);
+				attysScan.getAttysComm(i)->setAdc1_mux_index(attysScan.getAttysComm(i)->ADC_MUX_NORMAL);
 			}
-			attysScan.attysComm[i]->setAdc1_gain_index(attys_scope->special[i][1]->getGainIndex());
+			attysScan.getAttysComm(i)->setAdc1_gain_index(attys_scope->special[i][1]->getGainIndex());
 
-			attysScan.attysComm[i]->enableCurrents(curr_ch1, 0, curr_ch2);
+			attysScan.getAttysComm(i)->enableCurrents(curr_ch1, 0, curr_ch2);
 		}
 	}
 
 	counter.start(500,this);
 
 	mainTimerID = startTimer(50);		// run continuous timer
-	for (int i = 0; i < attysScan.nAttysDevices; i++) {
-		if (attysScan.attysComm[i])
-			attysScan.attysComm[i]->start();
+	for (int i = 0; i < attysScan.getNAttysDevices(); i++) {
+		if (attysScan.getAttysComm(i))
+			attysScan.getAttysComm(i)->start();
 	}
 
-	for (int n = 0; n < attysScan.nAttysDevices; n++) {
+	for (int n = 0; n < attysScan.getNAttysDevices(); n++) {
 
-		for (int i = attysScan.attysComm[n]->INDEX_Acceleration_X; i <= attysScan.attysComm[n]->INDEX_Acceleration_Z; i++) {
-			minV[n][i] = -attysScan.attysComm[n]->getAccelFullScaleRange();
-			maxV[n][i] = attysScan.attysComm[n]->getAccelFullScaleRange();
+		for (int i = attysScan.getAttysComm(n)->INDEX_Acceleration_X; i <= attysScan.getAttysComm(n)->INDEX_Acceleration_Z; i++) {
+			minV[n][i] = -attysScan.getAttysComm(n)->getAccelFullScaleRange();
+			maxV[n][i] = attysScan.getAttysComm(n)->getAccelFullScaleRange();
 		}
-		for (int i = attysScan.attysComm[n]->INDEX_Magnetic_field_X; i <= attysScan.attysComm[n]->INDEX_Magnetic_field_Z; i++) {
-			minV[n][i] = -attysScan.attysComm[n]->getMagFullScaleRange();
-			maxV[n][i] = attysScan.attysComm[n]->getMagFullScaleRange();
+		for (int i = attysScan.getAttysComm(n)->INDEX_Magnetic_field_X; i <= attysScan.getAttysComm(n)->INDEX_Magnetic_field_Z; i++) {
+			minV[n][i] = -attysScan.getAttysComm(n)->getMagFullScaleRange();
+			maxV[n][i] = attysScan.getAttysComm(n)->getMagFullScaleRange();
 		}
 		if (attys_scope->special[n][0]->getSpecial() == SPECIAL_TEMPERATURE) {
-			minV[n][attysScan.attysComm[n]->INDEX_Analogue_channel_1] = -20;
-			maxV[n][attysScan.attysComm[n]->INDEX_Analogue_channel_1] = 80;
+			minV[n][attysScan.getAttysComm(n)->INDEX_Analogue_channel_1] = -20;
+			maxV[n][attysScan.getAttysComm(n)->INDEX_Analogue_channel_1] = 80;
 		}
 		else {
-			minV[n][attysScan.attysComm[n]->INDEX_Analogue_channel_1] = -attysScan.attysComm[n]->getADCFullScaleRange(0);
-			maxV[n][attysScan.attysComm[n]->INDEX_Analogue_channel_1] = attysScan.attysComm[n]->getADCFullScaleRange(0);
+			minV[n][attysScan.getAttysComm(n)->INDEX_Analogue_channel_1] = -attysScan.getAttysComm(n)->getADCFullScaleRange(0);
+			maxV[n][attysScan.getAttysComm(n)->INDEX_Analogue_channel_1] = attysScan.getAttysComm(n)->getADCFullScaleRange(0);
 		}
-		// _RPT1(0, "ADC1 max = %f\n", attysScan.attysComm[n]->getADCFullScaleRange(0));
+		// _RPT1(0, "ADC1 max = %f\n", attysScan.getAttysComm(n]->getADCFullScaleRange(0));
 		if (attys_scope->special[n][1]->getSpecial() == SPECIAL_TEMPERATURE) {
-			minV[n][attysScan.attysComm[n]->INDEX_Analogue_channel_2] = -20;
-			maxV[n][attysScan.attysComm[n]->INDEX_Analogue_channel_2] = 80;
+			minV[n][attysScan.getAttysComm(n)->INDEX_Analogue_channel_2] = -20;
+			maxV[n][attysScan.getAttysComm(n)->INDEX_Analogue_channel_2] = 80;
 		}
 		else {
-			minV[n][attysScan.attysComm[n]->INDEX_Analogue_channel_2] = -attysScan.attysComm[n]->getADCFullScaleRange(1);
-			maxV[n][attysScan.attysComm[n]->INDEX_Analogue_channel_2] = attysScan.attysComm[n]->getADCFullScaleRange(1);
+			minV[n][attysScan.getAttysComm(n)->INDEX_Analogue_channel_2] = -attysScan.getAttysComm(n)->getADCFullScaleRange(1);
+			maxV[n][attysScan.getAttysComm(n)->INDEX_Analogue_channel_2] = attysScan.getAttysComm(n)->getADCFullScaleRange(1);
 		}
 		// GPIO channel 1 min/max range
-		minV[n][attysScan.attysComm[n]->INDEX_GPIO0] = -1;
-		maxV[n][attysScan.attysComm[n]->INDEX_GPIO0] = 1;
+		minV[n][attysScan.getAttysComm(n)->INDEX_GPIO0] = -1;
+		maxV[n][attysScan.getAttysComm(n)->INDEX_GPIO0] = 1;
 		// GPIO channel 2 min/max range
-		minV[n][attysScan.attysComm[n]->INDEX_GPIO1] = -1;
-		maxV[n][attysScan.attysComm[n]->INDEX_GPIO1] = 1;
-		// _RPT1(0, "ADC2 max = %f\n", attysScan.attysComm[n]->getADCFullScaleRange(1));
+		minV[n][attysScan.getAttysComm(n)->INDEX_GPIO1] = -1;
+		maxV[n][attysScan.getAttysComm(n)->INDEX_GPIO1] = 1;
+		// _RPT1(0, "ADC2 max = %f\n", attysScan.getAttysComm(n]->getADCFullScaleRange(1));
 	}
 
 }
@@ -207,9 +207,9 @@ ScopeWindow::~ScopeWindow() {
 	if (rec_file) {
 		fclose(rec_file);
 	}
-	for(int i=0; i<attysScan.nAttysDevices;i++) {
-		if (attysScan.attysComm[i]) {
-			attysScan.attysComm[i]->quit();
+	for(int i=0; i<attysScan.getNAttysDevices();i++) {
+		if (attysScan.getAttysComm(i)) {
+			attysScan.getAttysComm(i)->quit();
 		}
 	}
 }
@@ -229,7 +229,7 @@ void ScopeWindow::updateTime() {
 	} else {
 		if (!finalFilename.isEmpty()) {
 			s = finalFilename +
-				QString::asprintf("--- rec: %ldsec", nsamples / attysScan.attysComm[0]->getSamplingRateInHz());
+				QString::asprintf("--- rec: %ldsec", nsamples / attysScan.getAttysComm(0)->getSamplingRateInHz());
 		}
 	}
 	attys_scope->setWindowTitle( s );
@@ -276,8 +276,8 @@ void ScopeWindow::stopUDP()
 void ScopeWindow::writeUDP() {
 	if (!udpSocket) return;
 	char tmp[1024];
-	sprintf(tmp, "%f", ((float)nsamples) / ((float)attysScan.attysComm[0]->getSamplingRateInHz()));
-	for (int n = 0; n < attysScan.nAttysDevices; n++) {
+	sprintf(tmp, "%f", ((float)nsamples) / ((float)attysScan.getAttysComm(0)->getSamplingRateInHz()));
+	for (int n = 0; n < attysScan.getNAttysDevices(); n++) {
 		for (int i = 0; i < AttysComm::NCHANNELS; i++) {
 			float phy = unfiltDAQData[n][i];
 			sprintf(tmp+strlen(tmp), ",%f", phy);
@@ -321,9 +321,9 @@ void ScopeWindow::openFile() {
 	}
 	if (!(attys_scope->vers1dataCheckBox->isChecked())) {
 		fprintf(rec_file, "# %lu", (unsigned long)time(NULL));
-		for (int n = 0; n < attysScan.nAttysDevices; n++) {
+		for (int n = 0; n < attysScan.getNAttysDevices(); n++) {
 			char tmp[256];
-			attysScan.attysComm[n]->getBluetoothAdressString(tmp);
+			attysScan.getAttysComm(n)->getBluetoothAdressString(tmp);
 			fprintf(rec_file, "%c%s", separator, tmp);
 		}
 		fprintf(rec_file, "\n");
@@ -352,8 +352,8 @@ void ScopeWindow::startRec() {
 
 
 void ScopeWindow::clearAllRingbuffers() {
-	for (int n = 0; n < attysScan.nAttysDevices; n++) {
-		attysScan.attysComm[n]->resetRingbuffer();
+	for (int n = 0; n < attysScan.getNAttysDevices(); n++) {
+		attysScan.getAttysComm(n)->resetRingbuffer();
 	}
 	_RPT0(0, "Ringbuffers cleared.\n");
 }
@@ -363,7 +363,7 @@ void ScopeWindow::clearAllRingbuffers() {
 void ScopeWindow::attysHasReconnected() {
 	_RPT0(0, "Attys has reconnected.\n");
 	if (reconnectFlag) {
-		nsamples = (time(NULL) - start_time) * attysScan.attysComm[0]->getSamplingRateInHz();
+		nsamples = (time(NULL) - start_time) * attysScan.getAttysComm(0)->getSamplingRateInHz();
 		reconnectFlag = 0;
 	}
 }
@@ -388,8 +388,8 @@ void ScopeWindow::stopRec() {
 void ScopeWindow::writeFile() {
 	if (!rec_file) return;
 	if (attys_scope->vers1dataCheckBox->isChecked()) {
-		fprintf(rec_file, "%f", ((float)nsamples) / ((float)attysScan.attysComm[0]->getSamplingRateInHz()));
-		for (int n = 0; n < attysScan.nAttysDevices; n++) {
+		fprintf(rec_file, "%f", ((float)nsamples) / ((float)attysScan.getAttysComm(0)->getSamplingRateInHz()));
+		for (int n = 0; n < attysScan.getNAttysDevices(); n++) {
 			for (int i = 0; i < AttysComm::INDEX_Analogue_channel_2; i++) {
 				float phy = unfiltDAQData[n][i];
 				fprintf(rec_file, "%c%f", separator, phy);
@@ -403,8 +403,8 @@ void ScopeWindow::writeFile() {
 		}
 	}
 	else {
-		fprintf(rec_file, "%f", ((float)nsamples) / ((float)attysScan.attysComm[0]->getSamplingRateInHz()));
-		for (int n = 0; n < attysScan.nAttysDevices; n++) {
+		fprintf(rec_file, "%f", ((float)nsamples) / ((float)attysScan.getAttysComm(0)->getSamplingRateInHz()));
+		for (int n = 0; n < attysScan.getNAttysDevices(); n++) {
 			for (int i = 0; i < AttysComm::NCHANNELS; i++) {
 				float phy = unfiltDAQData[n][i];
 				fprintf(rec_file, "%c%f", separator, phy);
@@ -429,15 +429,15 @@ void ScopeWindow::paintEvent(QPaintEvent *) {
 	QPen penWhite(Qt::white,2);
 
 	int act = 0;
-	for (int n = 0; n < attysScan.nAttysDevices; n++) {
+	for (int n = 0; n < attysScan.getNAttysDevices(); n++) {
 		for (int i = 0; i < AttysComm::NCHANNELS; i++) {
 			if (attys_scope->
 				channel[n][i]->
 				isActive()) {
 				paint.setPen(penData[act % 3]);
-				QString s = QString::fromStdString(attysScan.attysComm[0]->
+				QString s = QString::fromStdString(attysScan.getAttysComm(0)->
 								   CHANNEL_SHORT_DESCRIPTION[attys_scope->channel[n][i]->getChannel()]);
-				if (attysScan.attysComm[n]->hasActiveConnection()) {
+				if (attysScan.getAttysComm(n)->hasActiveConnection()) {
 					s = QString::asprintf("%d  ", n) + s;
 				}
 				else {
@@ -461,9 +461,9 @@ void ScopeWindow::paintEvent(QPaintEvent *) {
 
 
 void ScopeWindow::setTB(int us) {
-	tb_init=us/(1000000/ attysScan.attysComm[0]->getSamplingRateInHz());
+	tb_init=us/(1000000/ attysScan.getAttysComm(0)->getSamplingRateInHz());
 	tb_counter=tb_init;
-	for(int n=0;n<attysScan.nAttysDevices;n++) {
+	for(int n=0;n<attysScan.getNAttysDevices();n++) {
 		for(int i=0;i<AttysComm::NCHANNELS;i++) {
 			adAvgBuffer[n][i]=0;
 		}
@@ -476,7 +476,7 @@ void ScopeWindow::calcScreenParameters() {
 	
 	num_channels=0;
 	
-	for(int n=0;n<attysScan.nAttysDevices;n++) {
+	for(int n=0;n<attysScan.getNAttysDevices();n++) {
 		for(int i=0;i<AttysComm::NCHANNELS;i++) {
 			if (attys_scope->channel[n][i]->isActive()) {
 				num_channels++;	
@@ -494,7 +494,7 @@ void ScopeWindow::calcScreenParameters() {
 
 void ScopeWindow::convertSampleToPlot(float **buffer) {
 	int act = 1;
-	for (int n = 0; n < attysScan.nAttysDevices; n++) {
+	for (int n = 0; n < attysScan.getNAttysDevices(); n++) {
 		for (int i = 0; i < AttysComm::NCHANNELS; i++) {
 			if (attys_scope->
 				channel[n][i]->
@@ -523,9 +523,9 @@ void ScopeWindow::processData() {
 
 		// number of devices which re-connect at the moment
 		int nReconnecting = 0;
-		for (int n = 0; n < attysScan.nAttysDevices; n++) {
-			int hasSample = attysScan.attysComm[n]->hasSampleAvailable();
-			int isActive = attysScan.attysComm[n]->hasActiveConnection();
+		for (int n = 0; n < attysScan.getNAttysDevices(); n++) {
+			int hasSample = attysScan.getAttysComm(n)->hasSampleAvailable();
+			int isActive = attysScan.getAttysComm(n)->hasActiveConnection();
 			if (isActive) {
 				// we should have samples here but if not we return and
 				// wait for some
@@ -537,28 +537,28 @@ void ScopeWindow::processData() {
 				nReconnecting++;
 			}
 		}
-		if (nReconnecting == attysScan.nAttysDevices) {
+		if (nReconnecting == attysScan.getNAttysDevices()) {
 			if (nsamples > 0) {
 				reconnectFlag = 1;
 			}
 			return;
 		}
 
-		for (int n = 0; n < attysScan.nAttysDevices; n++) {
+		for (int n = 0; n < attysScan.getNAttysDevices(); n++) {
 			float* values;
-			if (attysScan.attysComm[n]->hasActiveConnection()) {
-				values = attysScan.attysComm[n]->getSampleFromBuffer();
+			if (attysScan.getAttysComm(n)->hasActiveConnection()) {
+				values = attysScan.getAttysComm(n)->getSampleFromBuffer();
 			}
 			else {
 				values = dummySample;
 			}
 			if (attys_scope->special[n][0]->getSpecial() == SPECIAL_TEMPERATURE) {
-				values[attysScan.attysComm[n]->INDEX_Analogue_channel_1] =
-					AttysComm::phys2temperature(values[attysScan.attysComm[n]->INDEX_Analogue_channel_1]);
+				values[attysScan.getAttysComm(n)->INDEX_Analogue_channel_1] =
+					AttysComm::phys2temperature(values[attysScan.getAttysComm(n)->INDEX_Analogue_channel_1]);
 			}
 			if (attys_scope->special[n][1]->getSpecial() == SPECIAL_TEMPERATURE) {
-				values[attysScan.attysComm[n]->INDEX_Analogue_channel_2] =
-					AttysComm::phys2temperature(values[attysScan.attysComm[n]->INDEX_Analogue_channel_2]);
+				values[attysScan.getAttysComm(n)->INDEX_Analogue_channel_2] =
+					AttysComm::phys2temperature(values[attysScan.getAttysComm(n)->INDEX_Analogue_channel_2]);
 			}
 			for (int i = 0; i < AttysComm::NCHANNELS; i++) {
 				unfiltDAQData[n][i] = values[i];
@@ -589,7 +589,7 @@ void ScopeWindow::processData() {
 
 		// enough averaged?
 		if (tb_counter <= 0) {
-			for (int n = 0; n < attysScan.nAttysDevices; n++) {
+			for (int n = 0; n < attysScan.getNAttysDevices(); n++) {
 				for (int i = 0; i < AttysComm::NCHANNELS; i++) {
 					adAvgBuffer[n][i] = adAvgBuffer[n][i] / tb_init;
 				}
@@ -600,7 +600,7 @@ void ScopeWindow::processData() {
 
 			// clear buffer
 			tb_counter = tb_init;
-			for (int n = 0; n < attysScan.nAttysDevices; n++) {
+			for (int n = 0; n < attysScan.getNAttysDevices(); n++) {
 				for (int i = 0; i < AttysComm::NCHANNELS; i++) {
 					adAvgBuffer[n][i] = 0;
 				}

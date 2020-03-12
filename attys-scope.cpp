@@ -79,20 +79,20 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	int row = 1;
 
-	channelLabel=new QPointer<QLabel>*[attysScan.nAttysDevices];
-	channel=new QPointer<Channel>*[attysScan.nAttysDevices];
-	hbox=new QPointer<QHBoxLayout>*[attysScan.nAttysDevices];
-	gain=new QPointer<Gain>*[attysScan.nAttysDevices];
-	highpass=new QPointer<Highpass>*[attysScan.nAttysDevices];
-	lowpass=new QPointer<Lowpass>*[attysScan.nAttysDevices];
-	bandstop = new QPointer<Bandstop>*[attysScan.nAttysDevices];
-	special = new QPointer<Special>*[attysScan.nAttysDevices];
-	current = new QPointer<Current>[attysScan.nAttysDevices];
-	specialLayout = new QPointer<QHBoxLayout>[attysScan.nAttysDevices];
+	channelLabel=new QPointer<QLabel>*[attysScan.getNAttysDevices()];
+	channel=new QPointer<Channel>*[attysScan.getNAttysDevices()];
+	hbox=new QPointer<QHBoxLayout>*[attysScan.getNAttysDevices()];
+	gain=new QPointer<Gain>*[attysScan.getNAttysDevices()];
+	highpass=new QPointer<Highpass>*[attysScan.getNAttysDevices()];
+	lowpass=new QPointer<Lowpass>*[attysScan.getNAttysDevices()];
+	bandstop = new QPointer<Bandstop>*[attysScan.getNAttysDevices()];
+	special = new QPointer<Special>*[attysScan.getNAttysDevices()];
+	current = new QPointer<Current>[attysScan.getNAttysDevices()];
+	specialLayout = new QPointer<QHBoxLayout>[attysScan.getNAttysDevices()];
 	
 
 	AttysComm attysCommTmp;
-	for(int n=0;n<attysScan.nAttysDevices;n++) {
+	for(int n=0;n<attysScan.getNAttysDevices();n++) {
 		channelLabel[n]=new QPointer<QLabel>[channels];
 		channel[n]=new QPointer<Channel>[channels];
 		hbox[n]=new QPointer<QHBoxLayout>[channels];
@@ -103,7 +103,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 		special[n] = new QPointer<Special>[2];
 		current[n] = new Current();
 		current[n]->setStyleSheet(styleSheetChannel);
-		allChLayout->addWidget(new QLabel(QString::asprintf("Attys #%d (%s)\n",n,attysScan.attysName[n])), row, 1);
+		allChLayout->addWidget(new QLabel(QString::asprintf("Attys #%d (%s)\n",n,attysScan.getAttysName(n))), row, 1);
 		row++;
 		specialLayout[n] = new QHBoxLayout;
 		for (int i = 0; i < 2; i++) {
@@ -274,7 +274,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	tbLayout->addWidget(tbInfoLineEdit);
 
 	sprintf(status, "Fs=%d Hz",
-		attysScan.attysComm[0]->getSamplingRateInHz());
+		attysScan.getAttysComm(0)->getSamplingRateInHz());
 	statusLabel = new QLabel(status);
 	tbLayout->addWidget(statusLabel);
 
@@ -364,7 +364,7 @@ void Attys_scope::readSettings(QSettings &settings) {
 
 	settings.beginGroup(SETTINGS_CHANNELS);
 
-	for (int n = 0; n < attysScan.nAttysDevices; n++) {
+	for (int n = 0; n < attysScan.getNAttysDevices(); n++) {
 		for (int i = 0; i < 2; i++) {
 			char tmpSp[256];
 			sprintf(tmpSp, SETTINGS_SPECIAL, n, i);
@@ -425,7 +425,7 @@ void Attys_scope::writeSettings(QSettings & settings)
 
 	int channels = AttysComm::NCHANNELS;
 	settings.beginGroup(SETTINGS_CHANNELS);
-	for (int n = 0; n<attysScan.nAttysDevices; n++) {
+	for (int n = 0; n<attysScan.getNAttysDevices(); n++) {
 		for (int i = 0; i<channels; i++) {
 			char tmp[128];
 
@@ -522,7 +522,7 @@ void Attys_scope::disableControls() {
 	filePushButton->setEnabled( false );
 	vers1dataCheckBox->setEnabled( false );
 	int channels = AttysComm::NCHANNELS;
-	for(int n=0;n<attysScan.nAttysDevices;n++) {
+	for(int n=0;n<attysScan.getNAttysDevices();n++) {
 		for(int i=0;i<channels;i++) {
 			channel[n][i]->setEnabled( false );
 		}
@@ -534,7 +534,7 @@ void Attys_scope::enableControls() {
 	filePushButton->setEnabled( true );
 	vers1dataCheckBox->setEnabled( true );
 	int channels = AttysComm::NCHANNELS;
-	for(int n=0;n<attysScan.nAttysDevices;n++) {
+	for(int n=0;n<attysScan.getNAttysDevices();n++) {
 		for(int i=0;i<channels;i++) {
 			channel[n][i]->setEnabled( true );
 		}
@@ -687,7 +687,7 @@ int main( int argc, char **argv )
 	}
 	
 	// none detected
-	if (attysScan.nAttysDevices<1) {
+	if (attysScan.getNAttysDevices()<1) {
 		printf("No Attys present or not paired.\n");
 		splash->showMessage("Cound not connect\nand/or no devices paired.");
 		a.processEvents();
