@@ -41,6 +41,7 @@ struct AttysScanMsg : public AttysScanListener {
 	QSplashScreen* splash = NULL;
 	QApplication* app = NULL;
         virtual void message(const int, const char * msg) {
+		fprintf(stderr,"%s\n",msg);
 		if (splash) {
 			splash->showMessage(msg);
 			if (app) {

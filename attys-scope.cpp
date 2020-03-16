@@ -677,20 +677,10 @@ int main( int argc, char **argv )
 	// see if we have any Attys!
 	int ret = attysScan.scan(AttysScan::MAX_ATTYS_DEVS);
 
-	// zero on success and non zero on failure
-	if (ret) {
-		a.processEvents();
-		std::this_thread::sleep_for(std::chrono::milliseconds(5000));
-		attysScan.unregisterCallback();
-		delete splash;
-		return ret;
-	}
-	
 	// none detected
-	if (attysScan.getNAttysDevices()<1) {
-		printf("No Attys present or not paired.\n");
-		splash->showMessage("Cound not connect\nand/or no devices paired.");
-		a.processEvents();
+	if ((0 != ret) || (attysScan.getNAttysDevices()<1)) {
+		char tmp[] = "Exiting.";
+		attysScanMsg.message(0,tmp);
 		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 		attysScan.unregisterCallback();
 		delete splash;
