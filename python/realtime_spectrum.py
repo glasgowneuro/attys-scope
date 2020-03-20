@@ -19,7 +19,7 @@ updateRate = 1000
 # Title for the Channel:
 titleChannel = "Frequency spectrum"
 # From data Column:
-channel = 7
+channel = 11
 
 # minimal frequency detectable in Hz
 minF = 1000.0 / updateRate
@@ -85,7 +85,7 @@ def update(data):
     return line
 
 # start the animation
-ani = animation.FuncAnimation(fig, update, interval=1000)
+ani = animation.FuncAnimation(fig, update, interval=2000)
 
 # show it
 plt.show()

@@ -29,28 +29,28 @@ UDP packets are always transmitted as CSV.
 
 ### Columns
 
-1. TIME
-2. RAW_AccX
-3. RAW_AccY
-4. RAW_AccZ
-5. RAW_MagX
-6. RAW_MagY
-7. RAW_MagZ
-8. RAW_CH1
-9. RAW_CH2
-10. RAW_DIO1
-11. RAW_DIO2 
-12. FILT_AccX
-13. FILT_AccY
-14. FILT_AccZ
-15. FILT_MagX
-16. FILT_MagY
-17. FILT_MagZ
-18. FILT_CH1
-19. FILT_CH2
-20. FILT_DIO1
-21. FILT_DIO2
-22. RAW_AccX of the 2nd Attys
+0. TIME
+1. RAW_AccX
+2. RAW_AccY
+3. RAW_AccZ
+4. RAW_MagX
+5. RAW_MagY
+6. RAW_MagZ
+7. RAW_CH1
+8. RAW_CH2
+9. RAW_DIO1
+10. RAW_DIO2 
+11. FILT_1
+12. FILT_2
+13. FILT_3
+14. FILT_4
+15. FILT_5
+16. FILT_6
+17. FILT_7
+18. FILT_8
+19. FILT_9
+20. FILT_10
+21. RAW_AccX of the 2nd Attys
 22. ...
 
 
