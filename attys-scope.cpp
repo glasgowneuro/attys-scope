@@ -29,15 +29,24 @@
 Attys_scope::Attys_scope(QWidget *parent,
 			 int ignoreSettings
 	) : QWidget( parent ) {
-	
+
+#ifndef __APPLE__
 	QFile style(":/QTDark.stylesheet");
 	style.open(QIODevice::ReadOnly);
 
 	setStyleSheet(style.readAll());
 	style.close();
+#endif
 	
         setAutoFillBackground(true);
-	
+
+#ifdef __APPLE__
+	char styleSheetCombo[] = "";
+	char styleSheetChannel[] = "";
+	char styleSheetGain[] = "";
+	char styleSheetLabel[] = "";
+	char styleSheetNoPadding[] = "";
+#else
 	// to the get the stuff a bit closer together
 	char styleSheetCombo[] = "padding-left:1px; padding-right:1px";
 #ifdef _WIN32
@@ -49,6 +58,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 #endif
 	char styleSheetLabel[] = "padding-left:0.5em; padding-right:1px";
 	char styleSheetNoPadding[] = "padding-left:1px; padding-right:1px; width:1em; font-family: courier;";
+#endif
 	char styleCheckBox[] = "QCheckBox::indicator {width: 2em; height: 2em;}";
 	char styleLineEdit[] = "width:1em;";
 	char styleProfile[] = "font-size:12px;";
