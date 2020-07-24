@@ -111,6 +111,7 @@ void ScopeWindow::startDAQ() {
 
 	for (int i = 0; i < attysScan.getNAttysDevices(); i++) {
 		if (attysScan.getAttysComm(i)) {
+			attysScan.getAttysComm(i)->setAdc_samplingrate_index(attys_scope->samplingRate->getSamplingRate());
 			attysScan.getAttysComm(i)->setBiasCurrent(attys_scope->current[i]->getCurrent());
 			int curr_ch1 = 0;
 			int curr_ch2 = 0;

@@ -283,10 +283,11 @@ Attys_scope::Attys_scope(QWidget *parent,
 	tbInfoLineEdit->setStyleSheet(styleLineEdit);
 	tbLayout->addWidget(tbInfoLineEdit);
 
-	sprintf(status, "Fs=%d Hz",
-		attysScan.getAttysComm(0)->getSamplingRateInHz());
-	statusLabel = new QLabel(status);
-	tbLayout->addWidget(statusLabel);
+	samplingRate = new SamplingRate();
+	connect(samplingRate, SIGNAL(signalRestart()),
+		this, SLOT(specialChanged()));
+	samplingRate->setStyleSheet(styleSheetChannel);
+	tbLayout->addWidget(samplingRate);
 
 	tbgrp->setLayout(tbLayout);
 	restLayout->addWidget(tbgrp);
@@ -361,6 +362,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 #define BANDSTOP_SETTING_FORMAT "bandstop_dev%09d_ch%09d"
 #define GAIN_SETTING_FORMAT "gain_mapping_dev%09d_ch%09d"
 #define SETTINGS_SAVE_FILTERED "header"
+#define SETTINGS_SAMPLING_RATE "fs"
 
 void Attys_scope::readSettings(QSettings &settings) {
 	int channels = AttysComm::NCHANNELS;
@@ -373,6 +375,8 @@ void Attys_scope::readSettings(QSettings &settings) {
 	settings.endGroup();
 
 	settings.beginGroup(SETTINGS_CHANNELS);
+
+	samplingRate->setSamplingRate(settings.value(SETTINGS_SAMPLING_RATE,AttysCommBase::ADC_RATE_250HZ).toInt());
 
 	for (int n = 0; n < attysScan.getNAttysDevices(); n++) {
 		for (int i = 0; i < 2; i++) {
@@ -435,6 +439,9 @@ void Attys_scope::writeSettings(QSettings & settings)
 
 	int channels = AttysComm::NCHANNELS;
 	settings.beginGroup(SETTINGS_CHANNELS);
+
+	settings.setValue(SETTINGS_SAMPLING_RATE,samplingRate->getSamplingRate());
+	
 	for (int n = 0; n<attysScan.getNAttysDevices(); n++) {
 		for (int i = 0; i<channels; i++) {
 			char tmp[128];

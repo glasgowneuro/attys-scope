@@ -26,6 +26,7 @@ class Attys_scope;
 #include "lowpass.h"
 #include "bandstop.h"
 #include "recbutton.h"
+#include "samplingrate.h"
 #include "AttysComm.h"
 #include "AttysScan.h"
 
@@ -99,7 +100,11 @@ public:
 	**/
 	QPointer<Current>* current;
 
-
+	/**
+	 * Global sampling rate setting
+	 **/
+	QPointer<SamplingRate> samplingRate;
+	
 	/**
  * channel label
  **/
