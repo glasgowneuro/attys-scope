@@ -97,7 +97,8 @@ Attys_scope::Attys_scope(QWidget *parent,
 	special = new QPointer<Special>*[attysScan.getNAttysDevices()];
 	current = new QPointer<Current>[attysScan.getNAttysDevices()];
 	specialLayout = new QPointer<QHBoxLayout>[attysScan.getNAttysDevices()];
-	
+
+	int isHighSpeed = 0;
 
 	AttysComm attysCommTmp;
 	for(int n=0;n<attysScan.getNAttysDevices();n++) {
@@ -111,6 +112,9 @@ Attys_scope::Attys_scope(QWidget *parent,
 		special[n] = new QPointer<Special>[2];
 		current[n] = new Current();
 		current[n]->setStyleSheet(styleSheetChannel);
+		if (strstr(attysScan.getAttysName(n),"ATTYS2") != NULL ) {
+			isHighSpeed = isHighSpeed || 1;
+		}
 		allChLayout->addWidget(new QLabel(QString::asprintf("Attys #%d (%s)\n",n,attysScan.getAttysName(n))), row, 1);
 		row++;
 		specialLayout[n] = new QHBoxLayout;
@@ -281,7 +285,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	tbInfoLineEdit->setStyleSheet(styleLineEdit);
 	tbLayout->addWidget(tbInfoLineEdit);
 
-	samplingRate = new SamplingRate();
+	samplingRate = new SamplingRate(isHighSpeed);
 	connect(samplingRate, SIGNAL(signalRestart()),
 		this, SLOT(specialChanged()));
 	samplingRate->setStyleSheet(styleSheetChannel);
@@ -323,8 +327,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 						QSizePolicy::Expanding ) );
 	allChScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-	sprintf(status, "%d Attys", attysScan.getNAttysDevices());
-	statusLabel = new QLabel(status);
+	statusLabel = new QLabel();
 	controlLayout->addWidget(statusLabel);
 
 	attysScopeWindow->setSizePolicy(QSizePolicy(QSizePolicy::Expanding,
@@ -345,6 +348,13 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	tb_us = 1000000 / attysScopeWindow->getActualSamplingRate();
 	changeTB();
+
+	if (attysScopeWindow->getActualSamplingRate() > 250) {
+		sprintf(status, "%d Attys -- Magnetometer is off at fs>250Hz", attysScan.getNAttysDevices());		
+	} else {
+		sprintf(status, "%d Attys", attysScan.getNAttysDevices());
+	}
+	statusLabel->setText(status);
 }
 
 

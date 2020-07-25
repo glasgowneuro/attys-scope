@@ -17,7 +17,7 @@ public:
     /**
      * constructor
      **/
-	SamplingRate();
+	SamplingRate(int highSpeed);
 
 	const int samplingRateMapping[3] = {
 		AttysComm::ADC_RATE_125HZ,

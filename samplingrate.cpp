@@ -4,10 +4,12 @@
 #include<stdio.h>
 
 
-SamplingRate::SamplingRate() : QComboBox() {
+SamplingRate::SamplingRate(int attys2) : QComboBox() {
 	addItem(tr("125Hz"),SAMPLING_RATE_125HZ);
 	addItem(tr("250Hz"),SAMPLING_RATE_250HZ);
-	addItem(tr("500Hz"),SAMPLING_RATE_500HZ);
+	if (attys2) {
+		addItem(tr("500Hz"),SAMPLING_RATE_500HZ);
+	}
 
 	connect(this,
 		SIGNAL( activated(int) ),
