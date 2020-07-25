@@ -98,7 +98,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	current = new QPointer<Current>[attysScan.getNAttysDevices()];
 	specialLayout = new QPointer<QHBoxLayout>[attysScan.getNAttysDevices()];
 
-	int isHighSpeed = 0;
+	bool isHighSpeed = 0;
 
 	AttysComm attysCommTmp;
 	for(int n=0;n<attysScan.getNAttysDevices();n++) {
@@ -113,7 +113,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 		current[n] = new Current();
 		current[n]->setStyleSheet(styleSheetChannel);
 		if (strstr(attysScan.getAttysName(n),"ATTYS2") != NULL ) {
-			isHighSpeed = isHighSpeed || 1;
+			isHighSpeed = isHighSpeed || true;
 		}
 		allChLayout->addWidget(new QLabel(QString::asprintf("Attys #%d (%s)\n",n,attysScan.getAttysName(n))), row, 1);
 		row++;
