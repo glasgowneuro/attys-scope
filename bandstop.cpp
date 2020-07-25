@@ -3,15 +3,7 @@
 #include<qfont.h>
 #include<stdio.h>
 
-Bandstop::Bandstop(float _samplingrate, float _center, float _width) : QComboBox() {
-	frequency = _center;
-	samplingrate = _samplingrate;
-	if (_width > 0) {
-		width = _width;
-	}
-	else {
-		width = 5;
-	}
+Bandstop::Bandstop() : QComboBox() {
 
 	addItem(tr("off"),0);
 	addItem(tr("50Hz"), 50);
@@ -22,10 +14,6 @@ Bandstop::Bandstop(float _samplingrate, float _center, float _width) : QComboBox
 		this,
 		SLOT( setFrequencyIndex(int) ) );
 
-	setFrequency(_center);
-
-	//	int width = minimumSizeHint().width();
-	//	setMinimumWidth(width * 1.1);
 }
 
 void Bandstop::setFrequencyIndex ( int index ) {

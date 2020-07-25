@@ -12,27 +12,32 @@
 #define INERTIA_FOR_DC_DETECTION 1000
 
 class Highpass : public QComboBox {
-
-    Q_OBJECT
-
+	
+	Q_OBJECT
+	
 public:
     /**
      * constructor
      **/
-Highpass(float _samplingrate, float cutoff = -1);
+Highpass();
 
 private slots:
     void setFrequencyIndex(int i);
 
 private:
-    float frequency;
-	float samplingrate;
-	int dcCtr;
+    float frequency = 0;
+    float samplingrate = 250;
+    int dcCtr = 10;
 
 public:
     inline float getFrequency() {return frequency;};
+	
+    void setFrequency(float f);
 
-	void setFrequency(float f);
+    void setSamplingRate(float r) {
+	    samplingrate = r;
+	    dcCtr = r*10;
+    };
 
 private:
 

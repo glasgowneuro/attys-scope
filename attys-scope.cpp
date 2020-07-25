@@ -159,21 +159,21 @@ Attys_scope::Attys_scope(QWidget *parent,
 			QPointer<QLabel> hp = new QLabel("HP:");
 			hp->setStyleSheet(styleSheetLabel);
 			hbox[n][i]->addWidget(hp);
-			highpass[n][i] = new Highpass(attysScopeWindow->getActualSamplingRate(),-1);
+			highpass[n][i] = new Highpass();
 			highpass[n][i] ->setStyleSheet(styleSheetCombo);
 			hbox[n][i]->addWidget(highpass[n][i]);
 
 			QPointer<QLabel> lp = new QLabel("LP:");
 			lp->setStyleSheet(styleSheetLabel);
 			hbox[n][i]->addWidget(lp);
-			lowpass[n][i] = new Lowpass(attysScopeWindow->getActualSamplingRate(),0);
+			lowpass[n][i] = new Lowpass();
 			lowpass[n][i] ->setStyleSheet(styleSheetCombo);
 			hbox[n][i]->addWidget(lowpass[n][i]);
 
 			QPointer<QLabel> bs = new QLabel("BS:");
 			bs->setStyleSheet(styleSheetLabel);
 			hbox[n][i]->addWidget(bs);
-			bandstop[n][i] = new Bandstop(attysScopeWindow->getActualSamplingRate(), 0);
+			bandstop[n][i] = new Bandstop();
 			bandstop[n][i]->setStyleSheet(styleSheetCombo);
 			hbox[n][i]->addWidget(bandstop[n][i]);
 
@@ -322,7 +322,6 @@ Attys_scope::Attys_scope(QWidget *parent,
 			QSettings::UserScope,
 			ATTYS_STRING,
 			PROGRAM_NAME);
-
 		readSettings(settings);
 	}
 
@@ -395,16 +394,19 @@ void Attys_scope::readSettings(QSettings &settings) {
 			sprintf(tmpCh, HIGHPASS_SETTING_FORMAT, n, i);
 			float fhp = settings.value(tmpCh, -1.0).toFloat();
 			//_RPT2(0, "hp %d= %f\n", i,fhp);
+			highpass[n][i]->setSamplingRate(samplingRate->getSamplingRateInHz());
 			highpass[n][i]->setFrequency(fhp);
 
 			sprintf(tmpCh, LOWPASS_SETTING_FORMAT, n, i);
 			float flp = settings.value(tmpCh, 0.0).toFloat();
 			//_RPT2(0, "lp %d= %f\n", i,flp);
+			lowpass[n][i]->setSamplingRate(samplingRate->getSamplingRateInHz());
 			lowpass[n][i]->setFrequency(flp);
 
 			sprintf(tmpCh, BANDSTOP_SETTING_FORMAT, n, i);
 			float fbs = settings.value(tmpCh, 0.0).toFloat();
 			//_RPT2(0, "lp %d= %f\n", i,flp);
+			bandstop[n][i]->setSamplingRate(samplingRate->getSamplingRateInHz());
 			bandstop[n][i]->setFrequency(fbs);
 
 			sprintf(tmpCh, GAIN_SETTING_FORMAT, n, i);

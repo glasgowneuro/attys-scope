@@ -42,6 +42,10 @@ public:
 	int getSamplingRateIndex();
 
 	void setSamplingRate(int _sampingRate);
+
+	int getSamplingRateInHz() {
+		return AttysCommBase::ADC_SAMPLINGRATE[samplingRate];
+	}
 };
 
 #endif

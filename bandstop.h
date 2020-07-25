@@ -15,26 +15,26 @@ public:
     /**
      * constructor
      **/
-Bandstop(float _samplingrate, float _center, float _width = 5);
+    Bandstop();
 
 private slots:
     void setFrequencyIndex(int i);
 
 private:
-    float frequency;
-	float samplingrate;
-	float width;
+    float frequency = 0;
+    float samplingrate = 250;
+    float width = 5;
 
 public:
     inline float getFrequency() {return frequency;};
-
-	void setFrequency(float f);
+    void setFrequency(float f);
+    void setSamplingRate(float r) {samplingrate = r;}; 
 
 private:
-	Iir::Butterworth::BandStop<IIRORDER> bs;
+    Iir::Butterworth::BandStop<IIRORDER> bs;
 
 public:
-	float filter(float v);
+    float filter(float v);
 
 };
 

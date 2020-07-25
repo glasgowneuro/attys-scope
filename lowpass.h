@@ -15,25 +15,25 @@ public:
     /**
      * constructor
      **/
-Lowpass(float _samplingrate, float cutoff = 0);
+Lowpass();
 
 private slots:
     void setFrequencyIndex(int i);
 
 private:
-    float frequency;
-	float samplingrate;
+    float frequency = 0;
+    float samplingrate = 250;
 
 public:
     inline float getFrequency() {return frequency;};
-
-	void setFrequency(float f);
+    void setFrequency(float f);
+    void setSamplingRate(float r) { samplingrate = r; };
 
 private:
-	Iir::Butterworth::LowPass<LPORDER> lp;
+    Iir::Butterworth::LowPass<LPORDER> lp;
 
 public:
-	float filter(float v);
+    float filter(float v);
 
 };
 

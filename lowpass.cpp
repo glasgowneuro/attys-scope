@@ -4,10 +4,7 @@
 #include<stdio.h>
 
 
-Lowpass::Lowpass(float _samplingrate, float cutoff) : QComboBox() {
-
-	frequency = cutoff;
-	samplingrate = _samplingrate;
+Lowpass::Lowpass() : QComboBox() {
 
 	addItem(tr("off"),0);
 	addItem(tr("1Hz"), 1);
@@ -25,10 +22,7 @@ Lowpass::Lowpass(float _samplingrate, float cutoff) : QComboBox() {
 		this,
 		SLOT( setFrequencyIndex(int) ) );
 
-	setFrequency(cutoff);
-	
-	//	int width = minimumSizeHint().width();
-	//	setMinimumWidth(width);
+	setCurrentIndex(0);
 }
 
 void Lowpass::setFrequencyIndex ( int index ) {

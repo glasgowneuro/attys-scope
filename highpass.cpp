@@ -4,12 +4,9 @@
 #include<stdio.h>
 
 
-Highpass::Highpass(float _samplingrate, float cutoff) : QComboBox() {
+Highpass::Highpass() : QComboBox() {
 
-	frequency = cutoff;
-	samplingrate = _samplingrate;
 	dcValue = 0;
-	dcCtr = _samplingrate*10;
 
 	setMinimumWidth ( fontMetrics().width("1000Hz_") );
 
@@ -28,10 +25,7 @@ Highpass::Highpass(float _samplingrate, float cutoff) : QComboBox() {
 		this,
 		SLOT( setFrequencyIndex(int) ) );
 
-	setFrequency(cutoff);
-
-	//	int width = minimumSizeHint().width();
-	//	setMinimumWidth(width);
+	setCurrentIndex(0);
 }
 
 void Highpass::setFrequencyIndex ( int index ) {
