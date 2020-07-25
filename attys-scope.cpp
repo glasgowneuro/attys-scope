@@ -230,7 +230,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	recLayout->addWidget(new QLabel(" "));
 
-	vers1dataCheckBox = new QCheckBox("&V1.x fmt");
+	vers1dataCheckBox = new QCheckBox("V1.x fmt");
 	vers1dataCheckBox->setStyleSheet("font-size: 10pt;");
 	vers1dataCheckBox->setChecked(0);
 	vers1dataCheckBox->setEnabled(true);
@@ -251,7 +251,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	udpLineEdit->setStyleSheet(styleLineEdit);
 	udpLayout->addWidget(udpLineEdit);
 
-	udpCheckBox = new QCheckBox("&Broadcast");
+	udpCheckBox = new QCheckBox("Broadcast");
 	udpCheckBox->setSizePolicy(QSizePolicy(QSizePolicy::Fixed,
 		QSizePolicy::Fixed));
 	connect(udpCheckBox, SIGNAL(clicked()),
@@ -269,13 +269,13 @@ Attys_scope::Attys_scope(QWidget *parent,
 	QLabel tbLabel("Timebase:");
 	tbLayout->addWidget(&tbLabel);
 
-	tbIncPushButton = new QPushButton( "&slower" );
+	tbIncPushButton = new QPushButton( "slower" );
 
 	tbgrp->connect(tbIncPushButton, SIGNAL( clicked() ),
 		this, SLOT( incTbEvent() ) );
 	tbLayout->addWidget(tbIncPushButton);
 
-	tbDecPushButton = new QPushButton( "&faster" );
+	tbDecPushButton = new QPushButton( "faster" );
 	tbgrp->connect(tbDecPushButton, SIGNAL( clicked() ),
 		       this, SLOT( decTbEvent() ) );
 	tbLayout->addWidget(tbDecPushButton);
