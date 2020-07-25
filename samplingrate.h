@@ -32,8 +32,7 @@ signals:
 	void signalRestart();
 
 private:
-	int samplingRate;
-	std::string* samplingRateLabels;
+	int samplingRate = AttysCommBase::ADC_RATE_250HZ;
 	
 public:
 	inline int getSamplingRate() {return samplingRate;};

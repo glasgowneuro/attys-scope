@@ -14,6 +14,7 @@ SamplingRate::SamplingRate() : QComboBox() {
 		this,
 		SLOT( samplingRateChanged(int) ) );
 
+	setSamplingRate(AttysComm::ADC_RATE_250HZ);
 }
 
 void SamplingRate::samplingRateChanged ( int index ) {

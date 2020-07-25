@@ -46,7 +46,7 @@ signals:
 	void signalRestart();
 
 private:
-	int special;
+	int special = 0;
 	std::string* specialLabels;
 	
 public:

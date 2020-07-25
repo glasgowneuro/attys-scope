@@ -67,8 +67,6 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	int channels = AttysComm::NCHANNELS;
 
-	tb_us = 1000000 / attysScopeWindow->getActualSamplingRate();
-
 	// this the main layout which contains two sub-windows:
 	// the control window and the oscilloscope window
 	mainLayout = new QHBoxLayout;
@@ -334,8 +332,6 @@ Attys_scope::Attys_scope(QWidget *parent,
 	mainLayout->addLayout(controlLayout);
 	mainLayout->addWidget(attysScopeWindow);
 
-	changeTB();
-
 	if (!ignoreSettings) {
 		QSettings settings(QSettings::IniFormat,
 			QSettings::UserScope,
@@ -346,6 +342,9 @@ Attys_scope::Attys_scope(QWidget *parent,
 	}
 
 	attysScopeWindow->startDAQ();
+
+	tb_us = 1000000 / attysScopeWindow->getActualSamplingRate();
+	changeTB();
 }
 
 
@@ -665,9 +664,19 @@ void Attys_scope::specialChanged() {
 };
 
 
+void helptxt(char *name) {
+	fprintf(stderr,"Help: use '%s -i' or '%s /i' to disable reading the configuration.\n",name,name);
+	exit(1);
+}
+
 
 int main( int argc, char **argv )
 {
+	for(int i = 0;i<argc;i++) {
+		if (strstr(argv[i],"-h")) helptxt(argv[0]);
+		if (strstr(argv[i],"--help")) helptxt(argv[0]);
+	}
+
 	// default values
 	int ignoreSettings = 0;
 

@@ -21,6 +21,7 @@ Special::Special() : QComboBox() {
 		this,
 		SLOT( specialChanged(int) ) );
 
+	setSpecial(0);
 }
 
 void Special::specialChanged ( int index ) {
