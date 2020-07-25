@@ -5,6 +5,7 @@
 
 
 SamplingRate::SamplingRate(int attys2) : QComboBox() {
+	isHighSpeed = attys2;
 	addItem(tr("125Hz"),SAMPLING_RATE_125HZ);
 	addItem(tr("250Hz"),SAMPLING_RATE_250HZ);
 	if (attys2) {
@@ -25,8 +26,10 @@ void SamplingRate::samplingRateChanged ( int index ) {
 }
 
 void SamplingRate::setSamplingRate( int c ) {
+	if (c < count()) {
 		samplingRate = c;
 		setCurrentIndex(c);
+	}
 }
 
 int SamplingRate::getSamplingRateIndex() {

@@ -33,6 +33,8 @@ signals:
 
 private:
 	int samplingRate = AttysCommBase::ADC_RATE_250HZ;
+
+	int isHighSpeed = 0;
 	
 public:
 	inline int getSamplingRate() {return samplingRate;};
