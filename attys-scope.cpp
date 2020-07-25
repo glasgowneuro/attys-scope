@@ -201,13 +201,9 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	// now we create another layout which contains all the remaining controls
 	restLayout = new QVBoxLayout;
-	// the corresponding box which contains all the controls
-	restGroup = new QGroupBox;
-	restGroup->setAttribute(Qt::WA_DeleteOnClose, false);
+	restLayout->setSpacing(10);
+	restLayout->setMargin(10);
 
-	// group for the record stuff
-	recGroupBox = new QGroupBox();
-	recGroupBox->setAttribute(Qt::WA_DeleteOnClose, false);
 	recLayout = new QHBoxLayout();
 
 	recLabel = new QLabel("Write to file:");
@@ -236,16 +232,12 @@ Attys_scope::Attys_scope(QWidget *parent,
 	vers1dataCheckBox->setEnabled(true);
 	recLayout->addWidget(vers1dataCheckBox);
 
-	recGroupBox->setLayout(recLayout);
-	restLayout->addWidget(recGroupBox);
+	restLayout->addLayout(recLayout);
 
 
-	// group for the UDP stuff
-	udpGroupBox = new QGroupBox();
-	udpGroupBox->setAttribute(Qt::WA_DeleteOnClose, false);
 	udpLayout = new QHBoxLayout();
 
-	udpLayout->addWidget(new QLabel("UDP broadcast on port "));
+	udpLayout->addWidget(new QLabel("UDP broadcast on port: "));
 
 	udpLineEdit = new QLineEdit("65000");
 	udpLineEdit->setStyleSheet(styleLineEdit);
@@ -258,29 +250,26 @@ Attys_scope::Attys_scope(QWidget *parent,
 		this, SLOT(udpTransmit()));
 	udpLayout->addWidget(udpCheckBox);
 
-	udpGroupBox->setLayout(udpLayout);
-	restLayout->addWidget(udpGroupBox);
+	restLayout->addLayout(udpLayout);
 
-	// group for the time base
-	tbgrp = new QGroupBox();
-	tbgrp->setAttribute(Qt::WA_DeleteOnClose, false);
 	tbLayout = new QHBoxLayout;
 
-	QLabel tbLabel("Timebase:");
-	tbLayout->addWidget(&tbLabel);
+	tbLabel = new QLabel("Timebase: ");
+	tbLayout->addWidget(tbLabel);
 
 	tbIncPushButton = new QPushButton( "slower" );
 
-	tbgrp->connect(tbIncPushButton, SIGNAL( clicked() ),
-		this, SLOT( incTbEvent() ) );
+	connect(tbIncPushButton, SIGNAL( clicked() ),
+		       this, SLOT( incTbEvent() ) );
+	
 	tbLayout->addWidget(tbIncPushButton);
 
 	tbDecPushButton = new QPushButton( "faster" );
-	tbgrp->connect(tbDecPushButton, SIGNAL( clicked() ),
-		       this, SLOT( decTbEvent() ) );
+	connect(tbDecPushButton, SIGNAL( clicked() ),
+		this, SLOT( decTbEvent() ) );
 	tbLayout->addWidget(tbDecPushButton);
 
-	tbInfoLineEdit = new QLineEdit(tbgrp);
+	tbInfoLineEdit = new QLineEdit();
 	tbInfoLineEdit->setReadOnly(true);
 	tbInfoLineEdit->setStyleSheet(styleLineEdit);
 	tbLayout->addWidget(tbInfoLineEdit);
@@ -291,14 +280,11 @@ Attys_scope::Attys_scope(QWidget *parent,
 	samplingRate->setStyleSheet(styleSheetChannel);
 	tbLayout->addWidget(samplingRate);
 
-	tbgrp->setLayout(tbLayout);
-	restLayout->addWidget(tbgrp);
+	restLayout->addLayout(tbLayout);
 
-	statusgrp = new QGroupBox;
-	statusgrp->setAttribute(Qt::WA_DeleteOnClose, false);
 	statusLayout = new QHBoxLayout;
 
-	statusLayout->addWidget(new QLabel("Config:"));
+	statusLayout->addWidget(new QLabel("Config: "));
 	savePushButton = new QPushButton("save");
 	savePushButton->setStyleSheet(styleProfile);
 	connect(savePushButton, SIGNAL(clicked()),
@@ -310,13 +296,9 @@ Attys_scope::Attys_scope(QWidget *parent,
 		this, SLOT(slotLoadSettings()));
 	statusLayout->addWidget(loadPushButton);
 
-	statusgrp->setLayout(statusLayout);
-	restLayout->addWidget(statusgrp);
+	restLayout->addLayout(statusLayout);
 
-	restGroup->setLayout(restLayout);
-	controlLayout->addWidget(restGroup);
-	restGroup->setSizePolicy ( QSizePolicy(QSizePolicy::Fixed,
-						QSizePolicy::Fixed ) );
+	controlLayout->addLayout(restLayout);
 
 	attysScopeWindow->setMinimumWidth ( 500 );
 	attysScopeWindow->setMinimumHeight ( 200 );

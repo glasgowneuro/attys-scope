@@ -61,6 +61,7 @@ QPushButton {
 }
 
 QCheckBox, QRadioButton {
+	background-color: rgb(39,39,39);
 	border: none;
 }
 

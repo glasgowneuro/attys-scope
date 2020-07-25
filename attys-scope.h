@@ -261,21 +261,17 @@ private:
 
 	QPointer<QVBoxLayout> restLayout;
 
-	QPointer<QGroupBox> restGroup;
-
-	QPointer<QGroupBox> tbgrp;
 	QPointer<QHBoxLayout> tbLayout;
 
-	QPointer<QGroupBox> statusgrp;
 	QPointer<QHBoxLayout> statusLayout;
 
-	QPointer<QGroupBox> recGroupBox;
 	QPointer<QHBoxLayout> recLayout;
 
-	QPointer<QGroupBox> udpGroupBox;
 	QPointer<QHBoxLayout> udpLayout;
 
 	QPointer<QLabel> recLabel;
+
+	QPointer<QLabel> tbLabel;
 
 	QFont* voltageFont;
 	QFont* tbFont;
