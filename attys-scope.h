@@ -31,7 +31,7 @@ class Attys_scope;
 #include "AttysScan.h"
 
 // version number
-#define VERSION "2.1.0"
+#define VERSION "2.1.1"
 
 #define ATTYS_STRING "ATTYS"
 #define PROGRAM_NAME "attys-scope"
@@ -260,6 +260,8 @@ private:
 	QPointer<QHBoxLayout> mainLayout;
 
 	QPointer<QVBoxLayout> restLayout;
+
+	QPointer<QGroupBox> restGroup;
 
 	QPointer<QHBoxLayout> tbLayout;
 

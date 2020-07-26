@@ -203,8 +203,15 @@ Attys_scope::Attys_scope(QWidget *parent,
 	restLayout = new QVBoxLayout;
 	restLayout->setSpacing(10);
 	restLayout->setMargin(10);
+	restLayout->setSizeConstraint(QLayout::SetFixedSize);
 
-	recLayout = new QHBoxLayout();
+	restGroup = new QGroupBox;
+	restGroup->setAttribute(Qt::WA_DeleteOnClose, false);
+	restGroup->setLayout(restLayout);
+	restGroup->setSizePolicy(QSizePolicy(QSizePolicy::Fixed,
+		QSizePolicy::Expanding));
+
+	recLayout = new QHBoxLayout(restGroup);
 
 	recLabel = new QLabel("Write to file:");
 	recLayout->addWidget(recLabel);
@@ -235,7 +242,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	restLayout->addLayout(recLayout);
 
 
-	udpLayout = new QHBoxLayout();
+	udpLayout = new QHBoxLayout(restGroup);
 
 	udpLayout->addWidget(new QLabel("UDP broadcast on port: "));
 
@@ -252,7 +259,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	restLayout->addLayout(udpLayout);
 
-	tbLayout = new QHBoxLayout;
+	tbLayout = new QHBoxLayout(restGroup);
 
 	tbLabel = new QLabel("Timebase: ");
 	tbLayout->addWidget(tbLabel);
@@ -282,7 +289,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	restLayout->addLayout(tbLayout);
 
-	statusLayout = new QHBoxLayout;
+	statusLayout = new QHBoxLayout(restGroup);
 
 	statusLayout->addWidget(new QLabel("Config: "));
 	savePushButton = new QPushButton("save");
@@ -298,7 +305,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	restLayout->addLayout(statusLayout);
 
-	controlLayout->addLayout(restLayout);
+	controlLayout->addWidget(restGroup);
 
 	attysScopeWindow->setMinimumWidth ( 500 );
 	attysScopeWindow->setMinimumHeight ( 200 );
