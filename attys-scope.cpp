@@ -60,7 +60,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	char styleSheetNoPadding[] = "padding-left:1px; padding-right:1px; width:1em; font-family: courier;";
 #endif
 	char styleCheckBox[] = "QCheckBox::indicator {width: 2em; height: 2em;}";
-	char styleLineEdit[] = "width:1em;";
+	char styleLineEdit[] = "";
 	char styleProfile[] = "font-size:12px;";
 
 	attysScopeWindow=new ScopeWindow(this);
@@ -211,7 +211,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	restGroup->setSizePolicy(QSizePolicy(QSizePolicy::Fixed,
 		QSizePolicy::Expanding));
 
-	recLayout = new QHBoxLayout(restGroup);
+	recLayout = new QHBoxLayout();
 
 	recLabel = new QLabel("Write to file:");
 	recLayout->addWidget(recLabel);
@@ -242,7 +242,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	restLayout->addLayout(recLayout);
 
 
-	udpLayout = new QHBoxLayout(restGroup);
+	udpLayout = new QHBoxLayout();
 
 	udpLayout->addWidget(new QLabel("UDP broadcast on port: "));
 
@@ -259,7 +259,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	restLayout->addLayout(udpLayout);
 
-	tbLayout = new QHBoxLayout(restGroup);
+	tbLayout = new QHBoxLayout();
 
 	tbLabel = new QLabel("Timebase: ");
 	tbLayout->addWidget(tbLabel);
@@ -289,7 +289,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	restLayout->addLayout(tbLayout);
 
-	statusLayout = new QHBoxLayout(restGroup);
+	statusLayout = new QHBoxLayout();
 
 	statusLayout->addWidget(new QLabel("Config: "));
 	savePushButton = new QPushButton("save");
