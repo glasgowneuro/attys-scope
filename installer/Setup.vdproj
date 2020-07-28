@@ -51,7 +51,19 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_2D56EF87B055411C92C089C2A9B9071D"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_2D9EC1C2E07842A697CCD3BCAD3ED908"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_2E13BE0834574B13826D4FDF99B62CAF"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -135,6 +147,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_6CEF302F7E69460EB91558BCCAD044F5"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_6EE537FE323E4E709332B70C9C897F07"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -190,12 +208,6 @@
         "Entry"
         {
         "MsmKey" = "8:_979C0C768E4B4AC99FC046C25816D025"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_9CAE0C81D46E40A7A0BA52A5DDAAB719"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -291,13 +303,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_EA64864C5CE74805A2000F94BC73452C"
+        "MsmKey" = "8:_E9A81C8337354BB19CF60BD1C962D2F1"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_F37FFFA6EBA44F85A95EFFE0A2C8C1CF"
+        "MsmKey" = "8:_EA64864C5CE74805A2000F94BC73452C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -526,12 +538,52 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2D56EF87B055411C92C089C2A9B9071D"
+            {
+            "SourcePath" = "8:..\\release\\icuuc58.dll"
+            "TargetName" = "8:icuuc58.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_989FC54179EC48EDA466EDD4472D3D00"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2D9EC1C2E07842A697CCD3BCAD3ED908"
             {
             "SourcePath" = "8:..\\release\\translations\\qt_pl.qm"
             "TargetName" = "8:qt_pl.qm"
             "Tag" = "8:"
             "Folder" = "8:_0F6158A6E45F4891973B0B59ABF4C871"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2E13BE0834574B13826D4FDF99B62CAF"
+            {
+            "SourcePath" = "8:..\\release\\icudt58.dll"
+            "TargetName" = "8:icudt58.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_989FC54179EC48EDA466EDD4472D3D00"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -766,6 +818,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6CEF302F7E69460EB91558BCCAD044F5"
+            {
+            "SourcePath" = "8:..\\release\\styles\\qwindowsvistastyle.dll"
+            "TargetName" = "8:qwindowsvistastyle.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_20CA1C405AE54BEEB6EDE24766406160"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6EE537FE323E4E709332B70C9C897F07"
             {
             "SourcePath" = "8:..\\release\\translations\\qt_fi.qm"
@@ -952,26 +1024,6 @@
             "TargetName" = "8:windowsprintersupport.dll"
             "Tag" = "8:"
             "Folder" = "8:_46391AAED90049979C9FD4E0212E7EC1"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9CAE0C81D46E40A7A0BA52A5DDAAB719"
-            {
-            "SourcePath" = "8:..\\release\\styles\\qwindowsvistastyle.dll"
-            "TargetName" = "8:qwindowsvistastyle.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_989FC54179EC48EDA466EDD4472D3D00"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1286,12 +1338,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EA64864C5CE74805A2000F94BC73452C"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E9A81C8337354BB19CF60BD1C962D2F1"
             {
-            "SourcePath" = "8:..\\release\\translations\\qt_uk.qm"
-            "TargetName" = "8:qt_uk.qm"
+            "SourcePath" = "8:..\\release\\icuin58.dll"
+            "TargetName" = "8:icuin58.dll"
             "Tag" = "8:"
-            "Folder" = "8:_0F6158A6E45F4891973B0B59ABF4C871"
+            "Folder" = "8:_989FC54179EC48EDA466EDD4472D3D00"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1306,12 +1358,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F37FFFA6EBA44F85A95EFFE0A2C8C1CF"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EA64864C5CE74805A2000F94BC73452C"
             {
-            "SourcePath" = "8:..\\release\\styles\\qwindowsvistastyle.dll"
-            "TargetName" = "8:qwindowsvistastyle.dll"
+            "SourcePath" = "8:..\\release\\translations\\qt_uk.qm"
+            "TargetName" = "8:qt_uk.qm"
             "Tag" = "8:"
-            "Folder" = "8:_20CA1C405AE54BEEB6EDE24766406160"
+            "Folder" = "8:_0F6158A6E45F4891973B0B59ABF4C871"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
