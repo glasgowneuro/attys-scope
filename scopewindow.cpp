@@ -389,30 +389,30 @@ void ScopeWindow::stopRec() {
 void ScopeWindow::writeFile() {
 	if (!rec_file) return;
 	if (attys_scope->vers1dataCheckBox->isChecked()) {
-		fprintf(rec_file, "%f", ((float)nsamples) / ((float)attysScan.getAttysComm(0)->getSamplingRateInHz()));
+		fprintf(rec_file, "%e", ((float)nsamples) / ((float)attysScan.getAttysComm(0)->getSamplingRateInHz()));
 		for (int n = 0; n < attysScan.getNAttysDevices(); n++) {
 			for (int i = 0; i < AttysComm::INDEX_Analogue_channel_2; i++) {
 				float phy = unfiltDAQData[n][i];
-				fprintf(rec_file, "%c%f", separator, phy);
+				fprintf(rec_file, "%c%e", separator, phy);
 			}
 			for (int i = 0; i < AttysComm::NCHANNELS; i++) {
 				if (attys_scope->channel[n][i]->isActive()) {
 					float phy = filtDAQData[n][i];
-					fprintf(rec_file, "%c%f", separator, phy);
+					fprintf(rec_file, "%c%e", separator, phy);
 				}
 			}
 		}
 	}
 	else {
-		fprintf(rec_file, "%f", ((float)nsamples) / ((float)attysScan.getAttysComm(0)->getSamplingRateInHz()));
+		fprintf(rec_file, "%e", ((float)nsamples) / ((float)attysScan.getAttysComm(0)->getSamplingRateInHz()));
 		for (int n = 0; n < attysScan.getNAttysDevices(); n++) {
 			for (int i = 0; i < AttysComm::NCHANNELS; i++) {
 				float phy = unfiltDAQData[n][i];
-				fprintf(rec_file, "%c%f", separator, phy);
+				fprintf(rec_file, "%c%e", separator, phy);
 			}
 			for (int i = 0; i < AttysComm::NCHANNELS; i++) {
 				float phy = filtDAQData[n][i];
-				fprintf(rec_file, "%c%f", separator, phy);
+				fprintf(rec_file, "%c%e", separator, phy);
 			}
 		}
 	}
