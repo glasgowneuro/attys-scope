@@ -11,8 +11,11 @@ import matplotlib.animation as animation
 import threading
 import ecg_analysis
 
-# read from channel 9
-channel = 9
+# Read from 1st filtered selected channel (comes after all the
+# unfiltered in the UDP packet).
+# Filter settings:
+# For ECG set the gain to approx 1000, Highpass at 1Hz and mains notch.
+channel = 11
 
 # sampling rate
 fs = 250
@@ -42,6 +45,7 @@ def readSocket():
         # check if data is available
         data = f.readline()
         values = np.array(data.split(','),dtype=np.float32)
+        print(values)
         ringbuffer.append(values[channel])
         
 
