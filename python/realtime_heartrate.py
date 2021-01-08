@@ -45,7 +45,7 @@ def readSocket():
         # check if data is available
         data = f.readline()
         values = np.array(data.split(','),dtype=np.float32)
-        print(values)
+#        print(values)
         ringbuffer.append(values[channel])
         
 
