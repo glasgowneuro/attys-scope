@@ -233,7 +233,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	recLayout->addWidget(new QLabel(" "));
 
-	vers1dataCheckBox = new QCheckBox("V1.x fmt");
+	vers1dataCheckBox = new QCheckBox("v1 fmt");
 	vers1dataCheckBox->setStyleSheet("font-size: 10pt;");
 	vers1dataCheckBox->setChecked(0);
 	vers1dataCheckBox->setEnabled(true);
@@ -358,7 +358,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 #define LOWPASS_SETTING_FORMAT "lowpass_dev%09d_ch%09d"
 #define BANDSTOP_SETTING_FORMAT "bandstop_dev%09d_ch%09d"
 #define GAIN_SETTING_FORMAT "gain_mapping_dev%09d_ch%09d"
-#define SETTINGS_SAVE_FILTERED "header"
+#define SETTINGS_OLD_DATAFMT "header"
 #define SETTINGS_SAMPLING_RATE "fs"
 
 void Attys_scope::readSettings(QSettings &settings) {
@@ -368,7 +368,7 @@ void Attys_scope::readSettings(QSettings &settings) {
 	settings.beginGroup(SETTINGS_UDP);
 	udpLineEdit->setText(QString::number(settings.value(SETTINGS_UDP_PORT, 65000).toInt()));
 	udpCheckBox->setChecked(settings.value(SETTINGS_UDP_ON, 0).toBool());
-	vers1dataCheckBox->setChecked(settings.value(SETTINGS_SAVE_FILTERED, 1).toBool());
+	vers1dataCheckBox->setChecked(settings.value(SETTINGS_OLD_DATAFMT, 0).toBool());
 	settings.endGroup();
 
 	settings.beginGroup(SETTINGS_CHANNELS);
@@ -434,7 +434,7 @@ void Attys_scope::writeSettings(QSettings & settings)
 	settings.beginGroup(SETTINGS_UDP);
 	settings.setValue(SETTINGS_UDP_PORT, udpLineEdit->text().toInt());
 	settings.setValue(SETTINGS_UDP_ON, udpCheckBox->isChecked());
-	settings.setValue(SETTINGS_SAVE_FILTERED, vers1dataCheckBox->isChecked());
+	settings.setValue(SETTINGS_OLD_DATAFMT, vers1dataCheckBox->isChecked());
 	settings.endGroup();
 
 	int channels = AttysComm::NCHANNELS;
