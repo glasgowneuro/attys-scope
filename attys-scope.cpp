@@ -231,14 +231,6 @@ Attys_scope::Attys_scope(QWidget *parent,
 	recLayout->addWidget(recCheckBox);
 	recCheckBox->setStyleSheet(styleCheckBox);
 
-	recLayout->addWidget(new QLabel(" "));
-
-	vers1dataCheckBox = new QCheckBox("v1 fmt");
-	vers1dataCheckBox->setStyleSheet("font-size: 10pt;");
-	vers1dataCheckBox->setChecked(0);
-	vers1dataCheckBox->setEnabled(true);
-	recLayout->addWidget(vers1dataCheckBox);
-
 	restLayout->addLayout(recLayout);
 
 
@@ -358,7 +350,6 @@ Attys_scope::Attys_scope(QWidget *parent,
 #define LOWPASS_SETTING_FORMAT "lowpass_dev%09d_ch%09d"
 #define BANDSTOP_SETTING_FORMAT "bandstop_dev%09d_ch%09d"
 #define GAIN_SETTING_FORMAT "gain_mapping_dev%09d_ch%09d"
-#define SETTINGS_OLD_DATAFMT "header"
 #define SETTINGS_SAMPLING_RATE "fs"
 
 void Attys_scope::readSettings(QSettings &settings) {
@@ -368,7 +359,6 @@ void Attys_scope::readSettings(QSettings &settings) {
 	settings.beginGroup(SETTINGS_UDP);
 	udpLineEdit->setText(QString::number(settings.value(SETTINGS_UDP_PORT, 65000).toInt()));
 	udpCheckBox->setChecked(settings.value(SETTINGS_UDP_ON, 0).toBool());
-	vers1dataCheckBox->setChecked(settings.value(SETTINGS_OLD_DATAFMT, 0).toBool());
 	settings.endGroup();
 
 	settings.beginGroup(SETTINGS_CHANNELS);
@@ -434,7 +424,6 @@ void Attys_scope::writeSettings(QSettings & settings)
 	settings.beginGroup(SETTINGS_UDP);
 	settings.setValue(SETTINGS_UDP_PORT, udpLineEdit->text().toInt());
 	settings.setValue(SETTINGS_UDP_ON, udpCheckBox->isChecked());
-	settings.setValue(SETTINGS_OLD_DATAFMT, vers1dataCheckBox->isChecked());
 	settings.endGroup();
 
 	int channels = AttysComm::NCHANNELS;
@@ -537,7 +526,6 @@ Attys_scope::~Attys_scope() {
 
 void Attys_scope::disableControls() {
 	filePushButton->setEnabled( false );
-	vers1dataCheckBox->setEnabled( false );
 	int channels = AttysComm::NCHANNELS;
 	for(int n=0;n<attysScan.getNAttysDevices();n++) {
 		for(int i=0;i<channels;i++) {
@@ -549,7 +537,6 @@ void Attys_scope::disableControls() {
 
 void Attys_scope::enableControls() {
 	filePushButton->setEnabled( true );
-	vers1dataCheckBox->setEnabled( true );
 	int channels = AttysComm::NCHANNELS;
 	for(int n=0;n<attysScan.getNAttysDevices();n++) {
 		for(int i=0;i<channels;i++) {

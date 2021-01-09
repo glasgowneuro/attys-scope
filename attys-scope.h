@@ -31,7 +31,7 @@ class Attys_scope;
 #include "AttysScan.h"
 
 // version number
-#define VERSION "2.1.2"
+#define VERSION "2.2.0"
 
 #define ATTYS_STRING "ATTYS"
 #define PROGRAM_NAME "attys-scope"
@@ -84,11 +84,6 @@ public:
 	* Button which controls recording
 	**/
     QPointer<RecButton> recCheckBox;
-
-	/**
-	 * Button which controls recording
-	 **/
-	QPointer<QCheckBox> vers1dataCheckBox;
 
 	/**
 	* Array for the special settings

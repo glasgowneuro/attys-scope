@@ -320,15 +320,13 @@ void ScopeWindow::openFile() {
 		attys_scope->enableControls();
 		throw finalFilename.toLocal8Bit().constData();
 	}
-	if (!(attys_scope->vers1dataCheckBox->isChecked())) {
-		fprintf(rec_file, "# %lu", (unsigned long)time(NULL));
-		for (int n = 0; n < attysScan.getNAttysDevices(); n++) {
-			char tmp[256];
-			attysScan.getAttysComm(n)->getBluetoothAdressString(tmp);
-			fprintf(rec_file, "%c%s", separator, tmp);
-		}
-		fprintf(rec_file, "\n");
+	fprintf(rec_file, "# %lu", (unsigned long)time(NULL));
+	for (int n = 0; n < attysScan.getNAttysDevices(); n++) {
+		char tmp[256];
+		attysScan.getAttysComm(n)->getBluetoothAdressString(tmp);
+		fprintf(rec_file, "%c%s", separator, tmp);
 	}
+	fprintf(rec_file, "\n");
 }
 
 
@@ -388,32 +386,15 @@ void ScopeWindow::stopRec() {
 
 void ScopeWindow::writeFile() {
 	if (!rec_file) return;
-	if (attys_scope->vers1dataCheckBox->isChecked()) {
-		fprintf(rec_file, "%e", ((float)nsamples) / ((float)attysScan.getAttysComm(0)->getSamplingRateInHz()));
-		for (int n = 0; n < attysScan.getNAttysDevices(); n++) {
-			for (int i = 0; i < AttysComm::INDEX_Analogue_channel_2; i++) {
-				float phy = unfiltDAQData[n][i];
-				fprintf(rec_file, "%c%e", separator, phy);
-			}
-			for (int i = 0; i < AttysComm::NCHANNELS; i++) {
-				if (attys_scope->channel[n][i]->isActive()) {
-					float phy = filtDAQData[n][i];
-					fprintf(rec_file, "%c%e", separator, phy);
-				}
-			}
+	fprintf(rec_file, "%e", ((float)nsamples) / ((float)attysScan.getAttysComm(0)->getSamplingRateInHz()));
+	for (int n = 0; n < attysScan.getNAttysDevices(); n++) {
+		for (int i = 0; i < AttysComm::NCHANNELS; i++) {
+			float phy = unfiltDAQData[n][i];
+			fprintf(rec_file, "%c%e", separator, phy);
 		}
-	}
-	else {
-		fprintf(rec_file, "%e", ((float)nsamples) / ((float)attysScan.getAttysComm(0)->getSamplingRateInHz()));
-		for (int n = 0; n < attysScan.getNAttysDevices(); n++) {
-			for (int i = 0; i < AttysComm::NCHANNELS; i++) {
-				float phy = unfiltDAQData[n][i];
-				fprintf(rec_file, "%c%e", separator, phy);
-			}
-			for (int i = 0; i < AttysComm::NCHANNELS; i++) {
-				float phy = filtDAQData[n][i];
-				fprintf(rec_file, "%c%e", separator, phy);
-			}
+		for (int i = 0; i < AttysComm::NCHANNELS; i++) {
+			float phy = filtDAQData[n][i];
+			fprintf(rec_file, "%c%e", separator, phy);
 		}
 	}
 	fprintf(rec_file, "\n");
