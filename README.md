@@ -86,7 +86,7 @@ the other required packages.
 
 ## MacOS packages
 
-Install homebrew: https://docs.brew.sh/Installation
+Install homebrew: https://brew.sh/
 
 Add these two taps
 
