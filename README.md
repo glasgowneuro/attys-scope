@@ -86,6 +86,12 @@ the other required packages.
 
 ## MacOS packages
 
+### DMG
+
+Download `attys-scope.dmg` and drop its contents in the applications folder.
+
+### Homebrew
+
 Install homebrew: https://brew.sh/
 
 Add these two taps
