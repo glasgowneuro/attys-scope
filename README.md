@@ -60,20 +60,6 @@ UDP packets are always transmitted as CSV.
 * attys-comm (https://github.com/glasgowneuro/attys-comm)
 * Tested BT dongles which work with more than one Attys: ASUS-BT400 and Belkin (Broadcom chipset)
 
-## Compile under Windows
-* Install: Visual Studio 2017 community edition
-* clone iir1 in your root directory: https://github.com/berndporr/iir1 and compile it (release version)
-* Download the open source version of QT5, 64 bits for visual C++ 2017 from www.qt.io.
-* git clone https://github.com/glasgowneuro/attys-comm.git and compile it
-* git clone https://github.com/glasgowneuro/attys-scope.git
-* Edit attys-scope.pro and adjust the path variables so that they point to attys-comm and the IIR libary
-* "qmake -tp vc" and then re-target the project (right click on attys_scope in the Solutions Explorer -> Retarget Projects)
-* Open the .sln file
-* Build solution
-* go to the "release" subdirectory
-* run "windeployqt attys-scope.exe" which copies all the DLLs into this directory which are needed to run the app
-* Build the msi installer which will be in the "installer" subdirectory.
-
 ## Windows installer
 
 https://github.com/glasgowneuro/attys-scope/blob/master/installer/attys_scope_installer.msi
@@ -132,6 +118,20 @@ brew install attys-scope
 * make
 * make install
 * Start by typing "attys-scope"
+
+## Compile under Windows
+* Install: Visual Studio 2017 community edition
+* clone iir1 in your root directory: https://github.com/berndporr/iir1 and compile it (release version)
+* Download the open source version of QT5, 64 bits for visual C++ 2017 from www.qt.io.
+* git clone https://github.com/glasgowneuro/attys-comm.git and compile it
+* git clone https://github.com/glasgowneuro/attys-scope.git
+* Edit attys-scope.pro and adjust the path variables so that they point to attys-comm and the IIR libary
+* "qmake -tp vc" and then re-target the project (right click on attys_scope in the Solutions Explorer -> Retarget Projects)
+* Open the .sln file
+* Build solution
+* go to the "release" subdirectory
+* run "windeployqt attys-scope.exe" which copies all the DLLs into this directory which are needed to run the app
+* Build the msi installer which will be in the "installer" subdirectory.
 
 ## Post- and realtime processing in Python
 Check out the python subdirectory. This contains scripts for both postprocessing of datafiles and realtime processing.
