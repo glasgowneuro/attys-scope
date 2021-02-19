@@ -54,12 +54,6 @@ UDP packets are always transmitted as CSV.
 22. ...
 
 
-## Requires
-* QT5
-* IIR1 libaray (https://github.com/berndporr/iir1)
-* attys-comm (https://github.com/glasgowneuro/attys-comm)
-* Tested BT dongles which work with more than one Attys: ASUS-BT400 and Belkin (Broadcom chipset)
-
 ## Windows installer
 
 https://github.com/glasgowneuro/attys-scope/blob/master/installer/attys_scope_installer.msi
