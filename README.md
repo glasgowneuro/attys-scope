@@ -74,6 +74,10 @@ UDP packets are always transmitted as CSV.
 * run "windeployqt attys-scope.exe" which copies all the DLLs into this directory which are needed to run the app
 * Build the msi installer which will be in the "installer" subdirectory.
 
+## Windows installer
+
+https://github.com/glasgowneuro/attys-scope/blob/master/installer/attys_scope_installer.msi
+
 
 ## Linux Ubuntu packages for xenial and bionic
 Add these two repositories...
