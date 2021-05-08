@@ -1,4 +1,4 @@
-# attys-scope (Linux / Windows / MacOS)
+# attys-scope (Linux / Windows)
 
 Oscilloscope program for the Attys (http://www.attys.tech).
 
@@ -68,45 +68,11 @@ sudo add-apt-repository ppa:berndporr/usbdux
 ...and then select attys-scope. This will then install also
 the other required packages.
 
-## MacOS packages
-
-### DMG
-
-Download `attys-scope.dmg` and drop its contents in the applications folder.
-
-### Homebrew
-
-Install homebrew: https://brew.sh/
-
-Add these two taps
-
-```
-brew tap berndporr/dsp
-brew tap glasgowneuro/attys
-```
-
-and install attys-scope:
-
-```
-brew install attys-scope
-```
-
 ## Compile under Linux
 * git clone https://github.com/glasgowneuro/attys-comm.git and compile/install it.
 * git clone https://github.com/glasgowneuro/attys-scope.git 
 * Install the IIR filter library https://github.com/berndporr/iir1
 * Install the other packages: "apt-get install qt5-qmake, g++, qtbase5-dev-tools, qtdeclarative5-dev-tools, libbluetooth-dev, qtbase5-dev, qt5-default"
-* cd attys-scope
-* qmake
-* make
-* make install
-* Start by typing "attys-scope"
-
-## Compile on a Mac
-* git clone https://github.com/glasgowneuro/attys-comm.git and compile/install it.
-* git clone https://github.com/glasgowneuro/attys-scope.git 
-* Install the IIR filter library https://github.com/berndporr/iir1
-* Install qt5 via home-brew: "brew install qt5"
 * cd attys-scope
 * qmake
 * make
