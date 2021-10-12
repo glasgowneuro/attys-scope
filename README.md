@@ -80,7 +80,7 @@ the other required packages.
 * Start by typing "attys-scope"
 
 ## Compile under Windows
-* Install: Visual Studio 2017 community edition
+* Install: Visual Studio 2019 community edition
 * clone iir1 in your root directory: https://github.com/berndporr/iir1 and compile it (release version)
 * Download the open source version of QT5, 64 bits for visual C++ 2017 from www.qt.io.
 * git clone https://github.com/glasgowneuro/attys-comm.git and compile it
@@ -91,7 +91,7 @@ the other required packages.
 * Build solution
 * go to the "release" subdirectory
 * run "windeployqt attys-scope.exe" which copies all the DLLs into this directory which are needed to run the app
-* Build the msi installer which will be in the "installer" subdirectory.
+* Install "Microsoft Visual Studio Installer Projects" via VS->Extensions and build the msi installer which will be in the "installer" subdirectory.
 
 ## Post- and realtime processing in Python
 Check out the python subdirectory. This contains scripts for both postprocessing of datafiles and realtime processing.
