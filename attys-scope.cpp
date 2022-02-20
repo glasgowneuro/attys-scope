@@ -693,9 +693,9 @@ int main( int argc, char **argv )
 
 	// none detected
 	if ((0 != ret) || (attysScan.getNAttysDevices()<1)) {
-		char tmp[] = "Exiting.";
+		char tmp[] = "No Attys detected.\nExiting.";
 		attysScanMsg.message(0,tmp);
-		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+		std::this_thread::sleep_for(std::chrono::milliseconds(5000));
 		attysScan.unregisterCallback();
 		delete splash;
 		return -1;
