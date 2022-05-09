@@ -5,6 +5,7 @@
 #include <QtMultimedia/QAudioDeviceInfo>
 #include <QtMultimedia/QAudioOutput>
 #include <QBuffer>
+#include <QMessageBox>
 
 /**
  * Beep generator. Creates and plays a sinewave of specified frequency, duration and
@@ -42,15 +43,23 @@ public:
 	 **/
 	void play();
 
+	/**
+	* Reports if it's operational
+	**/
+	bool isOK() const {
+		return (nullptr != input) && (nullptr != audio);
+	}
+
 private:
 	// We use a fixed sampling rate here supported by any sound card
 	const unsigned int sampleRate = 48000;
 
-	QObject* qparent;
+	QObject* qparent = nullptr;
 	QByteArray byteBuffer;
 	QAudioFormat audioFormat;
-	QBuffer* input;
-	QAudioOutput* audio;
+	QBuffer* input = nullptr;
+	QAudioOutput* audio = nullptr;
+	QMessageBox* msgBox;
 };
 
 #endif

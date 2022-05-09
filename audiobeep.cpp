@@ -18,7 +18,12 @@ AudioBeep::AudioBeep(QObject *w, float duration, float frequency, float volume) 
 	// check if we can play it
 	QAudioDeviceInfo deviceInfo(QAudioDeviceInfo::defaultOutputDevice());
 	if(!deviceInfo.isFormatSupported(audioFormat)) {
-		throw "QT backend to play raw audio is not installed, cannot play audio.";
+		char tmp[] = "QT backend to play audio is not installed. Cannot play audio.";
+		msgBox = new QMessageBox;
+		msgBox->setText(tmp);
+		msgBox->setModal(true);
+		msgBox->show();
+		return;
 	}
 
 	// number of data samples
@@ -46,15 +51,21 @@ AudioBeep::AudioBeep(QObject *w, float duration, float frequency, float volume) 
 
 // destructor
 AudioBeep::~AudioBeep() {
-	input->close();
-	delete input;
-	delete audio;
+	if (nullptr != input) {
+		input->close();
+		delete input;
+	}
+	if (nullptr != audio) {
+		delete audio;
+	}
 }
 
 
 // play the audio
 void AudioBeep::play() {
-	input->seek(0);
-	audio->reset();
-	audio->start(input);
+	if ((nullptr != input) && (nullptr != audio)) {
+		input->seek(0);
+		audio->reset();
+		audio->start(input);
+	}
 }
