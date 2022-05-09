@@ -29,9 +29,10 @@ class Attys_scope;
 #include "samplingrate.h"
 #include "AttysComm.h"
 #include "AttysScan.h"
+#include "audiobeep.h"
 
 // version number
-#define VERSION "2.2.0"
+#define VERSION "2.3.0"
 
 #define ATTYS_STRING "ATTYS"
 #define PROGRAM_NAME "attys-scope"
@@ -136,14 +137,14 @@ public:
      **/
 	QPointer<ScopeWindow> attysScopeWindow;
 
-    /**
-     * Text-field: elapsed time
-     **/
+	/**
+	 * Text-field: elapsed time
+	 **/
 	QPointer<QLineEdit> timeInfoLineEdit;
 
-    /**
-     * Text-field for the file-name
-     **/
+	/**
+	 * Text-field for the file-name
+	 **/
 	QPointer<QPushButton> filePushButton;
 
 	/**
@@ -155,6 +156,11 @@ public:
 	* switches on UDP broadcast
 	**/
 	QPointer<QCheckBox> udpCheckBox;
+
+	/**
+	* switches on a tone when starting/stopping recording
+	**/
+	QPointer<QCheckBox> toneCheckBox;
 
 
  private:
@@ -281,11 +287,11 @@ private:
 		void setInfo(const char* txt);
 
 	private:
-		int restartInfo = 1;
+	int restartInfo = 1;
+	
+	char status[256];
 
-		char status[256];
-
-
+	AudioBeep* audiobeep;
 };
 
 

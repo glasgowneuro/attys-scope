@@ -37,19 +37,6 @@ QWidget::item:selected {
 	background: #3D7848;
 }
 
-QComboBox {
-	  font-size: 10pt;
-}
-
-QComboBox::drop-down {
-	border: 1px solid #5A5A5A;
-	background: #353535;
-}
-
-QComboBox QAbstractItemView {
-    min-width: 100px;
-}
-
 QPushButton {
 	background-color: rgb(64,64,64);
 	border: none;
@@ -158,6 +145,7 @@ QScrollBar:left-arrow, QScrollBar::right-arrow, QScrollBar::up-arrow, QScrollBar
 QScrollBar::add-page, QScrollBar::sub-page {
 	background: none;
 }
+
 
 QAbstractButton:hover {
 	background: #353535;

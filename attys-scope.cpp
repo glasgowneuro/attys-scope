@@ -25,28 +25,17 @@
 #include "scopewindow.h"
 #include "attys-scope.h"
 
-
 Attys_scope::Attys_scope(QWidget *parent,
 			 int ignoreSettings
 	) : QWidget( parent ) {
 
-#ifndef __APPLE__
 	QFile style(":/QTDark.stylesheet");
 	style.open(QIODevice::ReadOnly);
-
 	setStyleSheet(style.readAll());
 	style.close();
-#endif
-	
+
         setAutoFillBackground(true);
 
-#ifdef __APPLE__
-	char styleSheetCombo[] = "";
-	char styleSheetChannel[] = "";
-	char styleSheetGain[] = "";
-	char styleSheetLabel[] = "";
-	char styleSheetNoPadding[] = "";
-#else
 	// to the get the stuff a bit closer together
 	char styleSheetCombo[] = "padding-left:1px; padding-right:1px";
 #ifdef _WIN32
@@ -58,12 +47,13 @@ Attys_scope::Attys_scope(QWidget *parent,
 #endif
 	char styleSheetLabel[] = "padding-left:0.5em; padding-right:1px";
 	char styleSheetNoPadding[] = "padding-left:1px; padding-right:1px; width:1em; font-family: courier;";
-#endif
 	char styleCheckBox[] = "QCheckBox::indicator {width: 2em; height: 2em;}";
 	char styleLineEdit[] = "";
 	char styleProfile[] = "font-size:12px;";
 
 	attysScopeWindow=new ScopeWindow(this);
+
+	audiobeep = new AudioBeep(this,1,1000,0.5);
 
 	int channels = AttysComm::NCHANNELS;
 
@@ -231,6 +221,11 @@ Attys_scope::Attys_scope(QWidget *parent,
 	recLayout->addWidget(recCheckBox);
 	recCheckBox->setStyleSheet(styleCheckBox);
 
+	toneCheckBox = new QCheckBox("1kHz beep");
+	toneCheckBox->setSizePolicy(QSizePolicy(QSizePolicy::Fixed,
+						QSizePolicy::Fixed));
+	recLayout->addWidget(toneCheckBox);
+
 	restLayout->addLayout(recLayout);
 
 
@@ -284,12 +279,12 @@ Attys_scope::Attys_scope(QWidget *parent,
 	statusLayout = new QHBoxLayout();
 
 	statusLayout->addWidget(new QLabel("Config: "));
-	savePushButton = new QPushButton("save");
+	savePushButton = new QPushButton("save config");
 	savePushButton->setStyleSheet(styleProfile);
 	connect(savePushButton, SIGNAL(clicked()),
 		this, SLOT(slotSaveSettings()));
 	statusLayout->addWidget(savePushButton);
-	loadPushButton = new QPushButton("load");
+	loadPushButton = new QPushButton("load config");
 	loadPushButton->setStyleSheet(styleProfile);
 	connect(loadPushButton, SIGNAL(clicked()),
 		this, SLOT(slotLoadSettings()));
@@ -521,6 +516,7 @@ Attys_scope::~Attys_scope() {
 			   PROGRAM_NAME);
 
 	writeSettings(settings);
+	delete audiobeep;
 }
 
 
@@ -584,10 +580,16 @@ void Attys_scope::recstartstop(int)
   if (recCheckBox->checkState()) 
     {
       attysScopeWindow->startRec();
+      if (toneCheckBox->isChecked()) {
+	      audiobeep->play();
+      }
     } 
   else 
     {
       attysScopeWindow->stopRec();
+      if (toneCheckBox->isChecked()) {
+	      audiobeep->play();
+      }
       // to force the user to enter a new filename
       recCheckBox->setEnabled( false );
     }
