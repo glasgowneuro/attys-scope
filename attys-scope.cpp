@@ -39,8 +39,8 @@ Attys_scope::Attys_scope(QWidget *parent,
 	// to the get the stuff a bit closer together
 	char styleSheetCombo[] = "padding-left:1px; padding-right:1px";
 #ifdef _WIN32
-	char styleSheetChannel[] = "padding-left:1px; padding-right:1px; min-width: 3.2em;";
-	char styleSheetGain[] = "padding-left:1px; padding-right:1px; min-width: 3.2em;";
+	char styleSheetChannel[] = "padding-left:1px; padding-right:1px; width: 3.2em;";
+	char styleSheetGain[] = "padding-left:1px; padding-right:1px; width: 3.2em;";
 #else
 	char styleSheetChannel[] = "padding-left:1px; padding-right:1px; min-width: 3.5em;";
 	char styleSheetGain[] = "padding-left:1px; padding-right:1px; min-width: 3.5em;";
