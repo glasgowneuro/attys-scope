@@ -18,11 +18,6 @@ AudioBeep::AudioBeep(QObject *w, float duration, float frequency, float volume) 
 	// check if we can play it
 	QAudioDeviceInfo deviceInfo(QAudioDeviceInfo::defaultOutputDevice());
 	if(!deviceInfo.isFormatSupported(audioFormat)) {
-		char tmp[] = "QT backend to play audio is not installed. Cannot play audio.";
-		msgBox = new QMessageBox;
-		msgBox->setText(tmp);
-		msgBox->setModal(true);
-		msgBox->show();
 		return;
 	}
 

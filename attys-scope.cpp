@@ -39,8 +39,8 @@ Attys_scope::Attys_scope(QWidget *parent,
 	// to the get the stuff a bit closer together
 	char styleSheetCombo[] = "padding-left:1px; padding-right:1px";
 #ifdef _WIN32
-	char styleSheetChannel[] = "padding-left:1px; padding-right:1px; width: 3.2em;";
-	char styleSheetGain[] = "padding-left:1px; padding-right:1px; width: 3.2em;";
+	char styleSheetChannel[] = "padding-left:1px; padding-right:1px;";
+	char styleSheetGain[] = "padding-left:1px; padding-right:1px;";
 #else
 	char styleSheetChannel[] = "padding-left:1px; padding-right:1px; min-width: 3.5em;";
 	char styleSheetGain[] = "padding-left:1px; padding-right:1px; min-width: 3.5em;";
@@ -144,6 +144,8 @@ Attys_scope::Attys_scope(QWidget *parent,
 			channel[n][i] = new Channel(channels,attysCommTmp.CHANNEL_SHORT_DESCRIPTION);
 			channel[n][i] -> setChannel( i );
 			channel[n][i]->setStyleSheet(styleSheetChannel);
+			int w = channel[n][i]->minimumSizeHint().width();
+			channel[n][i]->setMinimumWidth(w * 1.1);
 			hbox[n][i]->addWidget(channel[n][i]);
 
 			QPointer<QLabel> hp = new QLabel("HP:");
@@ -170,6 +172,8 @@ Attys_scope::Attys_scope(QWidget *parent,
 			hbox[n][i]->addWidget(new QLabel(" "));
 			gain[n][i] = new Gain();
 			gain[n][i]->setStyleSheet(styleSheetGain);
+			w = gain[n][i]->minimumSizeHint().width();
+			gain[n][i]->setMinimumWidth(w * 1.1);
 			hbox[n][i]->addWidget(gain[n][i]);
 
 			allChLayout->addLayout(hbox[n][i],row,1);
@@ -224,6 +228,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	toneCheckBox = new QCheckBox("1kHz beep");
 	toneCheckBox->setSizePolicy(QSizePolicy(QSizePolicy::Fixed,
 						QSizePolicy::Fixed));
+	toneCheckBox->setVisible(audiobeep->isOK());
 	recLayout->addWidget(toneCheckBox);
 
 	restLayout->addLayout(recLayout);
