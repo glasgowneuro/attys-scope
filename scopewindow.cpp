@@ -274,9 +274,7 @@ void ScopeWindow::stopUDP()
 }
 
 
-void ScopeWindow::writeUDP() {
-	if (!udpSocket) return;
-	char tmp[1024];
+void ScopeWindow::writeCSV(char* tmp) {
 	sprintf(tmp, "%f", ((float)nsamples) / ((float)attysScan.getAttysComm(0)->getSamplingRateInHz()));
 	for (int n = 0; n < attysScan.getNAttysDevices(); n++) {
 		for (int i = 0; i < AttysComm::NCHANNELS; i++) {
@@ -289,6 +287,12 @@ void ScopeWindow::writeUDP() {
 		}
 	}
 	sprintf(tmp+strlen(tmp), "\n");
+}
+
+void ScopeWindow::writeUDP() {
+	if (!udpSocket) return;
+	char tmp[1024];
+	writeCSV(tmp);
 	if (udpSocket) {
 		if (udpStatus > -1) {
 #ifdef __linux__
@@ -303,6 +307,36 @@ void ScopeWindow::writeUDP() {
 	}
 }
 
+void ScopeWindow::startPython(QString filename) {
+	stopPython();
+	filename = "python "+filename;
+	pythonPipe = popen(filename.toLocal8Bit().data(),"w");
+	if (nullptr == pythonPipe) {
+		QString msg;
+		msg = "Command >>"+filename+"<< failed.";
+		QMessageBox* msgBox = new QMessageBox;
+		msgBox->setText(msg);
+		msgBox->setModal(true);
+		msgBox->show();
+	}
+}
+
+void ScopeWindow::stopPython() {
+	if (nullptr != pythonPipe) {
+		pclose(pythonPipe);
+		pythonPipe = nullptr;
+	}
+}
+
+void ScopeWindow::writePython() {
+	if (nullptr == pythonPipe) return;
+	char tmp[1024];
+	writeCSV(tmp);
+	int r = fprintf(pythonPipe,"%s",tmp);
+	if (r < 0) {
+		stopPython();
+	}
+}
 
 void ScopeWindow::openFile() {
 	QRegExp reg("[0-9]{1,9}$");
@@ -565,6 +599,7 @@ void ScopeWindow::processData() {
 		}
 
 		writeUDP();
+		writePython();
 
 		nsamples++;
 		tb_counter--;

@@ -254,14 +254,22 @@ private:
 	float **maxV;
 
 private:
+	void writeCSV(char*);
 	void writeUDP();
 	QPointer<QUdpSocket> udpSocket = NULL;
 	int udpPort = 65000;
 	int udpStatus = 0;
+	
+	void writePython();
+	FILE* pythonPipe = nullptr;
 
 public:
 	void startUDP(int port);
 	void stopUDP();
+
+public:
+	void startPython(QString);
+	void stopPython();
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 // mechanisms for re-connect

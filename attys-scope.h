@@ -188,6 +188,9 @@ public:
 	void slotSaveSettings();
 	void slotLoadSettings();
 
+	void slotRunPython();
+	void slotStopPython();
+
 private:
 /**
  * Button to increase the time-base has been pressed

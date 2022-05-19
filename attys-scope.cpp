@@ -473,6 +473,24 @@ void Attys_scope::slotLoadSettings() {
 	}
 };
 
+void Attys_scope::slotRunPython() {
+	QString filters(tr("Python scripts (*.py)"));
+
+	QFileDialog dialog(this);
+	dialog.setFileMode(QFileDialog::ExistingFile);
+	dialog.setNameFilter(filters);
+	dialog.setViewMode(QFileDialog::Detail);
+	dialog.setAcceptMode(QFileDialog::AcceptMode::AcceptOpen);
+
+	if (dialog.exec()) {
+		QString fileName = dialog.selectedFiles()[0];
+		attysScopeWindow->startPython(fileName);
+	}
+}
+
+void Attys_scope::slotStopPython() {
+	attysScopeWindow->stopPython();
+}
 
 void Attys_scope::setInfo(const char * txt)
 {
