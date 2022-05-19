@@ -30,13 +30,6 @@ Attys_scope::Attys_scope(QWidget *parent,
 			 int ignoreSettings
 	) : QWidget( parent ) {
 
-	QFile style(":/QTDark.stylesheet");
-	style.open(QIODevice::ReadOnly);
-	setStyleSheet(style.readAll());
-	style.close();
-
-        setAutoFillBackground(true);
-
 	attysScopeWindow=new ScopeWindow(this);
 
 	audiobeep = new AudioBeep(this,1,1000,0.5);
@@ -268,18 +261,6 @@ Attys_scope::Attys_scope(QWidget *parent,
 	restLayout->addLayout(tbLayout);
 
 	statusLayout = new QHBoxLayout();
-
-	statusLayout->addWidget(new QLabel("Config: "));
-	savePushButton = new QPushButton("save config");
-	savePushButton->setStyleSheet(styleProfile);
-	connect(savePushButton,&QPushButton::clicked,
-		this,&Attys_scope::slotSaveSettings);
-	statusLayout->addWidget(savePushButton);
-	loadPushButton = new QPushButton("load config");
-	loadPushButton->setStyleSheet(styleProfile);
-	connect(loadPushButton,&QPushButton::clicked,
-		this,&Attys_scope::slotLoadSettings);
-	statusLayout->addWidget(loadPushButton);
 
 	restLayout->addLayout(statusLayout);
 
@@ -643,69 +624,3 @@ void Attys_scope::specialChanged() {
 		restartInfo = 0;
 	}
 };
-
-
-void helptxt(char *name) {
-	fprintf(stderr,"Help: use '%s -i' or '%s /i' to disable reading the configuration.\n",name,name);
-	exit(1);
-}
-
-
-int main( int argc, char **argv )
-{
-	for(int i = 0;i<argc;i++) {
-		if (strstr(argv[i],"-h")) helptxt(argv[0]);
-		if (strstr(argv[i],"--help")) helptxt(argv[0]);
-	}
-
-	// default values
-	int ignoreSettings = 0;
-
-	QSettings settings(QSettings::IniFormat, 
-			   QSettings::UserScope,
-			   ATTYS_STRING,
-			   PROGRAM_NAME);
-
-	QApplication a( argc, argv );		// create application object
-
-	QPixmap pixmap(":/attys.png");
-	QSplashScreen* splash = new QSplashScreen(pixmap);
-	splash->setFont( QFont("Helvetica", 10, QFont::Black) );
-	splash->show();
-	splash->showMessage("Scanning for paired devices");
-	a.processEvents();
-
-	// callback
-	AttysScanMsg attysScanMsg;
-	attysScanMsg.splash = splash;
-	attysScanMsg.app = &a;
-	attysScan.registerCallback(&attysScanMsg);
-
-	// see if we have any Attys!
-	int ret = attysScan.scan(AttysScan::MAX_ATTYS_DEVS);
-
-	// none detected
-	if ((0 != ret) || (attysScan.getNAttysDevices()<1)) {
-		char tmp[] = "No Attys detected.\nExiting.";
-		attysScanMsg.message(0,tmp);
-		std::this_thread::sleep_for(std::chrono::milliseconds(5000));
-		attysScan.unregisterCallback();
-		delete splash;
-		return -1;
-	}
-
-	for(int i = 0;i<argc;i++) {
-		if (strstr(argv[i],"/i")) ignoreSettings = 1;	
-		if (strstr(argv[i],"-i")) ignoreSettings = 1;
-	}
-
-	Attys_scope attys_scope(0,ignoreSettings);
-
-	// show widget
-	attys_scope.show();
-	attysScan.unregisterCallback();
-	splash->finish(&attys_scope);
-	delete splash;
-	// run event loop
-	return a.exec();
-}

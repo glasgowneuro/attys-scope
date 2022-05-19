@@ -184,13 +184,11 @@ private:
  **/
 	QPointer<QPushButton> clearScreenPushButton;
 
-	QPointer<QPushButton> savePushButton;
-	QPointer<QPushButton> loadPushButton;
-
-
+public:
 	void slotSaveSettings();
 	void slotLoadSettings();
 
+private:
 /**
  * Button to increase the time-base has been pressed
  **/
