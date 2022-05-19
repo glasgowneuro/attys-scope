@@ -73,8 +73,8 @@ public:
 
 public:
 	/**
-	* Sets the filename for the data-file
-	**/
+	 * Sets the filename for the data-file
+	 **/
 	void setFilename(QString fn,int csv);
 	
 public:
@@ -82,18 +82,18 @@ public:
 	void disableControls();
 
 	/**
-	* Button which controls recording
-	**/
-    QPointer<RecButton> recCheckBox;
+	 * Button which controls recording
+	 **/
+	QPointer<RecButton> recCheckBox;
 
 	/**
-	* Array for the special settings
-	**/
+	 * Array for the special settings
+	 **/
 	QPointer<Special>** special;
 
 	/**
-	* Array for the current setting
-	**/
+	 * Array for the current setting
+	 **/
 	QPointer<Current>* current;
 
 	/**
@@ -102,39 +102,39 @@ public:
 	QPointer<SamplingRate> samplingRate;
 	
 	/**
- * channel label
- **/
+	 * channel label
+	 **/
 	QPointer<QLabel>** channelLabel;
 
 public:
-    /**
-     * Array for the channel settings
-     **/
+	/**
+	 * Array for the channel settings
+	 **/
 	QPointer<Channel>** channel;
 
-    /**
-     * Array for the gain settings
-     **/
+	/**
+	 * Array for the gain settings
+	 **/
 	QPointer<Gain>** gain;
 
-    /**
-     * highpass filter
-     **/
+	/**
+	 * highpass filter
+	 **/
 	QPointer<Highpass>** highpass;
 
-    /**
-     * lowpass filter
-     **/
+	/**
+	 * lowpass filter
+	 **/
 	QPointer<Lowpass>** lowpass;
 
 	/**
-	* lowpass filter
-	**/
+	 * lowpass filter
+	 **/
 	QPointer<Bandstop>** bandstop;
 
 	/**
-     * The widget which contains the graphical plots of the AD-data
-     **/
+	 * The widget which contains the graphical plots of the AD-data
+	 **/
 	QPointer<ScopeWindow> attysScopeWindow;
 
 	/**
@@ -148,77 +148,77 @@ public:
 	QPointer<QPushButton> filePushButton;
 
 	/**
-	* port for UDP
-	**/
+	 * port for UDP
+	 **/
 	QPointer<QLineEdit> udpLineEdit;
 
 	/**
-	* switches on UDP broadcast
-	**/
+	 * switches on UDP broadcast
+	 **/
 	QPointer<QCheckBox> udpCheckBox;
 
 	/**
-	* switches on a tone when starting/stopping recording
-	**/
+	 * switches on a tone when starting/stopping recording
+	 **/
 	QPointer<QCheckBox> toneCheckBox;
 
 
- private:
-    /**
-     * Button: Increase the time between samples
-     **/
-	 QPointer<QPushButton> tbIncPushButton;
+private:
+	/**
+	 * Button: Increase the time between samples
+	 **/
+	QPointer<QPushButton> tbIncPushButton;
 
-    /**
-     * Button: Decrease the time between samples
-     **/
-	 QPointer<QPushButton> tbDecPushButton;
+	/**
+	 * Button: Decrease the time between samples
+	 **/
+	QPointer<QPushButton> tbDecPushButton;
 
 /**
  * Text-field: time between samples
  **/
-	 QPointer<QLineEdit> tbInfoLineEdit;
+	QPointer<QLineEdit> tbInfoLineEdit;
 
 /**
  * Button: clears the screen
  **/
-	 QPointer<QPushButton> clearScreenPushButton;
+	QPointer<QPushButton> clearScreenPushButton;
 
-	 QPointer<QPushButton> savePushButton;
-	 QPointer<QPushButton> loadPushButton;
+	QPointer<QPushButton> savePushButton;
+	QPointer<QPushButton> loadPushButton;
 
-private slots:
-    void slotSaveSettings();
-    void slotLoadSettings();
+
+	void slotSaveSettings();
+	void slotLoadSettings();
 
 /**
  * Button to increase the time-base has been pressed
  **/
-    void incTbEvent();
+	void incTbEvent();
 
 /**
  * Reset screen
  **/
-    void resetTbEvent(); 
+	void resetTbEvent(); 
 
 /**
  * Button to decrease the time-base has been pressed
  **/
-    void decTbEvent();
+	void decTbEvent();
     
-    /**
-     * Enter a new filename
-     **/
-    void enterFileName();
-
-    /**
-     * Pressing or releasing the record button
-     **/
-    void recstartstop(int);
+	/**
+	 * Enter a new filename
+	 **/
+	void enterFileName();
 
 	/**
-	* Called when the UDP transmission is on/off
-	**/
+	 * Pressing or releasing the record button
+	 **/
+	void recstartstop(int);
+
+	/**
+	 * Called when the UDP transmission is on/off
+	 **/
 	void udpTransmit();
 
 	void specialChanged();
@@ -227,19 +227,19 @@ private:
 /**
  * Called if a change in the time-base has occurred
  **/
-    void changeTB();
+	void changeTB();
 
 /**
  * returns the timebase
  **/
 public:
-    int getTB() {return tb_us;};
+	int getTB() {return tb_us;};
 
 private:
 /**
  * Time between two samples in ms
  **/
-    int tb_us;
+	int tb_us;
 
 /**
  * Layout which keeps one channel together
@@ -279,14 +279,14 @@ private:
 	QFont* voltageFont;
 	QFont* tbFont;
 
-	private:
-		void readSettings(QSettings &settings);
-		void writeSettings(QSettings &settings);
+private:
+	void readSettings(QSettings &settings);
+	void writeSettings(QSettings &settings);
 
-	public:
-		void setInfo(const char* txt);
+public:
+	void setInfo(const char* txt);
 
-	private:
+private:
 	int restartInfo = 1;
 	
 	char status[256];

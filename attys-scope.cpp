@@ -24,6 +24,7 @@
 
 #include "scopewindow.h"
 #include "attys-scope.h"
+#include "stylesheets.h"
 
 Attys_scope::Attys_scope(QWidget *parent,
 			 int ignoreSettings
@@ -35,21 +36,6 @@ Attys_scope::Attys_scope(QWidget *parent,
 	style.close();
 
         setAutoFillBackground(true);
-
-	// to the get the stuff a bit closer together
-	char styleSheetCombo[] = "padding-left:1px; padding-right:1px";
-#ifdef _WIN32
-	char styleSheetChannel[] = "padding-left:1px; padding-right:1px;";
-	char styleSheetGain[] = "padding-left:1px; padding-right:1px;";
-#else
-	char styleSheetChannel[] = "padding-left:1px; padding-right:1px; min-width: 3.5em;";
-	char styleSheetGain[] = "padding-left:1px; padding-right:1px; min-width: 3.5em;";
-#endif
-	char styleSheetLabel[] = "padding-left:0.5em; padding-right:1px";
-	char styleSheetNoPadding[] = "padding-left:1px; padding-right:1px; width:1em; font-family: courier;";
-	char styleCheckBox[] = "QCheckBox::indicator {width: 2em; height: 2em;}";
-	char styleLineEdit[] = "";
-	char styleProfile[] = "font-size:12px;";
 
 	attysScopeWindow=new ScopeWindow(this);
 
@@ -114,17 +100,17 @@ Attys_scope::Attys_scope(QWidget *parent,
 		specialLayout[n]->addWidget(new QLabel("    "));
 		specialLayout[n]->addWidget(new QLabel("CH1:"));
 		specialLayout[n]->addWidget(special[n][0]);
-		connect(special[n][0], SIGNAL(signalRestart()),
-				this, SLOT(specialChanged()));
+		connect(special[n][0],&Special::signalRestart,
+			this, &Attys_scope::specialChanged);
 		specialLayout[n]->addWidget(new QLabel("    "));
 		specialLayout[n]->addWidget(new QLabel("CH2:"));
 		specialLayout[n]->addWidget(special[n][1]);
-		connect(special[n][1], SIGNAL(signalRestart()),
-			this, SLOT(specialChanged()));
+		connect(special[n][1],&Special::signalRestart,
+			this, &Attys_scope::specialChanged);
 		specialLayout[n]->addWidget(new QLabel(" "));
 		specialLayout[n]->addWidget(current[n]);
-		connect(current[n],SIGNAL(signalRestart()),
-			this, SLOT(specialChanged()));
+		connect(current[n],&Current::signalRestart,
+			this, &Attys_scope::specialChanged);
 		specialLayout[n]->addWidget(new QLabel(" "));
 		allChLayout->addLayout(specialLayout[n], row, 1);
 		row++;
@@ -213,14 +199,14 @@ Attys_scope::Attys_scope(QWidget *parent,
 	filePushButton = new QPushButton( "filename" );
 	filePushButton->setSizePolicy ( QSizePolicy(QSizePolicy::Fixed,
 						    QSizePolicy::Fixed ));
-	connect(filePushButton, SIGNAL( clicked() ),
-		this, SLOT( enterFileName() ) );
+	connect(filePushButton,&QPushButton::clicked,
+		this,&Attys_scope::enterFileName);
 	recLayout->addWidget(filePushButton);
 
 	recLayout->addWidget(new QLabel("    "));
 	recCheckBox = new RecButton();
-	recCheckBox->connect(recCheckBox, SIGNAL( stateChanged(int) ),
-			       this, SLOT( recstartstop(int) ) );
+	recCheckBox->connect(recCheckBox,&RecButton::stateChanged,
+			     this,&Attys_scope::recstartstop);
 	recCheckBox->setEnabled( false );
 	recLayout->addWidget(recCheckBox);
 	recCheckBox->setStyleSheet(styleCheckBox);
@@ -245,8 +231,8 @@ Attys_scope::Attys_scope(QWidget *parent,
 	udpCheckBox = new QCheckBox("Broadcast");
 	udpCheckBox->setSizePolicy(QSizePolicy(QSizePolicy::Fixed,
 		QSizePolicy::Fixed));
-	connect(udpCheckBox, SIGNAL(clicked()),
-		this, SLOT(udpTransmit()));
+	connect(udpCheckBox,&QCheckBox::clicked,
+		this,&Attys_scope::udpTransmit);
 	udpLayout->addWidget(udpCheckBox);
 
 	restLayout->addLayout(udpLayout);
@@ -258,14 +244,14 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	tbIncPushButton = new QPushButton( "slower" );
 
-	connect(tbIncPushButton, SIGNAL( clicked() ),
-		       this, SLOT( incTbEvent() ) );
+	connect(tbIncPushButton,&QPushButton::clicked,
+		       this,&Attys_scope::incTbEvent);
 	
 	tbLayout->addWidget(tbIncPushButton);
 
 	tbDecPushButton = new QPushButton( "faster" );
-	connect(tbDecPushButton, SIGNAL( clicked() ),
-		this, SLOT( decTbEvent() ) );
+	connect(tbDecPushButton,&QPushButton::clicked,
+		this,&Attys_scope::decTbEvent);
 	tbLayout->addWidget(tbDecPushButton);
 
 	tbInfoLineEdit = new QLineEdit();
@@ -274,8 +260,8 @@ Attys_scope::Attys_scope(QWidget *parent,
 	tbLayout->addWidget(tbInfoLineEdit);
 
 	samplingRate = new SamplingRate(isHighSpeed);
-	connect(samplingRate, SIGNAL(signalRestart()),
-		this, SLOT(specialChanged()));
+	connect(samplingRate,&SamplingRate::signalRestart,
+		this,&Attys_scope::specialChanged);
 	samplingRate->setStyleSheet(styleSheetChannel);
 	tbLayout->addWidget(samplingRate);
 
@@ -286,13 +272,13 @@ Attys_scope::Attys_scope(QWidget *parent,
 	statusLayout->addWidget(new QLabel("Config: "));
 	savePushButton = new QPushButton("save config");
 	savePushButton->setStyleSheet(styleProfile);
-	connect(savePushButton, SIGNAL(clicked()),
-		this, SLOT(slotSaveSettings()));
+	connect(savePushButton,&QPushButton::clicked,
+		this,&Attys_scope::slotSaveSettings);
 	statusLayout->addWidget(savePushButton);
 	loadPushButton = new QPushButton("load config");
 	loadPushButton->setStyleSheet(styleProfile);
-	connect(loadPushButton, SIGNAL(clicked()),
-		this, SLOT(slotLoadSettings()));
+	connect(loadPushButton,&QPushButton::clicked,
+		this,&Attys_scope::slotLoadSettings);
 	statusLayout->addWidget(loadPushButton);
 
 	restLayout->addLayout(statusLayout);
