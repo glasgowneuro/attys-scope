@@ -270,6 +270,7 @@ public:
 public:
 	void startPython(QString);
 	void stopPython();
+	bool hasPythonPipe() {return nullptr != pythonPipe;}
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 // mechanisms for re-connect
@@ -306,6 +307,7 @@ private:
 	void processData();
 	void convertSampleToPlot(float**);
 	void updateTime();
+
 };
 
 

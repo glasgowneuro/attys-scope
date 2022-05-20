@@ -475,6 +475,12 @@ void Attys_scope::slotLoadSettings() {
 
 void Attys_scope::slotRunPython() {
 	QString filters(tr("Python scripts (*.py)"));
+	if (attysScopeWindow->hasPythonPipe()) {
+		QMessageBox msgBox;
+		msgBox.setText("Close the python program first.");
+		msgBox.exec();
+		return;
+	}
 
 	QFileDialog dialog(this);
 	dialog.setFileMode(QFileDialog::ExistingFile);

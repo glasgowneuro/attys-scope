@@ -11,6 +11,7 @@ extern "C" {
 #include<fcntl.h>
 #include<stdlib.h>
 #include<fcntl.h>
+#include<signal.h>
 }
 
 #include "scopewindow.h"
@@ -21,7 +22,6 @@ extern "C" {
 #include <initguid.h>
 DEFINE_GUID(g_guidServiceClass, 0xb62c4e8d, 0x62cc, 0x404b, 0xbb, 0xbf, 0xbf, 0x3e, 0x3b, 0xbb, 0x13, 0x74);
 #endif
-
 
 ScopeWindow::ScopeWindow(Attys_scope *attys_scope_tmp)
 	: QWidget(attys_scope_tmp) {
@@ -235,16 +235,17 @@ void ScopeWindow::updateTime() {
 	}
 	attys_scope->setWindowTitle( s );
 
+	std::string s2;
 	if (udpSocket) {
 		if (udpStatus < 0) {
-			attys_scope->setInfo(" UDP broadcast error");
+			s2 = " UDP broadcast error. ";
 		}
-	} else {
-		attys_scope->setInfo("");
 	}
-
+	if (hasPythonPipe()) {
+		s2 = s2 + " Python script running. ";
+	}
+	attys_scope->setInfo(s2.c_str());
 }
-
 
 void ScopeWindow::setFilename(QString name,int tsv) {
 	rec_filename = name;

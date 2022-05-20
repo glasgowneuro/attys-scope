@@ -22,12 +22,9 @@ MainWindow::MainWindow(int ignoreSettings)
 	connect(loadConfigAct,&QAction::triggered,attys_scope,&Attys_scope::slotLoadSettings);
 
 	QMenu *pyMenu = menuBar()->addMenu(tr("&Python"));
-	QAction *runPythonAct = new QAction(tr("&Run (to sys.stdin)"), this);
+	QAction *runPythonAct = new QAction(tr("&Run"), this);
 	pyMenu->addAction(runPythonAct);
 	connect(runPythonAct,&QAction::triggered,attys_scope,&Attys_scope::slotRunPython);	
-	QAction *stopPythonAct = new QAction(tr("&Stop script"), this);
-	pyMenu->addAction(stopPythonAct);
-	connect(stopPythonAct,&QAction::triggered,attys_scope,&Attys_scope::slotStopPython);	
 }
 
 
