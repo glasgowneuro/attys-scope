@@ -7,13 +7,15 @@
 
 class MainWindow : public QMainWindow
 {
-    Q_OBJECT
-
+	Q_OBJECT
+	
 public:
-    MainWindow(int ignoreSettings = 0);
-
+	MainWindow(int ignoreSettings = 0);
+	
 private:
-    Attys_scope* attys_scope;
+	Attys_scope* attys_scope;
+	
+	void slotGithub();
 };
 
 #endif

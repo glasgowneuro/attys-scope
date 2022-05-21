@@ -10,24 +10,28 @@ Plots data from a file recorded by attys_scope.
 
 ![alt tag](plot_demo_data_screenshot.png)
 
-## realtime_plot.py
-Realtime plot of data: The scripts reads the data from
-attys_scope via its UDP port.
+## Python realtime plugins
 
-## realtime_bargraph.py
+Start these plugins from Attys-scope by selecting `Python->Run`.
+
+### realtime_plot.py
+Realtime plot of data: Plots the data from the 1st selected
+channel.
+
+### realtime_bargraph.py
 Shows in realtime the amplitude of the 1st two selected
 signals in attys_scope
 
 ![alt tag](realtime_bargraph_screenshot.png)
 
-## realtime_spectrum.py
+### realtime_spectrum.py
 Shows in realtime the Fourier Spectrum of the 1st channel selected
 in a semilog scale.
 
 ![alt tag](realtime_spectrum.png)
 ![alt tag](realtime_spectrum_eeg_alpha_waves.png)
 
-## realtime_heartrate.py
+### realtime_heartrate.py
 Realtime heartrate detection. The actual detector is in the
 module ecg_analysis.py
 

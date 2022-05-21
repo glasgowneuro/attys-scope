@@ -1,5 +1,7 @@
 #include <QtWidgets>
 #include "mainwindow.h"
+#include <QDesktopServices>
+#include <QUrl>
 
 MainWindow::MainWindow(int ignoreSettings)
 	: attys_scope(new Attys_scope(this,ignoreSettings))
@@ -24,9 +26,17 @@ MainWindow::MainWindow(int ignoreSettings)
 	QMenu *pyMenu = menuBar()->addMenu(tr("&Python"));
 	QAction *runPythonAct = new QAction(tr("&Run"), this);
 	pyMenu->addAction(runPythonAct);
-	connect(runPythonAct,&QAction::triggered,attys_scope,&Attys_scope::slotRunPython);	
+	connect(runPythonAct,&QAction::triggered,attys_scope,&Attys_scope::slotRunPython);
+
+	QMenu *helpMenu = menuBar()->addMenu(tr("&Help"));
+	QAction *runGithub = new QAction(tr("&github"), this);
+	helpMenu->addAction(runGithub);
+	connect(runGithub,&QAction::triggered,this,&MainWindow::slotGithub);	
 }
 
+void MainWindow::slotGithub() {
+	QDesktopServices::openUrl(QUrl("https://github.com/glasgowneuro/attys-scope")); 
+}
 
 
 /////////////////////////////////////////////////////////////////////
