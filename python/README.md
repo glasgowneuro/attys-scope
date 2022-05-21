@@ -22,17 +22,12 @@ channel.
 Shows in realtime the amplitude of the 1st two selected
 signals in attys_scope
 
-![alt tag](realtime_bargraph_screenshot.png)
-
 ### realtime_spectrum.py
 Shows in realtime the Fourier Spectrum of the 1st channel selected
 in a semilog scale.
 
-![alt tag](realtime_spectrum.png)
 ![alt tag](realtime_spectrum_eeg_alpha_waves.png)
 
 ### realtime_heartrate.py
 Realtime heartrate detection. The actual detector is in the
 module ecg_analysis.py
-
-![alt tag](realtime_heartrate.png)
