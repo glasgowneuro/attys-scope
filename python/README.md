@@ -28,4 +28,7 @@ in a semilog scale.
 Realtime heartrate detection. The actual detector is in the
 module ecg_analysis.py
 
+
+Alpha waves in an EEG while closing the eyes:
+
 ![alt tag](realtime_spectrum_eeg_alpha_waves.png)
