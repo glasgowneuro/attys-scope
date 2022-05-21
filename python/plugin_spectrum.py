@@ -34,16 +34,23 @@ doRun = True
 
 # This reads the data from the socket in an endless loop
 # and stores the data in a buffer
-def readSocket():
+def readStdin():
     global ringbuffer
+    global doRun
+    global ani
     while doRun:
         # check if data is available
         data = sys.stdin.readline()
+        if not data:
+            print("Stopping")
+            doRun = False
+            ani.event_source.stop()
+            break
         values = np.array(data.split(','),dtype=np.float32)
         ringbuffer.append(values)
 
 # start reading data from socket
-t = threading.Thread(target=readSocket)
+t = threading.Thread(target=readStdin)
 t.start()
 
 # now let's plot the data

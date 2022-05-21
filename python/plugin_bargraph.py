@@ -23,14 +23,20 @@ doRun = True
 # this just overwrites the amplitudes as fast as possible
 # for an oscilloscope plot we need a proper ringbuffer here!
 def readSocket():
-    global amplitudes 
+    global amplitudes
+    global doRun
+    global ani
     while doRun:
         # check if data is available
         data = sys.stdin.readline()
+        if not data:
+            print("Stopping")
+            doRun = False
+            ani.event_source.stop()
+            break       
         values = np.array(data.split(','),dtype=np.float32)
         values = np.fabs(values)
         amplitudes = values[11:13]
-        
 
 # start reading it in another thread
 t = threading.Thread(target=readSocket)

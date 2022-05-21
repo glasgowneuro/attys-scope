@@ -9,9 +9,18 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import threading
+import ecg_analysis
 
-# attys channel to be plotted from 
-channel = 7
+# Read from 1st filtered selected channel (comes after all the
+# unfiltered in the UDP packet).
+# Filter settings:
+# For ECG set the gain to approx 1000, Highpass at 1Hz and mains notch.
+channel = 11
+
+# sampling rate
+fs = 250
+
+heartrate_detector = ecg_analysis.heartrate_detector(fs)
 
 #That's our ringbuffer which accumluates the samples
 #It's emptied every time when the plot window below
@@ -23,37 +32,56 @@ doRun = True
 
 # This reads the data from the socket in an endless loop
 # and stores the data in a buffer
-def readstdin():
+def readStdin():
     global ringbuffer
     global channel
+    global doRun
+    global ani
     while doRun:
         # check if data is available
         data = sys.stdin.readline()
+        if not data:
+            print("Stopping")
+            doRun = False
+            ani.event_source.stop()
+            break       
         values = np.array(data.split(','),dtype=np.float32)
         ringbuffer.append(values[channel])
+        
 
 # start reading data from socket
-t = threading.Thread(target=readstdin)
+t = threading.Thread(target=readStdin)
 t.start()
 
 # now let's plot the data
 fig, ax = plt.subplots()
 # that's our plotbuffer
-plotbuffer = np.zeros(500)
+plotbuffer = np.zeros(60)
 # plots an empty line
 line, = ax.plot(plotbuffer)
 # axis
-ax.set_ylim(-2, 2)
-
+ax.set_ylim(0, 200)
+ax.set_xlabel('Heartbeat #')
+ax.set_ylabel('Beats per minute')
+ax.set_title('Heartrate')
 
 # receives the data from the generator below
 def update(data):
+    global heartrate_detector
     global plotbuffer
-    # add new data to the buffer
-    plotbuffer=np.append(plotbuffer,data)
-    # only keep the 500 newest ones and discard the old ones
-    plotbuffer=plotbuffer[-500:]
-    # set the new 500 points of channel 9
+    
+    for d in data:
+        heartrate_detector.detect(d)
+        rate = heartrate_detector.bpm
+        heartrate_detector.bpm = 0
+        
+        # add new data to the buffer
+        if rate>0:
+            plotbuffer=np.append(plotbuffer,rate)
+        
+    # only keep the 60 newest ones and discard the old ones
+    plotbuffer=plotbuffer[-60:]
+    # set the new 60 points
     line.set_ydata(plotbuffer)
     return line,
 
