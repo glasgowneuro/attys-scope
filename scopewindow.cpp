@@ -309,34 +309,46 @@ void ScopeWindow::writeUDP() {
 }
 
 void ScopeWindow::startPython(QString filename) {
-	stopPython();
+	PythonPipe p;
+	p.filename = filename.toStdString();
 	filename = "python "+filename;
-	pythonPipe = popen(filename.toLocal8Bit().data(),"w");
-	if (nullptr == pythonPipe) {
+	p.pipe = popen(filename.toLocal8Bit().data(),"w");
+	if (nullptr == p.pipe) {
 		QString msg;
 		msg = "Command >>"+filename+"<< failed.";
 		QMessageBox* msgBox = new QMessageBox;
 		msgBox->setText(msg);
 		msgBox->setModal(true);
 		msgBox->show();
+		return;
 	}
+	pythonPipes.push_back(p);
 }
 
 void ScopeWindow::stopPython() {
-	if (nullptr != pythonPipe) {
-		pclose(pythonPipe);
-		pythonPipe = nullptr;
+	for(auto& p:pythonPipes) {
+		pclose(p.pipe);
 	}
+	pythonPipes.clear();
 }
 
 void ScopeWindow::writePython() {
-	if (nullptr == pythonPipe) return;
-	char tmp[1024];
-	writeCSV(tmp);
-	int r = fprintf(pythonPipe,"%s",tmp);
-	if (r < 0) {
-		stopPython();
+	for(auto& p:pythonPipes) {
+		char tmp[1024];
+		writeCSV(tmp);
+		int r = fprintf(p.pipe,"%s",tmp);
+		if (r < 0) {
+			p.pipe = nullptr;
+		}
 	}
+	pythonPipes.erase(
+		std::remove_if(
+			pythonPipes.begin(), 
+			pythonPipes.end(),
+			[](PythonPipe const & p) { return nullptr == p.pipe; }
+			), 
+		pythonPipes.end()
+		);
 }
 
 void ScopeWindow::openFile() {

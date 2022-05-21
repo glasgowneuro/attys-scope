@@ -259,9 +259,14 @@ private:
 	QPointer<QUdpSocket> udpSocket = NULL;
 	int udpPort = 65000;
 	int udpStatus = 0;
+
+	struct PythonPipe {
+		FILE* pipe = nullptr;
+		std::string filename;
+	};
 	
 	void writePython();
-	FILE* pythonPipe = nullptr;
+	std::vector<PythonPipe> pythonPipes;
 
 public:
 	void startUDP(int port);
@@ -270,7 +275,7 @@ public:
 public:
 	void startPython(QString);
 	void stopPython();
-	bool hasPythonPipe() {return nullptr != pythonPipe;}
+	bool hasPythonPipe() {return pythonPipes.size()>0;}
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 // mechanisms for re-connect
