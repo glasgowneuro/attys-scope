@@ -8,8 +8,6 @@ Make sure attys_scope's broadcast is on.
 ## plot_demo_data.py
 Plots data from a file recorded by attys_scope.
 
-![alt tag](plot_demo_data_screenshot.png)
-
 ## Python realtime plugins
 
 Start these plugins from Attys-scope by selecting `Python->Run`.
@@ -26,8 +24,8 @@ signals in attys_scope
 Shows in realtime the Fourier Spectrum of the 1st channel selected
 in a semilog scale.
 
-![alt tag](realtime_spectrum_eeg_alpha_waves.png)
-
 ### realtime_heartrate.py
 Realtime heartrate detection. The actual detector is in the
 module ecg_analysis.py
+
+![alt tag](realtime_spectrum_eeg_alpha_waves.png)
