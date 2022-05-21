@@ -239,6 +239,8 @@ void ScopeWindow::updateTime() {
 	if (udpSocket) {
 		if (udpStatus < 0) {
 			s2 = " UDP broadcast error. ";
+		} else {
+			s2 = " UDP broadcast. ";
 		}
 	}
 	if (hasPythonPipe()) {

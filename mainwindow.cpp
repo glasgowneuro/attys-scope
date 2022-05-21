@@ -28,6 +28,15 @@ MainWindow::MainWindow(int ignoreSettings)
 	pyMenu->addAction(runPythonAct);
 	connect(runPythonAct,&QAction::triggered,attys_scope,&Attys_scope::slotRunPython);
 
+	QMenu *udpMenu = menuBar()->addMenu(tr("&Broadcast"));
+	QAction *startUDPAct = new QAction(tr("&Start UDP"), this);
+	udpMenu->addAction(startUDPAct);
+	connect(startUDPAct,&QAction::triggered,attys_scope,&Attys_scope::slotStartUDP);
+
+	QAction *stopUDPAct = new QAction(tr("&Stop UDP"), this);
+	udpMenu->addAction(stopUDPAct);
+	connect(stopUDPAct,&QAction::triggered,attys_scope,&Attys_scope::slotStopUDP);
+
 	QMenu *helpMenu = menuBar()->addMenu(tr("&Help"));
 	QAction *runGithub = new QAction(tr("&github"), this);
 	helpMenu->addAction(runGithub);

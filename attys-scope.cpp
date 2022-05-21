@@ -11,6 +11,7 @@
 #include <QScrollArea>
 #include <QMessageBox>
 #include <qsplashscreen.h>
+#include <QInputDialog>
 
 #include <stdio.h>
 #include <fcntl.h>
@@ -212,24 +213,6 @@ Attys_scope::Attys_scope(QWidget *parent,
 
 	restLayout->addLayout(recLayout);
 
-
-	udpLayout = new QHBoxLayout();
-
-	udpLayout->addWidget(new QLabel("UDP broadcast on port: "));
-
-	udpLineEdit = new QLineEdit("65000");
-	udpLineEdit->setStyleSheet(styleLineEdit);
-	udpLayout->addWidget(udpLineEdit);
-
-	udpCheckBox = new QCheckBox("Broadcast");
-	udpCheckBox->setSizePolicy(QSizePolicy(QSizePolicy::Fixed,
-		QSizePolicy::Fixed));
-	connect(udpCheckBox,&QCheckBox::clicked,
-		this,&Attys_scope::udpTransmit);
-	udpLayout->addWidget(udpCheckBox);
-
-	restLayout->addLayout(udpLayout);
-
 	tbLayout = new QHBoxLayout();
 
 	tbLabel = new QLabel("Timebase: ");
@@ -324,8 +307,7 @@ void Attys_scope::readSettings(QSettings &settings) {
 	int nch_enabled = 0;
 
 	settings.beginGroup(SETTINGS_UDP);
-	udpLineEdit->setText(QString::number(settings.value(SETTINGS_UDP_PORT, 65000).toInt()));
-	udpCheckBox->setChecked(settings.value(SETTINGS_UDP_ON, 0).toBool());
+	udpPort = settings.value(SETTINGS_UDP_PORT, 65000).toInt();
 	settings.endGroup();
 
 	settings.beginGroup(SETTINGS_CHANNELS);
@@ -382,15 +364,13 @@ void Attys_scope::readSettings(QSettings &settings) {
 	// at least one should be active not to make the user nervous.
 	if (nch_enabled == 0)
 		channel[0][0]->setChannel(0);
-	udpTransmit();
 }
 
 void Attys_scope::writeSettings(QSettings & settings)
 {
 
 	settings.beginGroup(SETTINGS_UDP);
-	settings.setValue(SETTINGS_UDP_PORT, udpLineEdit->text().toInt());
-	settings.setValue(SETTINGS_UDP_ON, udpCheckBox->isChecked());
+	settings.setValue(SETTINGS_UDP_PORT, udpPort);
 	settings.endGroup();
 
 	int channels = AttysComm::NCHANNELS;
@@ -621,16 +601,21 @@ void Attys_scope::resetTbEvent() {
 };
 
 
-void Attys_scope::udpTransmit() {
-	if (udpCheckBox->isChecked()) {
-		udpLineEdit->setEnabled(0);
-		int port = udpLineEdit->text().toInt();
+void Attys_scope::slotStartUDP() {
+	bool ok;
+	QString text = QInputDialog::getText(this, tr("QInputDialog::getText()"),
+					     tr("UDP Port #"),
+					     QLineEdit::Normal,
+					     "65000",
+					     &ok);
+	if (ok && !text.isEmpty()) {
+		const int port = text.toInt();
 		attysScopeWindow->startUDP(port);
 	}
-	else {
-		attysScopeWindow->stopUDP();
-		udpLineEdit->setEnabled(1);
-	}
+}
+
+void Attys_scope::slotStopUDP() {
+	attysScopeWindow->stopUDP();
 };
 
 

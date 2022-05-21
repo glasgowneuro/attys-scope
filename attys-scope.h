@@ -148,16 +148,6 @@ public:
 	QPointer<QPushButton> filePushButton;
 
 	/**
-	 * port for UDP
-	 **/
-	QPointer<QLineEdit> udpLineEdit;
-
-	/**
-	 * switches on UDP broadcast
-	 **/
-	QPointer<QCheckBox> udpCheckBox;
-
-	/**
 	 * switches on a tone when starting/stopping recording
 	 **/
 	QPointer<QCheckBox> toneCheckBox;
@@ -217,14 +207,18 @@ private:
 	 **/
 	void recstartstop(int);
 
+public:
 	/**
 	 * Called when the UDP transmission is on/off
 	 **/
-	void udpTransmit();
+	void slotStartUDP();
+	void slotStopUDP();
+
+private:
+	int udpPort = 65000;
 
 	void specialChanged();
 
-private:
 /**
  * Called if a change in the time-base has occurred
  **/
@@ -270,8 +264,6 @@ private:
 	QPointer<QHBoxLayout> statusLayout;
 
 	QPointer<QHBoxLayout> recLayout;
-
-	QPointer<QHBoxLayout> udpLayout;
 
 	QPointer<QLabel> recLabel;
 
