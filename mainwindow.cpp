@@ -1,5 +1,6 @@
-#include <QtWidgets>
 #include "mainwindow.h"
+
+#include <QtWidgets>
 #include <QDesktopServices>
 #include <QUrl>
 

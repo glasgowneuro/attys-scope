@@ -314,7 +314,11 @@ void ScopeWindow::startPython(QString filename) {
 	PythonPipe p;
 	p.filename = filename.toStdString();
 	filename = "python "+filename;
-	p.pipe = popen(filename.toLocal8Bit().data(),"w");
+#ifdef _WIN32
+	p.pipe = _popen(filename.toLocal8Bit().data(),"w");
+#else
+	p.pipe = popen(filename.toLocal8Bit().data(), "w");
+#endif
 	if (nullptr == p.pipe) {
 		QString msg;
 		msg = "Command >>"+filename+"<< failed.";
@@ -329,7 +333,11 @@ void ScopeWindow::startPython(QString filename) {
 
 void ScopeWindow::stopPython() {
 	for(auto& p:pythonPipes) {
+#ifdef _WIN32
+		_pclose(p.pipe);
+#else
 		pclose(p.pipe);
+#endif
 	}
 	pythonPipes.clear();
 }

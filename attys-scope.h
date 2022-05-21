@@ -32,7 +32,7 @@ class Attys_scope;
 #include "audiobeep.h"
 
 // version number
-#define VERSION "2.3.0"
+#define VERSION "2.4.0"
 
 #define ATTYS_STRING "ATTYS"
 #define PROGRAM_NAME "attys-scope"
