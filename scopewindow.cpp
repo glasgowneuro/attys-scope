@@ -312,7 +312,7 @@ void ScopeWindow::writeUDP() {
 
 void ScopeWindow::startPython(QString filename) {
 	PythonPipe p;
-	int r = p.start(filename.toStdString());
+	int r = p.start(filename);
 	if (r < 0) {
 		QString msg;
 		msg = "Command >>"+filename+"<< failed.";
@@ -342,7 +342,7 @@ void ScopeWindow::writePython() {
 		std::remove_if(
 			pythonPipes.begin(), 
 			pythonPipes.end(),
-			[](PythonPipe const & p) { return p.hasError; }
+			[](PythonPipe const& p) { return p.processFinished; }
 			), 
 		pythonPipes.end()
 		);

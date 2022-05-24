@@ -1,32 +1,19 @@
 #pragma once
 
 #include<stdio.h>
-#include<string>
+#include<qobject.h>
+#include<qprocess.h>
 
-#ifdef _WIN32
-#include <windows.h> 
-#include <tchar.h>
-#include <strsafe.h>
-#endif
+class PythonPipe {
 
-struct PythonPipe {
-#ifdef _WIN32
-#define BUFSIZE 4096 
-
-	HANDLE g_hChildStd_IN_Rd = NULL;
-	HANDLE g_hChildStd_IN_Wr = NULL;
-	HANDLE g_hChildStd_OUT_Rd = NULL;
-	HANDLE g_hChildStd_OUT_Wr = NULL;
-
-	HANDLE g_hInputFile = NULL;
-
-	int startWin();
-#else
-	FILE* pipe = nullptr;
-#endif
-	std::string filename;
-	int start(std::string theFilename);
+public:
+	int start(QString theFilename, QObject* parent = nullptr);
 	void stop();
 	void write(const char* data);
-	bool hasError = false;
+	inline bool hasError() const {
+		return ((qprocess->error() < QProcess::UnknownError));
+	}
+	bool processFinished = false;
+private:
+	QProcess* qprocess = nullptr;
 };
