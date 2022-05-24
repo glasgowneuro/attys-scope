@@ -45,6 +45,7 @@ class ScopeWindow;
 
 #include "AttysComm.h"
 #include "AttysScan.h"
+#include "pythonpipe.h"
 
 #define MAX_DISP_X 4096 // max screen width
 
@@ -260,11 +261,6 @@ private:
 	int udpPort = 65000;
 	int udpStatus = 0;
 
-	struct PythonPipe {
-		FILE* pipe = nullptr;
-		std::string filename;
-	};
-	
 	void writePython();
 	std::vector<PythonPipe> pythonPipes;
 
