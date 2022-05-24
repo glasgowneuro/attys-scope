@@ -4,11 +4,12 @@ int PythonPipe::start(std::string theFilename) {
 	filename = theFilename;
 	filename = "python " + filename;
 #ifdef _WIN32
-    return startWin();
+	return startWin();
 #else
 	pipe = popen(filename.c_str(), "w");
-    if (nullptr == pipe) return errno;
+	if (nullptr == pipe) return errno;
 #endif
+	hasError = false;
 	return 0;
 }
 
@@ -29,6 +30,11 @@ void PythonPipe::write(const char* data)
     bSuccess = WriteFile(g_hChildStd_IN_Wr, data, strlen(data), &dwWritten, NULL);
     if (!bSuccess) {
         hasError = true;
+    }
+#else
+    int r = fputs(data,pipe);
+    if (r < 0) {
+	    hasError = true;
     }
 #endif
 }
