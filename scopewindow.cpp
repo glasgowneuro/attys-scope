@@ -336,16 +336,13 @@ void ScopeWindow::writePython() {
 	for(auto& p:pythonPipes) {
 		char tmp[1024];
 		writeCSV(tmp);
-		int r = fprintf(p.pipe,"%s",tmp);
-		if (r < 0) {
-			p.pipe = nullptr;
-		}
+		p.write(tmp);
 	}
 	pythonPipes.erase(
 		std::remove_if(
 			pythonPipes.begin(), 
 			pythonPipes.end(),
-			[](PythonPipe const & p) { return nullptr == p.pipe; }
+			[](PythonPipe const & p) { return p.hasError; }
 			), 
 		pythonPipes.end()
 		);
