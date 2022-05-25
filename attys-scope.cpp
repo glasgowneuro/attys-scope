@@ -12,6 +12,7 @@
 #include <QMessageBox>
 #include <qsplashscreen.h>
 #include <QInputDialog>
+#include <QWindow>
 
 #include <stdio.h>
 #include <fcntl.h>
@@ -285,8 +286,14 @@ Attys_scope::Attys_scope(QWidget *parent,
 		sprintf(status, "%d Attys", attysScan.getNAttysDevices());
 	}
 	statusLabel->setText(status);
-}
 
+	logWindow = new LogWindow(this);
+	QRect rect = QStyle::alignedRect(layoutDirection(), Qt::AlignBottom, QSize(width(), height()/3), geometry());
+	logWindow->setGeometry(rect);
+	for(auto& p:attysScopeWindow->pythonPipes) {
+		connect(&p,&PythonPipe::pythonMessage,logWindow,&LogWindow::addText);
+	}
+}
 
 // config constants
 #define SETTINGS_UDP "udp"

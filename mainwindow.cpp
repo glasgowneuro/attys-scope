@@ -29,6 +29,10 @@ MainWindow::MainWindow(int ignoreSettings)
 	pyMenu->addAction(runPythonAct);
 	connect(runPythonAct,&QAction::triggered,attys_scope,&Attys_scope::slotRunPython);
 
+	QAction *runPythonLog = new QAction(tr("&Console"), this);
+	pyMenu->addAction(runPythonLog);
+	connect(runPythonLog,&QAction::triggered,attys_scope,&Attys_scope::slotLogPython);
+
 	QMenu *udpMenu = menuBar()->addMenu(tr("&Broadcast"));
 	QAction *startUDPAct = new QAction(tr("&Start UDP"), this);
 	udpMenu->addAction(startUDPAct);
@@ -41,7 +45,7 @@ MainWindow::MainWindow(int ignoreSettings)
 	QMenu *helpMenu = menuBar()->addMenu(tr("&Help"));
 	QAction *runGithub = new QAction(tr("&github"), this);
 	helpMenu->addAction(runGithub);
-	connect(runGithub,&QAction::triggered,this,&MainWindow::slotGithub);	
+	connect(runGithub,&QAction::triggered,this,&MainWindow::slotGithub);
 }
 
 void MainWindow::slotGithub() {

@@ -30,9 +30,10 @@ class Attys_scope;
 #include "AttysComm.h"
 #include "AttysScan.h"
 #include "audiobeep.h"
+#include "pythonpipe.h"
 
 // version number
-#define VERSION "2.4.0"
+#define VERSION "2.5.0"
 
 #define ATTYS_STRING "ATTYS"
 #define PROGRAM_NAME "attys-scope"
@@ -180,6 +181,7 @@ public:
 
 	void slotRunPython();
 	void slotStopPython();
+	void slotLogPython() {logWindow->show();};
 
 private:
 /**
@@ -285,6 +287,8 @@ private:
 	char status[256];
 
 	AudioBeep* audiobeep;
+
+	LogWindow* logWindow;
 };
 
 

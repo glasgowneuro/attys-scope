@@ -8,6 +8,8 @@ class ScopeWindow;
 
 #define MAXBUFFER 65536
 
+#define MAXPYTHONPIPES 16
+
 #include <QWidget>
 #include <QPushButton>
 #include <QCheckBox>
@@ -16,6 +18,7 @@ class ScopeWindow;
 #include <QTimerEvent>
 #include <QBasicTimer>
 #include <QUdpSocket>
+#include <QList>
 
 #ifdef __linux__ 
 #include<sys/ioctl.h>
@@ -262,7 +265,6 @@ private:
 	int udpStatus = 0;
 
 	void writePython();
-	std::vector<PythonPipe> pythonPipes;
 
 public:
 	void startUDP(int port);
@@ -271,7 +273,13 @@ public:
 public:
 	void startPython(QString);
 	void stopPython();
-	bool hasPythonPipe() {return pythonPipes.size()>0;}
+	bool hasPythonPipe() {
+		for(auto &p:pythonPipes) {
+			if (p.running()) return true;
+		}
+		return false;
+	}
+	PythonPipe pythonPipes[MAXPYTHONPIPES];
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 // mechanisms for re-connect

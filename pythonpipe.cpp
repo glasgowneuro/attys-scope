@@ -1,25 +1,23 @@
 #include "pythonpipe.h"
 #include <qobject.h>
 
-int PythonPipe::start(QString filename, QObject* parent) {
+int PythonPipe::start(QString filename) {
 	filename = filename;
 	filename = "python " + filename;
-	processFinished = false;
-    qprocess = new QProcess(parent);
-	qprocess->connect(qprocess, (void(QProcess::*)(int)) & QProcess::finished, [=](int) mutable {processFinished=true;});
-	qprocess->start(filename);
+	isRunning = true;
+	qprocess.start(filename);
 	return 0;
 }
 
 void PythonPipe::stop() {
-    qprocess->close();
-	delete qprocess;
+	qprocess.close();
+	isRunning = false;
 }
 
 void PythonPipe::write(const char* data)
 {
-	if (qprocess->state() == QProcess::Running) {
-		qprocess->write(data);
+	if (!isRunning) return;
+	if (qprocess.state() == QProcess::Running) {
+		qprocess.write(data);
 	}
 }
-

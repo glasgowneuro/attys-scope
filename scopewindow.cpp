@@ -311,25 +311,34 @@ void ScopeWindow::writeUDP() {
 }
 
 void ScopeWindow::startPython(QString filename) {
-	PythonPipe p;
-	int r = p.start(filename);
-	if (r < 0) {
-		QString msg;
-		msg = "Command >>"+filename+"<< failed.";
-		QMessageBox* msgBox = new QMessageBox;
-		msgBox->setText(msg);
-		msgBox->setModal(true);
-		msgBox->show();
-		return;
+	for(auto& p:pythonPipes) {
+		if (!(p.running())) {
+			int r = p.start(filename);
+			if (r < 0) {
+				QString msg;
+				msg = "Command >>"+filename+"<< failed.";
+				QMessageBox* msgBox = new QMessageBox;
+				msgBox->setText(msg);
+				msgBox->setModal(true);
+				msgBox->show();
+				return;
+			}
+			return;
+		}
 	}
-	pythonPipes.push_back(p);
+	QString msg;
+	msg = "Too many python scripts are running. The command >>"+filename+"<< could not be started.";
+	QMessageBox* msgBox = new QMessageBox;
+	msgBox->setText(msg);
+	msgBox->setModal(true);
+	msgBox->show();
+	return;
 }
 
 void ScopeWindow::stopPython() {
 	for(auto& p:pythonPipes) {
 		p.stop();
 	}
-	pythonPipes.clear();
 }
 
 void ScopeWindow::writePython() {
@@ -338,14 +347,6 @@ void ScopeWindow::writePython() {
 		writeCSV(tmp);
 		p.write(tmp);
 	}
-	pythonPipes.erase(
-		std::remove_if(
-			pythonPipes.begin(), 
-			pythonPipes.end(),
-			[](PythonPipe const& p) { return p.processFinished; }
-			), 
-		pythonPipes.end()
-		);
 }
 
 void ScopeWindow::openFile() {
