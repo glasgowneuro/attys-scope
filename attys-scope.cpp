@@ -288,8 +288,6 @@ Attys_scope::Attys_scope(QWidget *parent,
 	statusLabel->setText(status);
 
 	logWindow = new LogWindow(this);
-	QRect rect = QStyle::alignedRect(layoutDirection(), Qt::AlignBottom, QSize(width(), height()/3), geometry());
-	logWindow->setGeometry(rect);
 	for(auto& p:attysScopeWindow->pythonPipes) {
 		connect(&p,&PythonPipe::pythonMessage,logWindow,&LogWindow::addText);
 	}

@@ -43,6 +43,7 @@ public:
 		textedit = new QTextEdit;
 		verticalLayout->addWidget(textedit);
 		setLayout(verticalLayout);
+		setWindowTitle("Python console output");
 	}
 	void addText(QString t) {
 		textedit->append(t);

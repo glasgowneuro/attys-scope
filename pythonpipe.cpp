@@ -24,7 +24,7 @@ int PythonPipe::start(QString filename) {
 	filename = filename;
 	filename = "python " + filename;
 	isRunning = true;
-	qprocess.start(filename,QProcess::Unbuffered | QProcess::ReadWrite);
+	qprocess.start(filename);
 	return 0;
 }
 
