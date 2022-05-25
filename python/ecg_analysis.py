@@ -102,7 +102,7 @@ class heartrate_detector:
                         self.ignoreRRvalue = self.ignoreRRvalue - 1
                     else:
                         self.bpm = tbpm
-                        print(self.bpm," BPM")
+                        print(self.bpm," BPM",flush=True)
                 else:
                     self.ignoreRRvalue = 3
                 self.t2 = self.timestamp

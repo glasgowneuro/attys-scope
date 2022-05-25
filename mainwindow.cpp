@@ -15,13 +15,18 @@ MainWindow::MainWindow(int ignoreSettings)
 	style.close();
 	
         setAutoFillBackground(true);
+
+	QMenu *attysScopeMenu = menuBar()->addMenu(tr("&attys-scope"));
+	QAction *quitAct = new QAction(tr("&Exit"), this);
+	attysScopeMenu->addAction(quitAct);
+	connect(quitAct,&QAction::triggered,attys_scope,&QCoreApplication::quit);
 	
-	QMenu *fileMenu = menuBar()->addMenu(tr("&Config"));
+	QMenu *configMenu = menuBar()->addMenu(tr("&Config"));
 	QAction *saveConfigAct = new QAction(tr("&Save"), this);
-	fileMenu->addAction(saveConfigAct);
+	configMenu->addAction(saveConfigAct);
 	connect(saveConfigAct,&QAction::triggered,attys_scope,&Attys_scope::slotSaveSettings);
 	QAction *loadConfigAct = new QAction(tr("&Load"), this);
-	fileMenu->addAction(loadConfigAct);
+	configMenu->addAction(loadConfigAct);
 	connect(loadConfigAct,&QAction::triggered,attys_scope,&Attys_scope::slotLoadSettings);
 
 	QMenu *pyMenu = menuBar()->addMenu(tr("&Python"));

@@ -7,6 +7,34 @@
 #include<qdialog.h>
 #include<qtextedit.h>
 #include<QVBoxLayout>
+#include<QFileInfo>
+
+
+class PythonPipe : public QObject {
+	
+	Q_OBJECT
+
+public:
+	PythonPipe();
+	int start(QString theFilename);
+	void stop();
+	void write(const char* data);
+	inline bool running() const {
+		return isRunning;
+	}
+	~PythonPipe() {
+		stop();	
+	}
+signals:
+	void pythonMessage(QString s);
+private:
+	bool isRunning = false;
+	QProcess qprocess;
+	QFileInfo pythonScriptName;
+};
+
+
+
 
 class LogWindow : public QDialog {
 public:
@@ -23,36 +51,11 @@ private:
 	QTextEdit *textedit;
 };
 
-class PythonPipe : public QObject {
-	
-	Q_OBJECT
 
-public:
-	PythonPipe() : QObject() {
-		connect(&qprocess, (void(QProcess::*)(int)) & QProcess::finished, [this](int) mutable {isRunning = false;});
-		connect(&qprocess, &QProcess::readyReadStandardOutput, [this]() {
-									       QByteArray tmp = qprocess.readAllStandardOutput();
-									       fprintf(stderr,"%s",tmp.constData());
-									       pythonMessage(tmp);
-								      });
-		connect(&qprocess, &QProcess::readyReadStandardError, [this]() {
-									       QByteArray tmp = qprocess.readAllStandardError();
-									       fprintf(stderr,"%s",tmp.constData());
-									       pythonMessage(tmp);
-								      });
-	}
 
-	int start(QString theFilename);
-	void stop();
-	void write(const char* data);
-	inline bool running() const {
-		return isRunning;
-	}
-signals:
-	void pythonMessage(QString s);
-private:
-	bool isRunning = false;
-	QProcess qprocess;
-};
+
+
+
+
 
 #endif
