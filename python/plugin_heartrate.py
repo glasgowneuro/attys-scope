@@ -2,6 +2,8 @@
 """
 @author: Bernd Porr, mail@berndporr.me.uk
 
+Plots the heartrate in realtime. Start from
+within atty-scope.
 """
 
 import sys
@@ -11,8 +13,8 @@ import matplotlib.animation as animation
 import threading
 import ecg_analysis
 
-# Read from 1st filtered selected channel (comes after all the
-# unfiltered in the UDP packet).
+# Reads from 1st filtered selected channel (comes after all the
+# unfiltered packets).
 # Filter settings:
 # For ECG set the gain to approx 1000, Highpass at 1Hz and mains notch.
 channel = 11

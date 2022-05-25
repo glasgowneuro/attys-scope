@@ -3,8 +3,8 @@
 @author: Bernd Porr, mail@berndporr.me.uk
 
 Plots the frequency spectrum of the 1st selected channel in
-Attys scope
-
+attys-scope.
+Start from attys-scope.
 """
 
 import sys
@@ -12,6 +12,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import threading
+import scipy.signal as signal
+
+# sampling rate
+fs = 250
 
 # update rate in ms
 updateRate = 1000
@@ -57,7 +61,7 @@ t.start()
 fig, ax = plt.subplots(1,1)
 ax.set_xlim(minF,125)
 ax.set_xlabel('')
-ax.set_ylabel('Amplitude/V')
+ax.set_ylabel('Amplitude/V^2')
 ax.set_xlabel('Frequency/Hz')
 ax.set_title(titleChannel)
 
@@ -73,11 +77,8 @@ def update(data):
     global ax, fig
     global titlePlot
     # axis
-    spectrum = np.fft.rfft(np.array(ringbuffer)[:,channel])
-    # absolute value
-    spectrum = np.abs(spectrum)/len(spectrum)
-    spectrum[0] = 0
-    line.set_data(np.linspace(0,125,len(spectrum)), spectrum)
+    f, spectrum = signal.periodogram(np.array(ringbuffer)[:,channel], fs, scaling='spectrum', nfft=fs)
+    line.set_data(f, spectrum)
     # set new max
     ax.set_ylim(0,spectrum.max()*1.2)
     ringbuffer = []

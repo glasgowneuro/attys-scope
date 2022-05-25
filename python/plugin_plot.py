@@ -2,6 +2,8 @@
 """
 @author: Bernd Porr, mail@berndporr.me.uk
 
+Plots data in realtime with matplotlib.
+Start from attys-scope.
 """
 
 import sys

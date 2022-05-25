@@ -2,9 +2,11 @@
 """
 @author: Bernd Porr, mail@berndporr.me.uk
 
+Plots a realtime bargraph.
+
+Start from within attys-scope.
+
 """
-
-
 
 import sys
 import numpy as np
@@ -22,7 +24,7 @@ doRun = True
 # note you need to have at least two analoge channels on
 # this just overwrites the amplitudes as fast as possible
 # for an oscilloscope plot we need a proper ringbuffer here!
-def readSocket():
+def readStdio():
     global amplitudes
     global doRun
     global ani
@@ -39,7 +41,7 @@ def readSocket():
         amplitudes = values[11:13]
 
 # start reading it in another thread
-t = threading.Thread(target=readSocket)
+t = threading.Thread(target=readStdio)
 t.start()
 
 # get a pointer to a plotwindow
