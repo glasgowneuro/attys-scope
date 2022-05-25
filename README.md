@@ -12,7 +12,7 @@ Oscilloscope program for the Attys (http://www.attys.tech).
 ![alt tag](screenshot.png)
 
 The screenshot above shows attys-scope in action under Windows where it feeds the data into a Python program
-which then plots a bar graph in realtime.
+using matplotlib.
 
 ## Data format
 
@@ -72,7 +72,7 @@ the other required packages.
 * git clone https://github.com/glasgowneuro/attys-comm.git and compile/install it.
 * git clone https://github.com/glasgowneuro/attys-scope.git 
 * Install the IIR filter library https://github.com/berndporr/iir1
-* Install the other packages: "apt-get install qt5-qmake, g++, qtbase5-dev-tools, qtdeclarative5-dev-tools, libbluetooth-dev, qtbase5-dev, qt5-default"
+* Install the other packages: "apt-get install qt5-qmake, g++, qtbase5-dev-tools, qtdeclarative5-dev-tools, libbluetooth-dev, qtbase5-dev, qt5-default, libqt5multimedia5-plugins, qtmultimedia5-dev"
 * cd attys-scope
 * qmake
 * make
