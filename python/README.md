@@ -13,6 +13,9 @@ Start these plugins from Attys-scope by selecting `Python->Run`.
 Realtime plot of data: Plots the data from the 1st selected
 channel.
 
+### plugin_power.py
+Performs highpass filtering, then squares the 1st analogue channel and then lowpass filters it.
+
 ### plugin_bargraph.py
 Shows in realtime the amplitude of the 1st two selected
 signals in attys_scope
