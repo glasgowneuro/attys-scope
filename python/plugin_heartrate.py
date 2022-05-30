@@ -1,113 +1,78 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/python3
 """
-@author: Bernd Porr, mail@berndporr.me.uk
+Requires pyqtgraph.
 
-Plots the heartrate in realtime. Start from
-within atty-scope.
+Copyright (c) 2018-2022, Bernd Porr <mail@berndporr.me.uk>
+see LICENSE file.
+
+Plots heartrate
+
+It's a demo how use the callback based approach and filtering.
 """
+
+channel = 7 # 1st ADC unfiltered
 
 import sys
+import pyqtgraph as pg
+from pyqtgraph.Qt import QtCore, QtGui
 import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
-import threading
+from scipy import signal
+import iir_filter
+from attys_scope_plugin_comm import AttysScopeReader
 import ecg_analysis
 
-# Reads from 1st filtered selected channel (comes after all the
-# unfiltered packets).
-# Filter settings:
-# For ECG set the gain to approx 1000, Highpass at 1Hz and mains notch.
-channel = 11
 
-# sampling rate
-fs = 250
+# create a global QT application object
+app = QtGui.QApplication(sys.argv)
 
-heartrate_detector = ecg_analysis.heartrate_detector(fs)
 
-#That's our ringbuffer which accumluates the samples
-#It's emptied every time when the plot window below
-#does a repaint
-ringbuffer = []
+class QtPanningPlot:
 
-# for the thread below
-doRun = True
-
-# This reads the data from the socket in an endless loop
-# and stores the data in a buffer
-def readStdin():
-    global ringbuffer
-    global channel
-    global doRun
-    global ani
-    while doRun:
-        # check if data is available
-        data = sys.stdin.readline()
-        if not data:
-            print("Stopping")
-            doRun = False
-            ani.event_source.stop()
-            break       
-        values = np.array(data.split(','),dtype=np.float32)
-        ringbuffer.append(values[channel])
+    def __init__(self,title):
+        self.win = pg.GraphicsLayoutWidget()
+        self.win.setWindowTitle(title)
+        self.plt = self.win.addPlot()
+        self.plt.setYRange(0,200)
+        self.plt.setXRange(0,60)
+        self.curve = self.plt.plot()
+        self.data = []
+        # any additional initalisation code goes here (filters etc)
+        self.timer = QtCore.QTimer()
+        self.timer.timeout.connect(self.update)
+        self.timer.start(100)
+        self.layout = QtGui.QGridLayout()
+        self.win.setLayout(self.layout)
+        self.win.show()
         
+    def update(self):
+        self.data=self.data[-60:]
+        if self.data:
+            self.curve.setData(np.hstack(self.data))
 
-# start reading data from socket
-t = threading.Thread(target=readStdin)
-t.start()
+    def addData(self,d):
+        self.data.append(d)
+        
+qtPanningPlot1 = QtPanningPlot("Heartrate")
 
-# now let's plot the data
-fig, ax = plt.subplots()
-# that's our plotbuffer
-plotbuffer = np.zeros(60)
-# plots an empty line
-line, = ax.plot(plotbuffer)
-# axis
-ax.set_ylim(0, 200)
-ax.set_xlabel('Heartbeat #')
-ax.set_ylabel('Beats per minute')
-ax.set_title('Heartrate')
+# will be properly set in the callback
+heartrate_detector = False
 
-# receives the data from the generator below
-def update(data):
+# init the detector once we know the sampling rate
+def callbackFs(fs):
     global heartrate_detector
-    global plotbuffer
+    heartrate_detector = ecg_analysis.heartrate_detector(fs,qtPanningPlot1.addData)
+
+# process data with the filters set up
+def callbackData(data):
+    v = data[channel]
+    heartrate_detector.detect(v)
     
-    for d in data:
-        heartrate_detector.detect(d)
-        rate = heartrate_detector.bpm
-        heartrate_detector.bpm = 0
-        
-        # add new data to the buffer
-        if rate>0:
-            plotbuffer=np.append(plotbuffer,rate)
-        
-    # only keep the 60 newest ones and discard the old ones
-    plotbuffer=plotbuffer[-60:]
-    # set the new 60 points
-    line.set_ydata(plotbuffer)
-    return line,
+attysScopeReader = AttysScopeReader(callbackData,callbackFs)
+attysScopeReader.start()
 
-# this checks in an endless loop if there is data in the ringbuffer
-# of there is data then emit it to the update funnction above
-def data_gen():
-    global ringbuffer
-    #endless loop which gets data
-    while True:
-        # check if data is available
-        if not ringbuffer == []:
-            result = ringbuffer
-            ringbuffer = []
-            yield result
+# showing all the windows
+app.exec_()
 
-# start the animation
-ani = animation.FuncAnimation(fig, update, data_gen, interval=100)
+attysScopeReader.stop()
 
-# show it
-plt.show()
-
-# stop the thread which reads the data
-doRun = False
-# wait for it to finish
-t.join()
-
-print("finished")
+print("Finished")

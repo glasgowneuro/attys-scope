@@ -20,7 +20,8 @@ from scipy import signal as signal
 
 class heartrate_detector:
 
-    def __init__(self,_fs):
+    def __init__(self,_fs,callback=False):
+        self.hasHR = callback
         # how fast the adaptive threshold follows changes in ECG
         # amplitude. Realisic values: 0.1 .. 1.0
         # 0.1 = slow recovery after an artefact but no wrong detections
@@ -102,7 +103,8 @@ class heartrate_detector:
                         self.ignoreRRvalue = self.ignoreRRvalue - 1
                     else:
                         self.bpm = tbpm
-                        print(self.bpm," BPM",flush=True)
+                        if self.hasHR:
+                            self.hasHR(tbpm)
                 else:
                     self.ignoreRRvalue = 3
                 self.t2 = self.timestamp
