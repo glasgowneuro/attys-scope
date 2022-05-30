@@ -14,7 +14,7 @@ Realtime plot of data: Plots the data from the 1st selected
 channel.
 
 ### plugin_power.py
-Performs highpass filtering, then squares the 1st analogue channel and then lowpass filters it.
+Squares the 1st analogue channel and then lowpass filters it.
 This is a good demo how to do realtime filtering on the data and displaying it.
 
 ### plugin_bargraph.py
@@ -28,6 +28,10 @@ in a semilog scale.
 ### plugin_heartrate.py
 Realtime heartrate detection. The actual detector is in the
 module ecg_analysis.py
+
+### plugin_emg.py
+Performs highpass filtering of the signal, takes the power and then does
+a lowpass filtering. It also shows how to use buttons in the PyPlot environment.
 
 ### Writing your own python plugin
 `attys_scope_plugin_comm.py` is the API to communicate with attys-scope. It has

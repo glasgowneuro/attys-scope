@@ -26,11 +26,11 @@ app = QtGui.QApplication(sys.argv)
 
 class QtPanningPlot:
 
-    def __init__(self,title):
+    def __init__(self,title,miny,maxy):
         self.win = pg.GraphicsLayoutWidget()
         self.win.setWindowTitle(title)
         self.plt = self.win.addPlot()
-        self.plt.setYRange(-1,1)
+        self.plt.setYRange(miny,maxy)
         self.plt.setXRange(0,500)
         self.curve = self.plt.plot()
         self.data = []
@@ -50,8 +50,8 @@ class QtPanningPlot:
     def addData(self,d):
         self.data.append(d)
         
-qtPanningPlot1 = QtPanningPlot("Signal")
-qtPanningPlot2 = QtPanningPlot("Power")
+qtPanningPlot1 = QtPanningPlot("Signal",-2,2)
+qtPanningPlot2 = QtPanningPlot("Power",0,3)
 
 # The high- and lowpass filters can only be set after
 # the sampling rate is known
@@ -60,12 +60,9 @@ lpiir = False
 
 # init the filters once we know the sampling rate
 def callbackFs(fs):
-    global hpiir,lpiir
-    hpfc = 5 # highpass freq
-    hpsos = signal.butter(2, hpfc/fs*2, output='sos')
+    global lpiir
     lpfc = 1 # lowpass freq
     lpsos = signal.butter(2, lpfc/fs*2, output='sos')
-    hpiir = iir_filter.IIR_filter(hpsos)
     lpiir = iir_filter.IIR_filter(lpsos)
 
 
@@ -73,7 +70,6 @@ def callbackFs(fs):
 def callbackData(data):
     v = data[channel]
     qtPanningPlot1.addData(v)
-    v = hpiir.filter(v)
     v = v*v
     v = lpiir.filter(v)
     qtPanningPlot2.addData(v)
