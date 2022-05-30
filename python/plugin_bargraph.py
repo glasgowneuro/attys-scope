@@ -15,8 +15,8 @@ import matplotlib.animation as animation
 from attys_scope_plugin_comm import AttysScopeReader
 
 # channels
-ch1 = 7
-ch2 = 8
+ch1 = 11
+ch2 = 12
 
 # init the amplitudes
 amplitudes = np.zeros(2)
@@ -40,8 +40,8 @@ def update(data):
 
 def callBack(data):
     global amplitudes
-    amplitudes[0] = data[ch1]
-    amplitudes[1] = data[ch2]
+    amplitudes[0] = np.abs(data[ch1])
+    amplitudes[1] = np.abs(data[ch2])
 
 # start the animation
 ani = animation.FuncAnimation(fig, update, interval=100)
