@@ -12,6 +12,7 @@ It's a demo how use the callback based approach and filtering.
 
 channel = 7 # 1st ADC unfiltered
 
+import time
 import sys
 import pyqtgraph as pg
 from pyqtgraph.Qt import QtCore, QtGui
@@ -68,10 +69,14 @@ qtPanningPlot1 = QtPanningPlot("Heartrate")
 # will be properly set in the callback
 heartrate_detector = False
 
+def hasHR(bpm):
+    qtPanningPlot1.addData(bpm)
+    print(time.time(),bpm,flush=True)
+
 # init the detector once we know the sampling rate
 def callbackFs(fs):
     global heartrate_detector
-    heartrate_detector = ecg_analysis.heartrate_detector(fs,qtPanningPlot1.addData)
+    heartrate_detector = ecg_analysis.heartrate_detector(fs,hasHR)
 
 # process data with the filters set up
 def callbackData(data):

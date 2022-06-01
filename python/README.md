@@ -42,6 +42,9 @@ module ecg_analysis.py
 Performs highpass filtering of the signal, takes the power and then does
 a lowpass filtering. It also shows how to use buttons in the PyPlot environment.
 
+### plugin_eeg.py
+Plots the EEG gamma, beta, alpha, theta and delta waves.
+
 ### Write your own python plugin
 The best approach is to hack one of the plugins above and customise it to your needs.
 `attys_scope_plugin_comm.py` is the API to communicate with attys-scope. It has

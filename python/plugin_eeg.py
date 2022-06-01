@@ -9,7 +9,6 @@ Plots the EMG Amplitude from a signal above 5Hz.
 """
 
 CH1 = 7
-CH2 = 8
 
 # Bandstop frequency
 fbs = 50 # Hz
@@ -32,9 +31,9 @@ app = QtGui.QApplication(sys.argv)
 class QtPanningPlot:
 
     # duration of the scrolling window
-    twin = 2
+    twin = 5
     # scale in V
-    a = 2E-3
+    a = 100
 
     def __init__(self,title):
         self.title = title
@@ -42,16 +41,19 @@ class QtPanningPlot:
         self.win = pg.GraphicsLayoutWidget()
         self.win.setWindowTitle(title)
 
-        self.curve = [False,False,False]
-        self.plt = [False,False,False]
-        self.data = [[],[],[]]
-        ylabel = ["I","II","III"]
+        self.ylabel = ["gamma","beta","alpha","theta","delta"]
+        self.n = len(self.ylabel)
+
+        self.curve = [False]*self.n
+        self.plt = [False]*self.n
+        self.data = [[]]*self.n
+        self.bpiir = [False]*self.n
         
-        for i in range(3):
+        for i in range(self.n):
             self.plt[i] = self.win.addPlot(row=i, col=0)
             self.plt[i].setYRange(-self.a,self.a)
             self.plt[i].setLabel('bottom', 't/sec')
-            self.plt[i].setLabel('left',ylabel[i]+'/mV')
+            self.plt[i].setLabel('left',self.ylabel[i]+'/uV')
             self.curve[i] = self.plt[i].plot()
 
         self.layout = QtGui.QGridLayout()
@@ -64,7 +66,7 @@ class QtPanningPlot:
         self.win.show()
 
     def update(self):
-        for i in range(3):
+        for i in range(self.n):
             self.data[i] = self.data[i][-int(self.twin*self.fs):]
             if self.data[i]:
                 d = np.hstack(self.data[i])
@@ -72,39 +74,36 @@ class QtPanningPlot:
                 self.plt[i].setXRange(0,len(d)/self.fs)
                 self.curve[i].setData(t,d)
 
-    def addData(self,d1,d2,d3):
-        self.data[0].append(d1)
-        self.data[1].append(d2)
-        self.data[2].append(d3)
+    def addData(self,d):
+        for i in range(self.n):
+            self.data[i].append(self.bpiir[i].filter(d*1E6))
 
     def setFs(self,fs):
         self.fs = fs
-
-
+        frange = [
+            [30,100],
+            [13,30],
+            [8,13],
+            [4,8],
+            [0.1,4]
+        ]
+        for i in range(self.n):
+            bpsos = signal.butter(2, frange[i], output='sos', btype='bandpass', fs=fs)
+            self.bpiir[i] = iir_filter.IIR_filter(bpsos)
 
 ##############################################################################
 ## main
 
+bsiir = False
         
 qtPanningPlot = QtPanningPlot("EMG amplitude")
 
-# The high- and lowpass filters can only be set after
-# the sampling rate is known
-hpiir1 = False
-hpiir2 = False
-bsiir1 = False
-bsiir2 = False
-
 # init the filters once we know the sampling rate
 def callbackFs(fs):
-    global hpiir1,hpiir2,bsiir1,bsiir2
+    global bsiir
     hpfc = 0.5 # highpass freq
-    hpsos = signal.butter(2, hpfc, output='sos', btype='highpass', fs=fs)
-    hpiir1 = iir_filter.IIR_filter(hpsos)
-    hpiir2 = iir_filter.IIR_filter(hpsos)
     bssos = signal.butter(2, [fbs-1,fbs+2], output='sos', btype='bandstop', fs=fs)
-    bsiir1 = iir_filter.IIR_filter(bssos)
-    bsiir2 = iir_filter.IIR_filter(bssos)
+    bsiir = iir_filter.IIR_filter(bssos)
     qtPanningPlot.setFs(fs)
 
 def callbackSetChannel(c):
@@ -113,12 +112,9 @@ def callbackSetChannel(c):
 
 # process data with the filters set up
 def callbackData(data):
-    global CH1,CH2
-    v2 = hpiir1.filter(data[CH1])
-    v2 = bsiir1.filter(v2)
-    v3 = hpiir2.filter(data[CH2])
-    v3 = bsiir2.filter(v3)
-    qtPanningPlot.addData(v2-v3,v2,v3)
+    global CH1,bsiir
+    v = bsiir.filter(data[CH1])
+    qtPanningPlot.addData(v)
 
     
 attysScopeReader = AttysScopeReader(callbackData,callbackFs)
