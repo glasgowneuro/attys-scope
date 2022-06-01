@@ -8,6 +8,7 @@ see LICENSE file.
 Plots signal and power.
 
 It's a demo how use the callback based approach and filtering.
+Calculates the instantaneous power.
 """
 
 channel = 7 # 1st ADC unfiltered

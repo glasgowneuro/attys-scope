@@ -25,6 +25,15 @@ signals in attys_scope
 Shows in realtime the Fourier Spectrum of the 1st channel selected
 in a semilog scale.
 
+### plugin_ecg.py
+Shows Einthoven I,II,III
+
+Switch the attys-scope to ECG mode for both analogue channels.
+Wire up the subject:
+ - Neg: right shoulder
+ - Pos: left hip
+ - GND: left shoulder
+
 ### plugin_heartrate.py
 Realtime heartrate detection. The actual detector is in the
 module ecg_analysis.py
@@ -33,10 +42,10 @@ module ecg_analysis.py
 Performs highpass filtering of the signal, takes the power and then does
 a lowpass filtering. It also shows how to use buttons in the PyPlot environment.
 
-### Writing your own python plugin
+### Write your own python plugin
+The best approach is to hack one of the plugins above and customise it to your needs.
 `attys_scope_plugin_comm.py` is the API to communicate with attys-scope. It has
 two callbacks: one for the data and one for the sampling rate detected.
-The best approach is to hack one of the plugins above and customise it to your needs.
 To see errors produced by your script you can open the python console at `Python->Console`.
 Under Linux the python output is also printed in Linux console where attys-scope is running.
 

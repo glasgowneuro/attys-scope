@@ -5,7 +5,7 @@ Requires pyqtgraph.
 Copyright (c) 2018-2022, Bernd Porr <mail@berndporr.me.uk>
 see LICENSE file.
 
-Plots the EMG Power from a signal above 5Hz.
+Plots the EMG Amplitude from a signal above 5Hz.
 """
 
 channel = 7 # 1st ADC unfiltered
@@ -37,7 +37,8 @@ class QtPanningPlot:
         self.win = pg.GraphicsLayoutWidget()
         self.win.setWindowTitle(title)
         self.plt = self.win.addPlot()
-        self.plt.setYRange(0,3)
+        self.plt.setYRange(0,1.5)
+        self.plt.setLabel('bottom', 't/sec')
         self.curve = self.plt.plot()
         self.data = []
         # any additional initalisation code goes here (filters etc)
@@ -54,7 +55,7 @@ class QtPanningPlot:
         ccb2 = QPushButton("Ch2")
         ccb2.clicked.connect(self.ch2Callback)
         proxy2.setWidget(ccb2)
-        p = self.win.addLayout(row=2, col=0)
+        p = self.win.addLayout(row=1, col=0)
         p.addItem(proxy1,row=1,col=1)
         p.addItem(proxy2,row=1,col=2)
         self.win.show()
@@ -62,10 +63,12 @@ class QtPanningPlot:
     def ch1Callback(self):
         if self.channelCallback:
             self.channelCallback(self.CH1)
+            self.plt.setLabel('left', 'Ch1/V')
         
     def ch2Callback(self):
         if self.channelCallback:
             self.channelCallback(self.CH2)
+            self.plt.setLabel('left', 'Ch2/V')
         
     def update(self):
         self.data=self.data[-self.n:]
@@ -83,13 +86,14 @@ class QtPanningPlot:
 
     def setChannelCallback(self,channelCallback):
         self.channelCallback = channelCallback
+        self.ch1Callback()
 
 
 ##############################################################################
 ## main
 
         
-qtPanningPlot = QtPanningPlot("EMG Power")
+qtPanningPlot = QtPanningPlot("EMG amplitude")
 
 # The high- and lowpass filters can only be set after
 # the sampling rate is known
@@ -117,7 +121,7 @@ qtPanningPlot.setChannelCallback(callbackSetChannel)
 def callbackData(data):
     v = data[channel]
     v = hpiir.filter(v)
-    v = v*v
+    v = np.abs(v)
     v = lpiir.filter(v)
     qtPanningPlot.addData(v)
 

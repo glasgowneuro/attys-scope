@@ -20,6 +20,9 @@ from scipy import signal
 import iir_filter
 from attys_scope_plugin_comm import AttysScopeReader
 import ecg_analysis
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
 
 
 # create a global QT application object
@@ -42,6 +45,13 @@ class QtPanningPlot:
         self.timer.start(100)
         self.layout = QtGui.QGridLayout()
         self.win.setLayout(self.layout)
+        proxy1 = QtGui.QGraphicsProxyWidget()
+        self.qlabelHR = QLabel()
+        self.qlabelHR.setStyleSheet("background-color:black; color:white; font-size: 48px;");
+        self.qlabelHR.setAlignment(Qt.AlignCenter);
+        proxy1.setWidget(self.qlabelHR)
+        p = self.win.addLayout()
+        p.addItem(proxy1)
         self.win.show()
         
     def update(self):
@@ -50,6 +60,7 @@ class QtPanningPlot:
             self.curve.setData(np.hstack(self.data))
 
     def addData(self,d):
+        self.qlabelHR.setText("{:10.1f} BPM".format(d))
         self.data.append(d)
         
 qtPanningPlot1 = QtPanningPlot("Heartrate")
