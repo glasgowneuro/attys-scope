@@ -41,7 +41,7 @@ class QtPanningPlot:
         self.win = pg.GraphicsLayoutWidget()
         self.win.setWindowTitle(title)
 
-        self.ylabel = ["gamma","beta","alpha","theta","delta"]
+        self.ylabel = ["EEG","gamma","beta","alpha","theta","delta"]
         self.n = len(self.ylabel)
 
         self.curve = [False]*self.n
@@ -81,6 +81,7 @@ class QtPanningPlot:
     def setFs(self,fs):
         self.fs = fs
         frange = [
+            [0.1,100],
             [30,100],
             [13,30],
             [8,13],
