@@ -5,7 +5,7 @@ Requires pyqtgraph.
 Copyright (c) 2018-2022, Bernd Porr <mail@berndporr.me.uk>
 see LICENSE file.
 
-Plots the EMG Amplitude from a signal above 5Hz.
+Plots the different EEG bands.
 """
 
 CH1 = 7
@@ -97,7 +97,7 @@ class QtPanningPlot:
 
 bsiir = False
         
-qtPanningPlot = QtPanningPlot("EMG amplitude")
+qtPanningPlot = QtPanningPlot("EEG bands")
 
 # init the filters once we know the sampling rate
 def callbackFs(fs):

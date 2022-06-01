@@ -5,7 +5,7 @@ Requires pyqtgraph.
 Copyright (c) 2018-2022, Bernd Porr <mail@berndporr.me.uk>
 see LICENSE file.
 
-Plots the EMG Amplitude from a signal above 5Hz.
+Plots Einthoven I,II,III.
 """
 
 CH1 = 7
@@ -33,8 +33,8 @@ class QtPanningPlot:
 
     # duration of the scrolling window
     twin = 2
-    # scale in V
-    a = 2E-3
+    # scale in mV
+    a = 2
 
     def __init__(self,title):
         self.title = title
@@ -73,9 +73,9 @@ class QtPanningPlot:
                 self.curve[i].setData(t,d)
 
     def addData(self,d1,d2,d3):
-        self.data[0].append(d1)
-        self.data[1].append(d2)
-        self.data[2].append(d3)
+        self.data[0].append(d1*1000)
+        self.data[1].append(d2*1000)
+        self.data[2].append(d3*1000)
 
     def setFs(self,fs):
         self.fs = fs
@@ -86,7 +86,7 @@ class QtPanningPlot:
 ## main
 
         
-qtPanningPlot = QtPanningPlot("EMG amplitude")
+qtPanningPlot = QtPanningPlot("Einthoven ECG I,II,III")
 
 # The high- and lowpass filters can only be set after
 # the sampling rate is known
