@@ -19,8 +19,10 @@ class AttysScopeReader:
             data = sys.stdin.readline()
             values = np.array(data.split(','),dtype=np.float32)
             if (self.t2) and (not self.fs):
+                # print(values[0],self.t2)
                 self.fs = 1/(values[0] - self.t2)
                 self.fs = round(self.fs/125)*125
+                print("fs =",self.fs)
                 if self.fsCallback:
                     self.fsCallback(self.fs)
             self.t2 = values[0]

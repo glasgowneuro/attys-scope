@@ -278,15 +278,15 @@ void ScopeWindow::stopUDP()
 
 
 void ScopeWindow::writeCSV(char* tmp) {
-	sprintf(tmp, "%f", ((float)nsamples) / ((float)attysScan.getAttysComm(0)->getSamplingRateInHz()));
+	sprintf(tmp, "%e", ((double)nsamples) / ((double)attysScan.getAttysComm(0)->getSamplingRateInHz()));
 	for (int n = 0; n < attysScan.getNAttysDevices(); n++) {
 		for (int i = 0; i < AttysComm::NCHANNELS; i++) {
 			float phy = unfiltDAQData[n][i];
-			sprintf(tmp+strlen(tmp), ",%f", phy);
+			sprintf(tmp+strlen(tmp), ",%e", phy);
 		}
 		for (int i = 0; i < AttysComm::NCHANNELS; i++) {
 			float phy = filtDAQData[n][i];
-			sprintf(tmp+strlen(tmp), ",%f", phy);
+			sprintf(tmp+strlen(tmp), ",%e", phy);
 		}
 	}
 	sprintf(tmp+strlen(tmp), "\n");
