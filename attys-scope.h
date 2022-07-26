@@ -33,7 +33,7 @@ class Attys_scope;
 #include "pythonpipe.h"
 
 // version number
-#define VERSION "2.5.0"
+#define VERSION "2.5.1"
 
 #define ATTYS_STRING "ATTYS"
 #define PROGRAM_NAME "attys-scope"
