@@ -278,7 +278,7 @@ void ScopeWindow::stopUDP()
 
 
 void ScopeWindow::writeCSV(char* tmp) {
-	sprintf(tmp, "%e", ((double)nsamples) / ((double)attysScan.getAttysComm(0)->getSamplingRateInHz()));
+	sprintf(tmp, "%e", ((double)nPluginSamples) / ((double)attysScan.getAttysComm(0)->getSamplingRateInHz()));
 	for (int n = 0; n < attysScan.getNAttysDevices(); n++) {
 		for (int i = 0; i < AttysComm::NCHANNELS; i++) {
 			float phy = unfiltDAQData[n][i];
@@ -613,6 +613,7 @@ void ScopeWindow::processData() {
 		writePython();
 
 		nsamples++;
+		nPluginSamples++;
 		tb_counter--;
 
 		// enough averaged?

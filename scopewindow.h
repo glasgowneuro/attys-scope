@@ -122,7 +122,12 @@ private:
 	/**
 	 * elapsed msec
 	 **/
-	long int         nsamples;
+	long int         nsamples = 0;
+
+	/**
+	* sample counter for UDP and plugin
+	**/
+	long int         nPluginSamples = 0;
 
 public:
 	/**
@@ -184,16 +189,19 @@ private:
 	/**
 	 * init value for the averaging counter
 	 **/
-	int         tb_init;
+	int         tb_init = 1;
 
-	int eraseFlag;
+	/**
+	* if the screen should be wiped
+	**/
+	int eraseFlag = 0;
 
 private:
 	/**
 	 * counter for the tb. If zero the average is
 	 * taken from adAvgBuffer and saved into actualAD.
 	 **/
-	int         tb_counter;
+	int         tb_counter = 1;
 
 public:
 	/**
