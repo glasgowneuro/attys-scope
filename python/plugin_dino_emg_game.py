@@ -10,6 +10,8 @@ Plots the EMG Amplitude from a signal above 5Hz.
 
 channel = 7 # 1st ADC unfiltered
 
+gain = 1000
+
 from dinogame import DinoGame
 
 import sys
@@ -43,16 +45,27 @@ def callbackData(data):
     v = hpiir.filter(v)
     v = np.abs(v)
     v = lpiir.filter(v)
+    v = v * gain
+    l = " " * 40
+    l = l[:20]+"|"+l[20:]
+    x = v * 20
+    if x>40:
+        x = 40
+    if v < 1:
+        c = '>'
+    if v == 1:
+        c = '!'
+    if v > 1:
+        c = '<'
+    l = l[:int(x)]+c+l[int(x):]
+    print(l)
     if w > 0:
         w = w - 1
         if w < 1:
             game.start_running()
-        print("Wait")
         return
-    if v > 0.0001:
-        print("jump")
+    if v > 1:
         game.jump()
-    print(v)
 
 game = DinoGame()
     
