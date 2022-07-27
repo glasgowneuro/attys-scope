@@ -155,6 +155,8 @@ void ScopeWindow::startDAQ() {
 			attysScan.getAttysComm(i)->setAdc1_gain_index(attys_scope->special[i][1]->getGainIndex());
 
 			attysScan.getAttysComm(i)->enableCurrents(curr_ch1, 0, curr_ch2);
+
+			attysScan.getAttysComm(i)->setAccel_full_scale_index(attys_scope->acceleration[i]->getAccelerationIndex());
 		}
 	}
 

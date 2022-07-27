@@ -67,6 +67,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 	bandstop = new QPointer<Bandstop>*[attysScan.getNAttysDevices()];
 	special = new QPointer<Special>*[attysScan.getNAttysDevices()];
 	current = new QPointer<Current>[attysScan.getNAttysDevices()];
+	acceleration = new QPointer<Acceleration>[attysScan.getNAttysDevices()];
 	specialLayout = new QPointer<QHBoxLayout>[attysScan.getNAttysDevices()];
 
 	bool isHighSpeed = 0;
@@ -83,6 +84,8 @@ Attys_scope::Attys_scope(QWidget *parent,
 		special[n] = new QPointer<Special>[2];
 		current[n] = new Current();
 		current[n]->setStyleSheet(styleSheetChannel);
+		acceleration[n] = new Acceleration();
+		acceleration[n]->setStyleSheet(styleSheetChannel);
 		if (strstr(attysScan.getAttysName(n),"ATTYS2") != NULL ) {
 			isHighSpeed = isHighSpeed || true;
 		}
@@ -107,6 +110,9 @@ Attys_scope::Attys_scope(QWidget *parent,
 		connect(current[n],&Current::signalRestart,
 			this, &Attys_scope::specialChanged);
 		specialLayout[n]->addWidget(new QLabel(" "));
+		specialLayout[n]->addWidget(acceleration[n]);
+		connect(acceleration[n],&Acceleration::signalRestart,
+			this, &Attys_scope::specialChanged);
 		allChLayout->addLayout(specialLayout[n], row, 1);
 		row++;
 
@@ -300,6 +306,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 #define SETTINGS_CHANNELS "channelconfig"
 #define SETTINGS_SPECIAL "special_config%09d_ch%09d"
 #define SETTINGS_CURRENT "current_config%09d"
+#define SETTINGS_ACCELERATION "acc_config%09d"
 #define CHSETTING_FORMAT "ch_mapping_dev%09d_ch%09d"
 #define HIGHPASS_SETTING_FORMAT "highpass_dev%09d_ch%09d"
 #define LOWPASS_SETTING_FORMAT "lowpass_dev%09d_ch%09d"
@@ -332,6 +339,11 @@ void Attys_scope::readSettings(QSettings &settings) {
 		int a = settings.value(tmpCur, 0).toInt();
 		// _RPT1(0, "settings current %d\n", a);
 		current[n]->setCurrent(a);
+
+		sprintf(tmpCur, SETTINGS_ACCELERATION, n);
+		a = settings.value(tmpCur, AttysComm::ACCEL_16G).toInt();
+		// _RPT1(0, "settings acc %d\n", a);
+		acceleration[n]->setAcceleration(a);
 
 		char tmpCh[128];
 		for (int i = 0; i < channels; i++) {
@@ -416,6 +428,9 @@ void Attys_scope::writeSettings(QSettings & settings)
 		sprintf(tmpCur, SETTINGS_CURRENT, n);
 		//		fprintf(stderr,"curr=%d\n",current[n]->getCurrent());
 		settings.setValue(tmpCur, current[n]->getCurrent());
+
+		sprintf(tmpCur, SETTINGS_ACCELERATION, n);
+		settings.setValue(tmpCur, acceleration[n]->getAcceleration());
 	}
 	settings.endGroup();
 }

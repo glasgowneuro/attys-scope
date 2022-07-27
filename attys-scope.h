@@ -31,9 +31,10 @@ class Attys_scope;
 #include "AttysScan.h"
 #include "audiobeep.h"
 #include "pythonpipe.h"
+#include "acceleration.h"
 
 // version number
-#define VERSION "2.5.1"
+#define VERSION "2.6.0"
 
 #define ATTYS_STRING "ATTYS"
 #define PROGRAM_NAME "attys-scope"
@@ -96,6 +97,11 @@ public:
 	 * Array for the current setting
 	 **/
 	QPointer<Current>* current;
+
+	/**
+	 * Array for the acceleration
+	 **/
+	QPointer<Acceleration>* acceleration;
 
 	/**
 	 * Global sampling rate setting
