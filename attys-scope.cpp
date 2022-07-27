@@ -95,12 +95,11 @@ Attys_scope::Attys_scope(QWidget *parent,
 		for (int i = 0; i < 2; i++) {
 			special[n][i] = new Special();
 		}
-		specialLayout[n]->addWidget(new QLabel("    "));
 		specialLayout[n]->addWidget(new QLabel("CH1:"));
 		specialLayout[n]->addWidget(special[n][0]);
 		connect(special[n][0],&Special::signalRestart,
 			this, &Attys_scope::specialChanged);
-		specialLayout[n]->addWidget(new QLabel("    "));
+		specialLayout[n]->addWidget(new QLabel(" "));
 		specialLayout[n]->addWidget(new QLabel("CH2:"));
 		specialLayout[n]->addWidget(special[n][1]);
 		connect(special[n][1],&Special::signalRestart,
@@ -113,6 +112,7 @@ Attys_scope::Attys_scope(QWidget *parent,
 		specialLayout[n]->addWidget(acceleration[n]);
 		connect(acceleration[n],&Acceleration::signalRestart,
 			this, &Attys_scope::specialChanged);
+		specialLayout[n]->addWidget(new QLabel(" "));
 		allChLayout->addLayout(specialLayout[n], row, 1);
 		row++;
 
