@@ -204,7 +204,12 @@ Attys_scope::Attys_scope(QWidget *parent,
 		this,&Attys_scope::enterFileName);
 	recLayout->addWidget(filePushButton);
 
-	recLayout->addWidget(new QLabel("    "));
+	toneCheckBox = new QCheckBox("1kHz beep:");
+	toneCheckBox->setSizePolicy(QSizePolicy(QSizePolicy::Fixed,
+						QSizePolicy::Fixed));
+	toneCheckBox->setVisible(audiobeep->isOK());
+	recLayout->addWidget(toneCheckBox);
+
 	recCheckBox = new RecButton();
 	recCheckBox->connect(recCheckBox,&RecButton::stateChanged,
 			     this,&Attys_scope::recstartstop);
@@ -212,11 +217,8 @@ Attys_scope::Attys_scope(QWidget *parent,
 	recLayout->addWidget(recCheckBox);
 	recCheckBox->setStyleSheet(styleCheckBox);
 
-	toneCheckBox = new QCheckBox("1kHz beep");
-	toneCheckBox->setSizePolicy(QSizePolicy(QSizePolicy::Fixed,
-						QSizePolicy::Fixed));
-	toneCheckBox->setVisible(audiobeep->isOK());
-	recLayout->addWidget(toneCheckBox);
+	filenameLabel = new QLabel("");
+	recLayout->addWidget(filenameLabel);
 
 	restLayout->addLayout(recLayout);
 
@@ -534,9 +536,8 @@ void Attys_scope::enableControls() {
 
 void Attys_scope::setFilename(QString fn,int tsv) {
 	attysScopeWindow->setFilename(fn,tsv);
-	QString tmp;
-	tmp="attys_scope - datafile: "+fn;
-	setWindowTitle( tmp );
+	QFileInfo fi(fn);
+	filenameLabel->setText(fi.fileName());
 	recCheckBox->setEnabled( true );
 }
 
@@ -582,6 +583,7 @@ void Attys_scope::recstartstop(int)
       }
       // to force the user to enter a new filename
       recCheckBox->setEnabled( false );
+      filenameLabel->setText("");
     }
 }
 

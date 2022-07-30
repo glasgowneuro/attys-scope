@@ -252,6 +252,8 @@ private:
 
 	QPointer<QLabel> statusLabel;
 
+	QPointer<QLabel> filenameLabel;
+
 	QPointer<QVBoxLayout> controlLayout;
 	QPointer<QVBoxLayout> scopeLayout;
 
