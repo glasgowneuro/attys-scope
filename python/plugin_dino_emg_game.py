@@ -10,7 +10,7 @@ Plots the EMG Amplitude from a signal above 5Hz.
 
 channel = 7 # 1st ADC unfiltered
 
-gain = 1000
+gain = 50000
 
 from dinogame import DinoGame
 
