@@ -1,11 +1,9 @@
 #!/usr/bin/python3
 """
-Requires pyqtgraph.
-
 Copyright (c) 2018-2022, Bernd Porr <mail@berndporr.me.uk>
 see LICENSE file.
 
-Plots the EMG Amplitude from a signal above 5Hz.
+Dino game where the EMG controls the dino. Reset with the space key.
 """
 
 channel = 7 # 1st ADC unfiltered
