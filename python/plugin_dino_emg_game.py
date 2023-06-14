@@ -8,7 +8,7 @@ Dino game where the EMG controls the dino. Reset with the space key.
 
 channel = 7 # 1st ADC unfiltered
 
-gain = 50000
+gain = 15000
 
 from dinogame import DinoGame
 
@@ -29,7 +29,7 @@ w = 2000
 def callbackFs(fs):
     global hpiir,lpiir
     hpfc = 5 # highpass freq
-    hpsos = signal.butter(2, hpfc/fs*2, output='sos', btype='highpass')
+    hpsos = signal.butter(4, hpfc/fs*2, output='sos', btype='highpass')
     lpfc = 1 # lowpass freq
     lpsos = signal.butter(2, lpfc/fs*2, output='sos')
     hpiir = iir_filter.IIR_filter(hpsos)

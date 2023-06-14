@@ -42,6 +42,11 @@ module ecg_analysis.py
 Performs highpass filtering of the signal, takes the power and then does
 a lowpass filtering. It also shows how to use buttons in the PyPlot environment.
 
+### plugin_dino_emg_game.py
+The famous Dino Game controlled with EMG. Flex your muscle and make
+the dino jump.
+Requires: https://pypi.org/project/dino-game/
+
 ### plugin_eeg.py
 Plots the EEG gamma, beta, alpha, theta and delta waves.
 
