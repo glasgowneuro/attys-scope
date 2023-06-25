@@ -55,6 +55,7 @@ class QtPanningPlot:
         l2.addWidget(ccb1)
         l2.addWidget(ccb2)
         self.l.addLayout(l2)
+        self.mw.show()
 
     def ch1Callback(self):
         if self.channelCallback:
@@ -124,8 +125,6 @@ def callbackData(data):
     
 attysScopeReader = AttysScopeReader(callbackData,callbackFs)
 attysScopeReader.start()
-
-qtPanningPlot.mw.show()
 
 # showing all the windows
 pg.exec()

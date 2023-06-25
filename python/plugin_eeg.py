@@ -15,18 +15,13 @@ fbs = 50 # Hz
 
 import sys
 import pyqtgraph as pg
-from pyqtgraph.Qt import QtCore, QtGui
+from pyqtgraph.Qt import QtCore, QtWidgets
 import numpy as np
 from scipy import signal
 import iir_filter
 from attys_scope_plugin_comm import AttysScopeReader
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
 
-# create a global QT application object
-app = QtGui.QApplication(sys.argv)
-
+app = pg.mkQApp()
 
 class QtPanningPlot:
 
@@ -36,34 +31,39 @@ class QtPanningPlot:
     a = 100
 
     def __init__(self,title):
+        self.fs = 250
         self.title = title
         self.channelCallback = False
-        self.win = pg.GraphicsLayoutWidget()
-        self.win.setWindowTitle(title)
 
         self.ylabel = ["EEG","gamma","beta","alpha","theta","delta"]
         self.n = len(self.ylabel)
 
-        self.curve = [False]*self.n
+        self.pw = [False]*self.n
         self.plt = [False]*self.n
         self.data = [[]]*self.n
         self.bpiir = [False]*self.n
+
+        self.mw = QtWidgets.QMainWindow()
+        self.mw.setWindowTitle('EEG')
+        self.mw.resize(800,800)
+        self.cw = QtWidgets.QWidget()
+        self.mw.setCentralWidget(self.cw)
+        self.l = QtWidgets.QVBoxLayout()
+        self.cw.setLayout(self.l)
         
         for i in range(self.n):
-            self.plt[i] = self.win.addPlot(row=i, col=0)
-            self.plt[i].setYRange(-self.a,self.a)
-            self.plt[i].setLabel('bottom', 't/sec')
-            self.plt[i].setLabel('left',self.ylabel[i]+'/uV')
-            self.curve[i] = self.plt[i].plot()
-
-        self.layout = QtGui.QGridLayout()
-        self.win.setLayout(self.layout)
+            self.pw[i] = pg.PlotWidget()
+            self.pw[i].setYRange(-self.a,self.a)
+            self.pw[i].setLabel('bottom', 't/sec')
+            self.pw[i].setLabel('left',self.ylabel[i]+'/uV')
+            self.l.addWidget(self.pw[i])
+            self.plt[i] = self.pw[i].plot()
 
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.update)
         self.timer.start(100)
         
-        self.win.show()
+        self.mw.show()
 
     def update(self):
         for i in range(self.n):
@@ -71,8 +71,8 @@ class QtPanningPlot:
             if self.data[i]:
                 d = np.hstack(self.data[i])
                 t = np.linspace(0,len(d)/self.fs,len(d))
-                self.plt[i].setXRange(0,len(d)/self.fs)
-                self.curve[i].setData(t,d)
+                self.pw[i].setXRange(0,len(d)/self.fs)
+                self.plt[i].setData(x=t,y=d)
 
     def addData(self,d):
         for i in range(self.n):
@@ -122,7 +122,7 @@ attysScopeReader = AttysScopeReader(callbackData,callbackFs)
 attysScopeReader.start()
 
 # showing all the windows
-app.exec_()
+pg.exec()
 
 attysScopeReader.stop()
 

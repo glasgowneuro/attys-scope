@@ -19,13 +19,12 @@ Plots data from a file recorded by attys_scope.
 
 Start these plugins from Attys-scope by selecting `Python->Run`.
 
-### plugin_realtime_plot.py
-Realtime plot of data: Plots the data from the 1st selected
-channel.
+### plugin_realtime_plot_matplotlib.py
+Realtime plot of data using matplotlib.
 
-### plugin_power.py
-Squares the 1st analogue channel and then lowpass filters it.
-This is a good demo how to do realtime filtering on the data and displaying it.
+### plugin_realtime_plot_pyqtgraph.py
+Realtime plot of data using pyqtgraph which is much faster than matplotlib and
+fully integrates into QT.
 
 ### plugin_bargraph.py
 Shows in realtime the amplitude of the 1st two selected
@@ -38,7 +37,7 @@ in a semilog scale.
 ### plugin_ecg.py
 Shows Einthoven I,II,III
 
-Switch the attys-scope to ECG mode for both analogue channels.
+Switch the attys-scope to *ECG mode* for both analogue channels.
 Wire up the subject:
  - Neg: right shoulder
  - Pos: left hip
@@ -56,6 +55,16 @@ a lowpass filtering. It also shows how to use buttons in the PyPlot environment.
 The famous Dino Game controlled with EMG. Flex your muscle and make
 the dino jump.
 Requires: https://pypi.org/project/dino-game/
+
+These are the processing stages of the EMG signal:
+
+ 1. Highpass at 1Hz: v=hp(v)
+ 2. Absolute value: v=abs(v)
+ 3. Lowpass at 5hz: v=lp(v)
+ 4. Amplified by factor `gain`: v=v*gain
+ 5. if v > 1 then jump!
+
+Tweak the gain that the dino jumps when the muscle is flexed.
 
 ### plugin_eeg.py
 Plots the EEG gamma, beta, alpha, theta and delta waves.
