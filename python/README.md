@@ -2,6 +2,16 @@
 Python scripts to demonstrate how to process data with
 attys-scope.
 
+## Prerequisites
+
+```
+pip install pyqtgraph
+pip install PyQt5
+pip install scipy
+pip install numpy
+pip install matplotlib
+```
+
 ## plot_demo_data.py
 Plots data from a file recorded by attys_scope.
 

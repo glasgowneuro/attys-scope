@@ -12,18 +12,13 @@ channel = 7 # 1st ADC unfiltered
 
 import sys
 import pyqtgraph as pg
-from pyqtgraph.Qt import QtCore, QtGui
+from pyqtgraph.Qt import QtCore, QtWidgets
 import numpy as np
 from scipy import signal
 import iir_filter
 from attys_scope_plugin_comm import AttysScopeReader
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
 
-# create a global QT application object
-app = QtGui.QApplication(sys.argv)
-
+app = pg.mkQApp()
 
 class QtPanningPlot:
 
@@ -34,49 +29,50 @@ class QtPanningPlot:
     def __init__(self,title):
         self.title = title
         self.channelCallback = False
-        self.win = pg.GraphicsLayoutWidget()
-        self.win.setWindowTitle(title)
-        self.plt = self.win.addPlot()
-        self.plt.setYRange(0,1.5)
-        self.plt.setLabel('bottom', 't/sec')
-        self.curve = self.plt.plot()
+        self.mw = QtWidgets.QMainWindow()
+        self.mw.setWindowTitle('EMG')
+        self.mw.resize(800,600)
+        self.cw = QtWidgets.QWidget()
+        self.mw.setCentralWidget(self.cw)
+        self.l = QtWidgets.QVBoxLayout()
+        self.cw.setLayout(self.l)
+        self.pw = pg.PlotWidget()
+        self.l.addWidget(self.pw)
+        self.pw.setYRange(0,1.5)
+        self.pw.setLabel('bottom', 't/sec')
+        self.plt = self.pw.plot()
+
         self.data = []
         # any additional initalisation code goes here (filters etc)
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.update)
         self.timer.start(100)
-        self.layout = QtGui.QGridLayout()
-        self.win.setLayout(self.layout)
-        proxy1 = QtGui.QGraphicsProxyWidget()
-        ccb1 = QPushButton("Ch1")
+        l2 = QtWidgets.QHBoxLayout()
+        ccb1 = QtWidgets.QPushButton("Ch1")
         ccb1.clicked.connect(self.ch1Callback)
-        proxy1.setWidget(ccb1)
-        proxy2 = QtGui.QGraphicsProxyWidget()
-        ccb2 = QPushButton("Ch2")
+        ccb2 = QtWidgets.QPushButton("Ch2")
         ccb2.clicked.connect(self.ch2Callback)
-        proxy2.setWidget(ccb2)
-        p = self.win.addLayout(row=1, col=0)
-        p.addItem(proxy1,row=1,col=1)
-        p.addItem(proxy2,row=1,col=2)
-        self.win.show()
+        l2.addWidget(ccb1)
+        l2.addWidget(ccb2)
+        self.l.addLayout(l2)
 
     def ch1Callback(self):
         if self.channelCallback:
             self.channelCallback(self.CH1)
-            self.plt.setLabel('left', 'Ch1/V')
+            self.pw.setLabel('left', 'Ch1/V')
         
     def ch2Callback(self):
         if self.channelCallback:
             self.channelCallback(self.CH2)
-            self.plt.setLabel('left', 'Ch2/V')
+            self.pw.setLabel('left', 'Ch2/V')
         
     def update(self):
         self.data=self.data[-self.n:]
         if self.data:
             d = np.hstack(self.data)
             t = np.linspace(0,len(d)/self.fs,len(d))
-            self.plt.setXRange(0,len(d)/self.fs)
-            self.curve.setData(t,d)
+            self.pw.setXRange(0,len(d)/self.fs)
+            self.plt.setData(x=t,y=d)
 
     def addData(self,d):
         self.data.append(d)
@@ -129,8 +125,10 @@ def callbackData(data):
 attysScopeReader = AttysScopeReader(callbackData,callbackFs)
 attysScopeReader.start()
 
+qtPanningPlot.mw.show()
+
 # showing all the windows
-app.exec_()
+pg.exec()
 
 attysScopeReader.stop()
 
