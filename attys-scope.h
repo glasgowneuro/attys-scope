@@ -34,7 +34,7 @@ class Attys_scope;
 #include "acceleration.h"
 
 // version number
-#define VERSION "2.6.1"
+#define VERSION "2.6.2"
 
 #define ATTYS_STRING "ATTYS"
 #define PROGRAM_NAME "attys-scope"

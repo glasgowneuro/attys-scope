@@ -80,7 +80,7 @@ the other required packages.
 * Start by typing "attys-scope"
 
 ## Compile under Windows
-* Install: Visual Studio 2019 community edition
+* Install: Visual Studio 2022 community edition
 * clone iir1 in your root directory: https://github.com/berndporr/iir1 and compile it (release version)
 * Download the open source version of QT5, 64 bits for visual C++ 2017 from www.qt.io.
 * git clone https://github.com/glasgowneuro/attys-comm.git and compile it
