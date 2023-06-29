@@ -79,7 +79,7 @@ the other required packages.
 ## Compile under Windows
 * Install: Visual Studio 2022 community edition
 * clone iir1 in your root directory: https://github.com/berndporr/iir1 and compile it (release version)
-* Download the open source version of QT5, 64 bits for visual C++ 2017 from www.qt.io.
+* Download the open source version of QT5, 64 bits, 5.15 LTS for visual C++ 2019 from www.qt.io.
 * git clone https://github.com/glasgowneuro/attys-comm.git and compile it
 * git clone https://github.com/glasgowneuro/attys-scope.git
 * Edit attys-scope.pro and adjust the path variables so that they point to attys-comm and the IIR libary
