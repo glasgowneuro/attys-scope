@@ -9,7 +9,7 @@ Oscilloscope program for the Attys (http://www.attys.tech).
 * Saves data as tab separated values which can be directly imported into Python, MATLAB ™, OCTAVE, R, GNUPLOT and many other software packages.
 * Change the gain, highpass, lowpass, 50/60Hz bandstop and rectifier for amplitude plots
 
-![alt tag](screenshot.png)
+![alt tag](attys_emg_measurement.jpg)
 
 The screenshot above shows attys-scope in action under Windows where it feeds the data into a Python program
 using matplotlib.
@@ -59,7 +59,7 @@ UDP packets are always transmitted as CSV.
 https://github.com/glasgowneuro/attys-scope/blob/master/installer/attys_scope_installer.msi
 
 
-## Linux Ubuntu packages for xenial and bionic
+## Ubuntu packages for Ubuntu LTS releases
 Add these two repositories...
 ```
 sudo add-apt-repository ppa:berndporr/attys
@@ -86,8 +86,9 @@ the other required packages.
 * git clone https://github.com/glasgowneuro/attys-comm.git and compile it
 * git clone https://github.com/glasgowneuro/attys-scope.git
 * Edit attys-scope.pro and adjust the path variables so that they point to attys-comm and the IIR libary
-* "qmake -tp vc" and then re-target the project (right click on attys_scope in the Solutions Explorer -> Retarget Projects)
-* Open the .sln file
+* Run `qmake -tp vc` in the x64 terminal of VS
+* Open the `.sln` file
+* Open VS and then re-target the project (right click on attys_scope in the Solutions Explorer -> Retarget Projects)
 * Build solution
 * go to the "release" subdirectory
 * run "windeployqt attys-scope.exe" which copies all the DLLs into this directory which are needed to run the app
