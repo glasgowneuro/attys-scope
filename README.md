@@ -11,9 +11,6 @@ Oscilloscope program for the Attys (http://www.attys.tech).
 
 ![alt tag](attys_emg_measurement.jpg)
 
-The screenshot above shows attys-scope in action under Windows where it feeds the data into a Python program
-using matplotlib.
-
 ## Data format
 
 For saving data to a file the format is either "comma separated" (CSV) or "tab separated" (TSV).
