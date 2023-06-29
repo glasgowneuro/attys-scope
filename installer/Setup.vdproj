@@ -39,6 +39,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_1CCFCAA60DB243C68FFE20A10E011CC4"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_2D9EC1C2E07842A697CCD3BCAD3ED908"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -117,12 +123,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_67D6F3418E95E6984A79C3F441CB5426"
-        "OwnerKey" = "8:_3767FD80AC094AA893B9CDF7D57E8A10"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_6CEF302F7E69460EB91558BCCAD044F5"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -177,6 +177,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_87D2512A944042D6840883F73518A9FE"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_8E708E97F30F1DC23D6CA1958695EF88"
         "OwnerKey" = "8:_3767FD80AC094AA893B9CDF7D57E8A10"
         "MsmSig" = "8:_UNDEFINED"
@@ -226,12 +232,6 @@
         "Entry"
         {
         "MsmKey" = "8:_9D06DE6D1D92D577626F9B057E26A428"
-        "OwnerKey" = "8:_3767FD80AC094AA893B9CDF7D57E8A10"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_A084401F8288AB1E95C64D25F72FDB2C"
         "OwnerKey" = "8:_3767FD80AC094AA893B9CDF7D57E8A10"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -327,6 +327,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_DBAF5CF97D2FABE1F90E370EAD354064"
+        "OwnerKey" = "8:_3767FD80AC094AA893B9CDF7D57E8A10"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_DCC2D6CDC84B84536E2B549B13BB6D15"
         "OwnerKey" = "8:_3767FD80AC094AA893B9CDF7D57E8A10"
         "MsmSig" = "8:_UNDEFINED"
@@ -341,6 +347,12 @@
         {
         "MsmKey" = "8:_E6841BE9E8B24AAE8A2AD05B874910B5"
         "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_E933DA1A61C02E95607EF9239FA6B840"
+        "OwnerKey" = "8:_3767FD80AC094AA893B9CDF7D57E8A10"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -531,6 +543,26 @@
             "TargetName" = "8:qsvg.dll"
             "Tag" = "8:"
             "Folder" = "8:_ADD766AC29D84DA1A9BCF7C4169E813D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1CCFCAA60DB243C68FFE20A10E011CC4"
+            {
+            "SourcePath" = "8:..\\release\\audio\\qtaudio_windows.dll"
+            "TargetName" = "8:qtaudio_windows.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_989FC54179EC48EDA466EDD4472D3D00"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -785,26 +817,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_67D6F3418E95E6984A79C3F441CB5426"
-            {
-            "SourcePath" = "8:Qt5Multimedia.dll"
-            "TargetName" = "8:Qt5Multimedia.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_989FC54179EC48EDA466EDD4472D3D00"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6CEF302F7E69460EB91558BCCAD044F5"
             {
             "SourcePath" = "8:..\\release\\styles\\qwindowsvistastyle.dll"
@@ -985,6 +997,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_87D2512A944042D6840883F73518A9FE"
+            {
+            "SourcePath" = "8:..\\release\\audio\\qtaudio_wasapi.dll"
+            "TargetName" = "8:qtaudio_wasapi.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_989FC54179EC48EDA466EDD4472D3D00"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8E708E97F30F1DC23D6CA1958695EF88"
             {
             "SourcePath" = "8:MSVCP140.dll"
@@ -1149,26 +1181,6 @@
             {
             "SourcePath" = "8:api-ms-win-crt-locale-l1-1-0.dll"
             "TargetName" = "8:api-ms-win-crt-locale-l1-1-0.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_989FC54179EC48EDA466EDD4472D3D00"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A084401F8288AB1E95C64D25F72FDB2C"
-            {
-            "SourcePath" = "8:Qt5Network.dll"
-            "TargetName" = "8:Qt5Network.dll"
             "Tag" = "8:"
             "Folder" = "8:_989FC54179EC48EDA466EDD4472D3D00"
             "Condition" = "8:"
@@ -1485,6 +1497,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DBAF5CF97D2FABE1F90E370EAD354064"
+            {
+            "SourcePath" = "8:Qt5Multimedia.dll"
+            "TargetName" = "8:Qt5Multimedia.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_989FC54179EC48EDA466EDD4472D3D00"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DCC2D6CDC84B84536E2B549B13BB6D15"
             {
             "SourcePath" = "8:api-ms-win-crt-runtime-l1-1-0.dll"
@@ -1543,6 +1575,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E933DA1A61C02E95607EF9239FA6B840"
+            {
+            "SourcePath" = "8:Qt5Network.dll"
+            "TargetName" = "8:Qt5Network.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_989FC54179EC48EDA466EDD4472D3D00"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EA64864C5CE74805A2000F94BC73452C"
@@ -1779,7 +1831,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:attys-scope"
         "ProductCode" = "8:{5DF4810D-E082-4A04-8647-C7CF427BF5FB}"
-        "PackageCode" = "8:{C12719D2-D21F-4FD9-8814-87BA2143EF2C}"
+        "PackageCode" = "8:{637CA6AB-D3F1-4EAC-9D47-C252A5DC75D2}"
         "UpgradeCode" = "8:{61B338BB-2C5C-411B-9290-DD8EC4E42DD4}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
