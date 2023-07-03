@@ -8,7 +8,7 @@ Highpass::Highpass() : QComboBox() {
 
 	dcValue = 0;
 
-	setMinimumWidth ( fontMetrics().width("1000Hz_") );
+	setMinimumWidth ( fontMetrics().horizontalAdvance("1000Hz_") );
 
 	addItem(tr("off"),-1);
 	addItem(tr("-DC"),0);

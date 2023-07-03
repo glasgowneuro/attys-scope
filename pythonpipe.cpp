@@ -3,7 +3,9 @@
 #include <iostream>
 
 PythonPipe::PythonPipe() : QObject() {
-	connect(&qprocess, (void(QProcess::*)(int)) & QProcess::finished, [this](int) mutable {isRunning = false;});
+	connect(&qprocess,
+		(void(QProcess::*)(int,QProcess::ExitStatus)) & QProcess::finished,
+		[this](int,QProcess::ExitStatus) mutable {isRunning = false;});
 	connect(&qprocess, &QProcess::readyReadStandardOutput, [this]() {
 								       QString tmp(qprocess.readAllStandardOutput());
 								       tmp = "{"+pythonScriptName.fileName()+"} " + tmp;
