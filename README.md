@@ -60,7 +60,7 @@ https://github.com/glasgowneuro/attys-scope/blob/master/installer/attys_scope_in
 Add these two repositories...
 ```
 sudo add-apt-repository ppa:berndporr/attys
-sudo add-apt-repository ppa:berndporr/usbdux
+sudo add-apt-repository ppa:berndporr/dsp
 ```
 ...and then select attys-scope. This will then install also
 the other required packages.
